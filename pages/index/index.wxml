@@ -1,0 +1,29 @@
+<!--index.wxml-->
+<view class="container">
+  
+  <view  bindtap="bindViewTap" class="userinfo">
+    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+    <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+  </view>
+
+</view>
+
+
+<view style="flex-direction:row;">
+  <view style="flex-item;"  class="menu">
+      <navigator url="../score_board2/score_board2" style="text-align:center">横版大记分牌</navigator>
+  </view>
+
+
+  <view style="flex-item;menu" class="menu">
+      <navigator url="../score_board/score_board" style="text-align:center">竖版大记分牌</navigator>
+  </view>
+
+
+<view style="flex-item;menu" class="menu">
+      <navigator url="../stat/stat" style="text-align:center">小记分牌</navigator>
+  </view>
+
+
+
+</view>

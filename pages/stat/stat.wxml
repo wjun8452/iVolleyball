@@ -1,0 +1,35 @@
+<view style="flex-direction:row;">
+    <view class="flex-item score">{{myScore}}:{{yourScore}}</view>
+
+    <view class="flex-item">
+        <view style="flex-direction:row;">
+
+            <view class="flex-item addScore">
+                <button type="primary" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}"
+        disabled="{{disabled}}" bindtap="addScore"> 得分
+                </button>
+             </view>
+
+
+            <view class="flex-item addScore">
+                <button type="warn" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}"
+        disabled="{{disabled}}" bindtap="looseScore"> 失分
+                </button>
+            </view>
+
+
+             <view class="flex-item addScore">
+            <button type="primary" size="{{primarySize}}" bindtap="reset" style="background-color: Chartreuse"> 重新开始
+                </button>
+             </view>
+
+            <view class="flex-item addScore">
+            <button type="primary" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}"
+        disabled="{{lastOp==0}}" bindtap="undo" style="background-color: Bisque"> 撤销
+                </button>
+             </view>
+
+
+        </view>
+    </view>
+</view>

@@ -1,0 +1,18 @@
+<template name="block">
+
+  <view style="display: flex; flex-direction: row; flex-wrap: wrap; padding: 2px">
+      <block wx:for="{{player.play_items}}">
+        <block wx:if="{{item.score == 1}}">
+          <button bindtap='onTapPlayItem' data-player='{{player_index}}' data-item='{{index}}' style="flex:1; background: Green; margin:2px; color:white"> {{item.name}} </button>
+        </block>
+
+        <block wx:if="{{item.score == -1}}">
+          <button bindtap='onTapPlayItem' data-player='{{player_index}}' data-item='{{index}}' style="flex:1; background: #FF9900; margin:2px; color:white"> {{item.name}} </button>
+        </block>
+      </block>
+   </view>
+
+    <view style="display: flex; flex-direction: row;">
+      <text style="flex:1; text-align: center"> {{player.name}} </text>
+    </view>
+</template>

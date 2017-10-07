@@ -1,3 +1,6 @@
+
+var g_can_start_vibration = true;
+
 Page({
   data:
   {
@@ -9,13 +12,13 @@ Page({
     "colon_width" : 0,
     "myScore": 0,
     "yourScore": 0,
-    "lastOp" : 0 //0: no op, 1: add my score, -1: add your score
+    "stat_items": []
   },
-
   start_x_1: 0,
   start_y_1: 0,
   start_x_2: 0,
   start_y_2: 0,
+  isShow: false,
 
 
   onLoad: function () {
@@ -40,8 +43,8 @@ Page({
    this.setData({height: res.windowHeight, width: res.windowWidth, 
      score_height: res.windowHeight / 80 * 39, 
      score_width: res.windowWidth,
-   colon_height: res.windowHeight / 80 * 2,
-   colon_width: res.windowWidth})
+     colon_height: res.windowHeight / 80 * 2,
+     colon_width: res.windowWidth})
 
     console.log("height: " + this.data.height);
     console.log("width: " + this.data.width);
@@ -50,38 +53,81 @@ Page({
     console.log("colon_height: " + this.data.colon_height);
     console.log("colon_width: " + this.data.colon_width);
 
+    wx.startAccelerometer()
+  },
+
+  onAccelerometerChange: function(res) {
+    var that = this;
+    console.log("------------------")
+    console.log("g_can_start_vibration=" + g_can_start_vibration)
+    //console.log("acc_x=" + res.x)
+    console.log("acc_y=" + res.y)
+    //console.log("acc_z=" + res.z)
+
+    if (!that.isShow) {
+      console.log("page not show, return")
+      return
+    }
+
+    var acc = 1.5;
+
+    if (res.y > acc && g_can_start_vibration) {
+      that.logScore()
+      console.log("my score +1")
+      wx.vibrateLong();
+      that.changeMyScore(+1);
+      that.logScore()
+      that.drawMyScore();
+      g_can_start_vibration = false;
+    } else if (res.y < -acc && g_can_start_vibration) {
+      that.logScore()
+      console.log("your score +1")
+      wx.vibrateLong();
+      that.changeYourScore(+1);
+      that.logScore()
+      that.drawYourScore();
+      g_can_start_vibration = false;
+    } else if (res.y <= acc && res.y >= -acc) {
+      console.log("reset g_can_start_vibration to true")
+      g_can_start_vibration = true;
+    }
+
+    console.log("g_can_start_vibration=" + g_can_start_vibration)
+  },
+
+  onShow: function() {
+    var that = this;
+    this.isShow = true;
+    wx.onAccelerometerChange(that.onAccelerometerChange)
+
+  },
+
+  onHide: function() {
+    this.isShow = false;
+  },
+
+  logScore : function() {
+    //console.log("my_score: " + this.data.myScore);
+    //console.log("your_score: " + this.data.yourScore);
   },
 
   onUnload: function () {
+    wx.stopAccelerometer();
     wx.setStorageSync("stats", this.data);
   },
 
   changeMyScore: function (delta) {
-    var my = this.data.myScore;
-    my = my + delta;
-    this.setData({lastOp: 1});
-    this.setData({myScore: my})
+    this.data.stat_items.push(this.createStatItem("", "", delta));
+
+    var s = this.data.myScore + delta;
+    this.setData({myScore: s});
+    
   },
 
   changeYourScore: function (delta) {
-    var you = this.data.yourScore;
-    you = you + delta;
-    this.setData({lastOp: -1})
-    this.setData({ yourScore: you })
-  },
-
-  undo: function() {
-    if (this.data.lastOp == 1) {
-      var my = this.data.myScore;
-      my = my - 1;
-      this.setData({ myScore: my });
-    } else if (this.data.lastOp == -1) {
-      var you = this.data.yourScore;
-      you = you - 1;
-      this.setData({ yourScore: you })
-    }
-
-    this.setData({lastOp: 0});
+    this.data.stat_items.push(this.createStatItem("", "", delta));
+    var s = this.data.yourScore + delta;
+    this.setData({yourScore: s});
   },
 
   reset: function() {
@@ -123,9 +169,9 @@ Page({
   },
 
   touchStart1: function(e) {
-    console.log("touchStart:");
-    console.log(e.changedTouches[0].x);
-    console.log(e.changedTouches[0].y);
+    //console.log("touchStart:");
+    //console.log(e.changedTouches[0].x);
+    //console.log(e.changedTouches[0].y);
     this.start_x_1 = e.changedTouches[0].x;
     this.start_y_1 = e.changedTouches[0].y;
   },
@@ -137,9 +183,9 @@ Page({
   },
 
   touchEnd1: function(e) {
-    console.log("touchEnd:");
-    console.log(e.changedTouches[0].x);
-    console.log(e.changedTouches[0].y);
+    //console.log("touchEnd:");
+    //console.log(e.changedTouches[0].x);
+    //console.log(e.changedTouches[0].y);
 
     var end_x = e.changedTouches[0].x
     var end_y = e.changedTouches[0].y;
@@ -148,23 +194,23 @@ Page({
   },
 
   touchStart2: function (e) {
-    console.log("touchStart:");
-    console.log(e.changedTouches[0].x);
-    console.log(e.changedTouches[0].y);
+    //console.log("touchStart:");
+    //console.log(e.changedTouches[0].x);
+    //console.log(e.changedTouches[0].y);
     this.start_x_2 = e.changedTouches[0].x;
     this.start_y_2 = e.changedTouches[0].y;
   },
 
   touchMove2: function (e) {
-    console.log("touchMove:");
-    console.log(e.changedTouches[0].x);
-    console.log(e.changedTouches[0].y);
+    //console.log("touchMove:");
+    //console.log(e.changedTouches[0].x);
+    //console.log(e.changedTouches[0].y);
   },
 
   touchEnd2: function (e) {
-    console.log("touchEnd:");
-    console.log(e.changedTouches[0].x);
-    console.log(e.changedTouches[0].y);
+    //console.log("touchEnd:");
+    //console.log(e.changedTouches[0].x);
+    //console.log(e.changedTouches[0].y);
 
     var end_x = e.changedTouches[0].x
     var end_y = e.changedTouches[0].y;
@@ -180,8 +226,8 @@ Page({
     var change_x_abs = Math.abs(changeX);
     var change_y_abs = Math.abs(changeY);
 
-    console.log("change_x: " + changeX);
-    console.log("change_y: " + changeY);
+    //console.log("change_x: " + changeX);
+    //console.log("change_y: " + changeY);
 
     if (change_x_abs < 50 && change_y_abs < 50) return;
 
@@ -210,6 +256,15 @@ Page({
     this.drawMyScore();
     this.drawYourScore();
     this.drawColon();
-  }
+  },
+
+  createStatItem: function (player, item, score) {
+    var obj = new Object();
+    obj.player = player
+    obj.item = item;
+    obj.score = score;
+    return obj;
+  },
+
 })
 

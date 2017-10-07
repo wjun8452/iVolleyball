@@ -21,9 +21,11 @@
 
 
 <view style="flex-item;menu" class="menu">
-      <navigator url="../stat/stat" style="text-align:center">小记分牌</navigator>
+      <navigator url="../stat/stat" style="text-align:center">复杂记分牌</navigator>
   </view>
 
-
+<view style="flex-item;menu" class="menu">
+      <navigator url="../stat/report" style="text-align:center">技术统计</navigator>
+  </view>
 
 </view>

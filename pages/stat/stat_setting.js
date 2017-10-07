@@ -16,7 +16,7 @@ Page({
       title: '设置'
     })
 
-    var saved = wx.getStorageSync('stats');
+    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
 
     this.setData(saved || this.data);
   },
@@ -46,7 +46,9 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    wx.setStorageSync("stats", this.data);
+    console.log("onUnload")
+    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
+    // console.log(this.data);
   },
 
   /**
@@ -73,13 +75,41 @@ Page({
   onTapServe: function(e) {
     var serve = e.detail.value;
     this.setData({serve: serve});
+    wx.navigateBack({
+      delta: 1
+    })
   },
 
-  onReset: function(){
-    var players = this.data.players;
-    for (var k in players) {
-      players[k].name = parseInt(k) + 1;
-    }
+  onReset: function() {
     this.setData({myScore:0, yourScore:0, stat_items:[]});
-  }
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+  onNextPosition: function() {
+    this.updatePosition();
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+  updatePosition: function () {
+    var players = this.data.players;
+    var player = players[5];
+    players[5] = players[0];
+    players[0] = players[1];
+    players[1] = players[2];
+    players[2] = players[3];
+    players[3] = players[4];
+    players[4] = player;
+    this.setData({ players: players });
+  },
+
+  // onResetAll: function() {
+  //   this.data = null;
+  //   wx.navigateBack({
+  //     delta: 1
+  //   })
+  // }
 })

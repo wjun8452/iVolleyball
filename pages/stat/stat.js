@@ -3,39 +3,11 @@ Page({
   {
     "myScore": 0,
     "yourScore": 0,
-    "players" : [
-        {
-          "name" : "1",
-          "play_items": [],
-        }, 
-        
-        {
-          "name": "2",
-          "play_items": [],
-        },
-
-        {
-          "name": "3",
-          "play_items": [],
-        },
-
-        {
-          "name": "4",
-          "play_items": [],
-        },
-
-        {
-          "name": "5",
-          "play_items": [],
-        },
-
-        {
-          "name": "6",
-          "play_items": [],
-        }
-      ],
+    "all_players": ["张磊", "王军", "小波", "小光", "荣球", "李钊", "乐乐", "陈鑫"],
+    "players": ["小光", "李钊", "荣球", "王军", "张磊", "陈鑫"],
+    "play_items" : [[], [], [], [], [], []],
     "stat_items" : [],
-    "serve" : false  //true: we serve, false: we serve return and attack
+    "serve" : false,  //true: we serve, false: we serve return and attack
   },
 
   onLoad: function () {
@@ -48,25 +20,23 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    var saved = wx.getStorageSync('stats');
-
-    this.setData(saved || this.data);
-
-    this.updatePlayItems();
-
     console.log("onShow")
+    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
+    // console.log(saved)
+    this.setData(saved || this.data);
+    this.updatePlayItems();
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    wx.setStorageSync("stats", this.data);
+    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     console.log("onHide")
   },
 
   onUnload: function () {
-    wx.setStorageSync("stats", this.data);
+    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     console.log("onUnload")
   },
 
@@ -120,13 +90,6 @@ Page({
     this.setData({ yourScore: yourScore });
   },
 
-  undo: function() {
-  },
-
-  reset: function() {
-    this.setData({myScore:0, yourScore:0});
-  },
-
   createPlayItem: function (name, score) {
     var obj = new Object();
     obj.name = name;
@@ -135,42 +98,40 @@ Page({
   },
 
   updatePlayItems: function () {
-    var players = this.data.players;
     var serve = this.data.serve;
+    var m_play_items = this.data.play_items;
 
-    var index = 0
+    for (var index in m_play_items) {
+      m_play_items[index] = [];
+      var play_items = m_play_items[index];
 
-    for (; index < players.length; index++) {
-      var player = players[index];
-      player.play_items = [];
-
-      player.play_items.push(this.createPlayItem("扣球", 1));
+      play_items.push(this.createPlayItem("扣球", 1));
       
       if (serve && index==0) {
-        player.play_items.push(this.createPlayItem("发球", 1));
+        play_items.push(this.createPlayItem("发球", 1));
       }
 
       if (index >=1 && index <=3) {
-        player.play_items.push(this.createPlayItem("拦网", 1));
+        play_items.push(this.createPlayItem("拦网", 1));
       }
 
       //--------- negotive
-      player.play_items.push(this.createPlayItem("扣球", -1));
-      player.play_items.push(this.createPlayItem("串联", -1));
+      play_items.push(this.createPlayItem("扣球", -1));
+      play_items.push(this.createPlayItem("串联", -1));
       if (serve && index == 0) {
-        player.play_items.push(this.createPlayItem("发球", -1));
+        play_items.push(this.createPlayItem("发球", -1));
       }
 
       if (!serve) {
-        player.play_items.push(this.createPlayItem("一传", -1));
+        play_items.push(this.createPlayItem("一传", -1));
       }
 
       if (index >= 1 && index <= 3) {
-        player.play_items.push(this.createPlayItem("拦网", -1));
+        play_items.push(this.createPlayItem("拦网", -1));
       }
     }
 
-    this.setData({players: players});
+    this.setData({play_items: m_play_items});
   },
 
   onTapSetting: function() {
@@ -181,13 +142,13 @@ Page({
 
   onTapPlayItem: function(e) {
 
-    var player_index = e.target.dataset.player;
-    var item_index = e.target.dataset.item;
+    var position = e.target.dataset.position;
+    var item_index = e.target.dataset.play_item_index;
 
-    var player = this.data.players[player_index];
-    var item = this.data.players[player_index].play_items[item_index];
+    var player = this.data.players[position];
+    var item = this.data.play_items[position][item_index];
 
-    this.data.stat_items.push(this.createStatItem(player.name, item.name, item.score));
+    this.data.stat_items.push(this.createStatItem(player, item.name, item.score));
    
     if (item.score == 1) {
       this.addScore();
@@ -215,5 +176,14 @@ Page({
     obj.score = score;
     return obj;
   },
+
+  onPlayerChanged: function(e) {
+    var position = e.target.dataset.position;
+    var new_player_index = e.detail.value;
+
+    var players = this.data.players;
+    players[position] = this.data.all_players[new_player_index];
+    this.setData({ players: players })
+  }
 
 })

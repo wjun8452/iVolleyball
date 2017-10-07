@@ -23,7 +23,7 @@ Page({
       title: '竖版记分牌'
     })
 
-    var saved = wx.getStorageSync('stats');
+    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
 
     this.setData(saved || this.data);
 
@@ -52,7 +52,7 @@ Page({
   },
 
   onUnload: function () {
-    wx.setStorageSync("stats", this.data);
+    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
   },
 
   changeMyScore: function (delta) {

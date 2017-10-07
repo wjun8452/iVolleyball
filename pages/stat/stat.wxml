@@ -2,52 +2,33 @@
 
 <view>
 
-    <view style="display: flex; flex-direction: row; ">
-        <navigator url="../score_board2/score_board2" style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}}: {{yourScore}}  </navigator> 
-    </view>
-
-   <view>
-
-    <view style="display: flex; flex-direction: row;">
-      <view  style="flex:1; margin: 2px; background-color: #FFCC00;">
-        <template is="block" data="{{player: players[4-1], player_index:3}}" />
-      </view>
-      
-      <view style="flex:1; margin: 2px; background-color:  #FFCC00;">
-        <template is="block" data="{{player: players[3-1], player_index:2}}" />
-      </view>
-      
-      <view style="flex:1; margin: 2px; background-color:  #FFCC00;">
-        <template is="block" data="{{player: players[2-1], player_index:1}}" />
-      </view>
-
-    </view>
-
-
-    <view style="width:100%;height:0;border-bottom:#000000 1px dashed; margin_top: 2px; margin_bottom: 2px">      </view>
-
-    <view style="display: flex; flex-direction: row;">
-      <view  style="flex:1;margin: 2px;background-color:  #FFCC00;">
-        <template is="block" data="{{player: players[5-1], player_index:4}}" />
-      </view>
-      <view style="flex:1;margin: 2px;background-color:  #FFCC00;">
-        <template is="block" data="{{player: players[6-1], player_index:5}}" />
-      </view>
-      <view style="flex:1;margin: 2px;background-color:  #FFCC00;">
-        <template is="block" data="{{player: players[1-1], player_index:0}}" />
-      </view>
-    </view>
-</view>
-
-
-
-  <view style="display: flex; flex-direction: row;">
-     <button bindtap='onTapAddScore' type="primary" style="flex:1; margin:2px;">得分</button>
-
-     <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
-
-     <button bindtap='onTapLooseScore' type="warn"  style="flex:1; margin:2px;"> 失分 </button>
+  <view style="display: flex; flex-direction: row; ">
+    <navigator url="../score_board2/score_board2" style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}}: {{yourScore}}  </navigator> 
   </view>
+  
+
+    <view style="display: flex; flex-direction: row;">
+      <block wx:for="{{[3,2,1]}}">
+      <view  style="flex:1; margin: 2px; background-color: #FFCC00;">
+        <template is="block" data="{{players, all_players, position:item, play_items:play_items[item]}}" />
+      </view>
+      </block>
+    </view>
+
+    <view style="display: flex; flex-direction: row;">
+      <block wx:for="{{[4,5,0]}}">
+      <view  style="flex:1; margin: 2px; background-color: #FFCC00;">
+        <template is="block" data="{{players, all_players, position:item, play_items:play_items[item]}}" />
+      </view>
+      </block>
+    </view>
+
+
+<view style="display: flex; flex-direction: row;">
+  <button bindtap='onTapAddScore' type="primary" style="flex:1; margin:2px;">得分</button>
+  <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
+  <button bindtap='onTapLooseScore' type="warn"  style="flex:1; margin:2px;"> 失分 </button>
+</view>
 
 
 

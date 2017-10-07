@@ -135,7 +135,7 @@ Page({
       title: '历史报表'
     })
 
-    var saved = wx.getStorageSync('stats');
+    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     if (saved) {
       var itemMap = this.createItemsByPlayer(saved.stat_items);
       var itemNames = this.createItemSet(saved.stat_items);

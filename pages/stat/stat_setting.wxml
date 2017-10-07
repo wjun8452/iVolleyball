@@ -1,57 +1,16 @@
-
 <view style="display: flex; flex-direction: column; justify-content: center">
-
-  <block wx:if="{{serve}}">
-      <switch style="flex:1; margin:10px" checked bindchange="onTapServe"> 我方发球 </switch>
+  <block wx:if="{{serve}}"> 
+    <switch style="flex:1; margin:10px" checked bindchange="onTapServe"> 我方发球 </switch>
   </block>
-
- <block wx:if="{{!serve}}">
+  
+  <block wx:if="{{!serve}}">
       <switch style="flex:1; margin:10px"  unchecked bindchange="onTapServe"> 我方发球 </switch>
   </block>
 
   <button style="flex:1; margin:10px"  type="primary" bindtap="onReset"> 分数清零 </button>
 
+  <button style="flex:1; margin:10px"  type="primary" bindtap="onNextPosition">下一轮次</button>
 
-<!-- 
-  <movable-area style="width:750rpx; height:750rpx">
-    
-     <view style="display: flex; flex-direction: row;"> 
-       <block wx:for="{{players}}"> 
-        <movable-view style="width:100rpx; height:100rpx; background:red" direction="all" x="{{100*index}}">
-            <view> {{item.name}} </view>
-        </movable-view>
-       </block> 
-     </view> 
-    
-    <view style="display: flex; flex-direction: row;">
-      <view  style="flex:1; margin: 2px; background-color: #99FFCC;">
-        1
-      </view>
-      
-      <view style="flex:1; margin: 2px; background-color: #99FFCC;">
-2
-      </view>
-      
-      <view style="flex:1; margin: 2px; background-color: #99FFCC;">
-3
-      </view>
-
-    </view>
-
-    <view style="display: flex; flex-direction: row;">
-      <view  style="flex:1;margin: 2px;background-color: #99FFCC;">
-4
-      </view>
-      <view style="flex:1;margin: 2px;background-color: #99FFCC;">
-5
-      </view>
-      <view style="flex:1;margin: 2px;background-color: #99FFCC;">
-6
-      </view>
-    </view>
-
-    
-  
-  </movable-area> -->
+  <!-- <button style="flex:1; margin:10px"  type="primary" bindtap="onResetAll">恢复默认</button> -->
 
 </view>

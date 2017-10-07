@@ -76,6 +76,10 @@ Page({
   },
 
   onReset: function(){
+    var players = this.data.players;
+    for (var k in players) {
+      players[k].name = parseInt(k) + 1;
+    }
     this.setData({myScore:0, yourScore:0, stat_items:[]});
   }
 })

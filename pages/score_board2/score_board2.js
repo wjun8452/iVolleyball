@@ -23,7 +23,7 @@ Page({
 
   onLoad: function () {
     wx.setNavigationBarTitle({
-      title: '横版记分牌'
+      title: '大记分牌'
     })
 
     var saved = wx.getStorageSync('stats');

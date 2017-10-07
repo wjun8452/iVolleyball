@@ -10,22 +10,24 @@
 
 
 <view style="flex-direction:row;">
+   <view style="flex-item; text-align:center"  class="menu"> v1.6
+
+   </view>
   <view style="flex-item;"  class="menu">
-      <navigator url="../score_board2/score_board2" style="text-align:center">横版大记分牌</navigator>
+      <navigator url="../score_board2/score_board2" style="text-align:center">大记分牌</navigator>
   </view>
 
-
-  <view style="flex-item;menu" class="menu">
+  <!-- <view style="flex-item;menu" class="menu">
       <navigator url="../score_board/score_board" style="text-align:center">竖版大记分牌</navigator>
-  </view>
+  </view> -->
 
 
 <view style="flex-item;menu" class="menu">
-      <navigator url="../stat/stat" style="text-align:center">复杂记分牌</navigator>
+      <navigator url="../stat/stat" style="text-align:center">技术统计</navigator>
   </view>
 
 <view style="flex-item;menu" class="menu">
-      <navigator url="../stat/report" style="text-align:center">技术统计</navigator>
+      <navigator url="../stat/report" style="text-align:center">历史报表</navigator>
   </view>
 
 </view>

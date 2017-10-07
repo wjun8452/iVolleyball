@@ -1,13 +1,18 @@
 
-<view style="display: flex; flex-direction: column;">
+<view style="display: flex; flex-direction: column; justify-content: center">
+
   <block wx:if="{{serve}}">
-      <switch checked bindchange="onTapServe"> 我方发球 </switch>
+      <switch style="flex:1; margin:10px" checked bindchange="onTapServe"> 我方发球 </switch>
   </block>
 
  <block wx:if="{{!serve}}">
-      <switch unchecked bindchange="onTapServe"> 我方发球 </switch>
+      <switch style="flex:1; margin:10px"  unchecked bindchange="onTapServe"> 我方发球 </switch>
   </block>
 
+  <button style="flex:1; margin:10px"  type="primary" bindtap="onReset"> 分数清零 </button>
+
+
+<!-- 
   <movable-area style="width:750rpx; height:750rpx">
     
      <view style="display: flex; flex-direction: row;"> 
@@ -47,6 +52,6 @@
 
     
   
-  </movable-area>
+  </movable-area> -->
 
 </view>

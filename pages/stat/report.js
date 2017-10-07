@@ -131,6 +131,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.setNavigationBarTitle({
+      title: '历史报表'
+    })
+
     var saved = wx.getStorageSync('stats');
     if (saved) {
       var itemMap = this.createItemsByPlayer(saved.stat_items);

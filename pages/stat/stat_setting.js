@@ -73,5 +73,9 @@ Page({
   onTapServe: function(e) {
     var serve = e.detail.value;
     this.setData({serve: serve});
+  },
+
+  onReset: function(){
+    this.setData({myScore:0, yourScore:0, stat_items:[]});
   }
 })

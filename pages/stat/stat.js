@@ -40,7 +40,7 @@ Page({
 
   onLoad: function () {
     wx.setNavigationBarTitle({
-      title: '复杂记分牌'
+      title: '技术统计'
     })
   },
 
@@ -53,6 +53,8 @@ Page({
     this.setData(saved || this.data);
 
     this.updatePlayItems();
+
+    console.log("onShow")
   },
 
   /**
@@ -60,14 +62,16 @@ Page({
    */
   onHide: function () {
     wx.setStorageSync("stats", this.data);
+    console.log("onHide")
   },
 
   onUnload: function () {
-  
+    wx.setStorageSync("stats", this.data);
+    console.log("onUnload")
   },
 
   onTapAddScore: function () {
-    stat_items.push(this.createStatItem("", "", 1));
+    this.data.stat_items.push(this.createStatItem("", "", 1));
 
     this.addScore();
 
@@ -176,7 +180,6 @@ Page({
   },
 
   onTapPlayItem: function(e) {
-    console.log(e)
 
     var player_index = e.target.dataset.player;
     var item_index = e.target.dataset.item;
@@ -203,8 +206,6 @@ Page({
         this.updatePlayItems();
       }
     }
-
-    console.log(this.data)
   },
 
   createStatItem: function(player, item, score) {

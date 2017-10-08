@@ -3,7 +3,7 @@
 <view>
 
   <view style="display: flex; flex-direction: row; ">
-    <navigator url="../score_board2/score_board2" style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}}: {{yourScore}}  </navigator> 
+    <navigator url="../score_board2/score_board2" style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}} : {{yourScore}}  </navigator> 
   </view>
   
 

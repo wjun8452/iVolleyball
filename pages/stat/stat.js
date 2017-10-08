@@ -3,8 +3,8 @@ Page({
   {
     "myScore": 0,
     "yourScore": 0,
-    "all_players": ["张磊", "王军", "小波", "小光", "荣球", "李钊", "乐乐", "陈鑫"],
-    "players": ["小光", "李钊", "荣球", "王军", "张磊", "陈鑫"],
+    "all_players": ["1号", "2号", "3号", "4号", "5号", "6号"],
+    "players": ["1号", "2号", "3号", "4号", "5号", "6号"],
     "play_items" : [[], [], [], [], [], []],
     "stat_items" : [],
     "serve" : false,  //true: we serve, false: we serve return and attack

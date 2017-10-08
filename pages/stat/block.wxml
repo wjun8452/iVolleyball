@@ -11,9 +11,9 @@
         </block>
       </block>
    </view>
-
+   
     <view style="display: flex; flex-direction: row;">
-      <picker bindchange="onPlayerChanged" data-position='{{position}}' value="{{players[position]}}" range="{{all_players}}">
+      <picker style="flex:1;text-align:center" bindchange="onPlayerChanged" data-position='{{position}}' value="{{players[position]}}" range="{{all_players}}">
         <view class="picker">
           {{players[position]}}
        </view>

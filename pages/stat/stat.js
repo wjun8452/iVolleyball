@@ -105,7 +105,7 @@ Page({
       m_play_items[index] = [];
       var play_items = m_play_items[index];
 
-      play_items.push(this.createPlayItem("扣球", 1));
+      play_items.push(this.createPlayItem("进攻", 1));
       
       if (serve && index==0) {
         play_items.push(this.createPlayItem("发球", 1));
@@ -116,7 +116,7 @@ Page({
       }
 
       //--------- negotive
-      play_items.push(this.createPlayItem("扣球", -1));
+      play_items.push(this.createPlayItem("进攻", -1));
       play_items.push(this.createPlayItem("串联", -1));
       if (serve && index == 0) {
         play_items.push(this.createPlayItem("发球", -1));

@@ -2,7 +2,7 @@
 
 <view style="display:flex; flex-direction: row; margin-bottom:10px">
     <form bindsubmit="onAddPlayer">  
-      <input name="player" placeholder="输入名称"> </input>
+      <input name="player" placeholder="输入名称" value="{{temp_player_name}}"> </input>
       <button type="primary" form-type="submit"> 添加 </button>
     </form>
 </view>

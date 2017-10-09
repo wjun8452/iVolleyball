@@ -10,7 +10,7 @@
 
 
 <view style="flex-direction:row;">
-   <view style="flex-item; text-align:center"  class="menu"> v1.9
+   <view style="flex-item; text-align:center"  class="menu"> v2.0
 
    </view>
   <view style="flex-item;"  class="menu">

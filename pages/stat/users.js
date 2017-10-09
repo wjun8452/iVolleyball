@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-  
+    temp_player_name: ""
   },
 
   /**
@@ -69,6 +69,7 @@ Page({
   onAddPlayer: function(e) {
     var player = e.detail.value.player;
     this.data.all_players.push(player);
+    this.data.temp_player_name = ""
     this.setData(this.data)
   },
 

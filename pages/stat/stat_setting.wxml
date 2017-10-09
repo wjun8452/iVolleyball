@@ -7,9 +7,9 @@
       <switch style="flex:1; margin:10px"  unchecked bindchange="onTapServe"> 我方发球 </switch>
   </block>
 
-  <button style="flex:1; margin:10px"  type="primary" bindtap="onReset"> 分数清零 </button>
+  <button style="flex:1; margin:10px"  type="default" bindtap="onReset"> 分数清零 </button>
 
-  <button style="flex:1; margin:10px"  type="primary" bindtap="onNextPosition">下一轮次</button>
+  <button style="flex:1; margin:10px"  type="default" bindtap="onNextPosition">下一轮次</button>
 
   <!-- <button style="flex:1; margin:10px"  type="primary" bindtap="onResetAll">恢复默认</button> -->
 

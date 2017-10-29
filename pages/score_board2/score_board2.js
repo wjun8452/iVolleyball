@@ -1,6 +1,3 @@
-
-var g_can_start_vibration = true;
-
 Page({
   data:
   {
@@ -18,7 +15,6 @@ Page({
   start_y_1: 0,
   start_x_2: 0,
   start_y_2: 0,
-  isShow: false,
 
 
   onLoad: function () {
@@ -27,92 +23,23 @@ Page({
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-
     this.setData(saved || this.data);
-
     var res = wx.getSystemInfoSync()
-    console.log(res.model)
-    console.log(res.pixelRatio)
-    console.log(res.windowWidth)
-    console.log(res.windowHeight)
-    console.log(res.language)
-    console.log(res.version)
-    console.log(res.platform)
-
-//can not use this.data.height to set score_height
+    //can not use this.data.height to set score_height
    this.setData({height: res.windowHeight, width: res.windowWidth, 
      score_height: res.windowHeight / 80 * 39, 
      score_width: res.windowWidth,
      colon_height: res.windowHeight / 80 * 2,
      colon_width: res.windowWidth})
-
-    console.log("height: " + this.data.height);
-    console.log("width: " + this.data.width);
-    console.log("score_height: " + this.data.score_height);
-    console.log("score_width: " + this.data.score_width);
-    console.log("colon_height: " + this.data.colon_height);
-    console.log("colon_width: " + this.data.colon_width);
-
-    wx.startAccelerometer()
-  },
-
-  onAccelerometerChange: function(res) {
-    var that = this;
-    console.log("------------------")
-    console.log("g_can_start_vibration=" + g_can_start_vibration)
-    //console.log("acc_x=" + res.x)
-    console.log("acc_y=" + res.y)
-    //console.log("acc_z=" + res.z)
-
-    if (!that.isShow) {
-      console.log("page not show, return")
-      return
-    }
-
-    var acc = 1.5;
-
-    if (res.y > acc && g_can_start_vibration) {
-      that.logScore()
-      console.log("my score +1")
-      wx.vibrateLong();
-      that.changeMyScore(+1);
-      that.logScore()
-      that.drawMyScore();
-      g_can_start_vibration = false;
-    } else if (res.y < -acc && g_can_start_vibration) {
-      that.logScore()
-      console.log("your score +1")
-      wx.vibrateLong();
-      that.changeYourScore(+1);
-      that.logScore()
-      that.drawYourScore();
-      g_can_start_vibration = false;
-    } else if (res.y <= acc && res.y >= -acc) {
-      console.log("reset g_can_start_vibration to true")
-      g_can_start_vibration = true;
-    }
-
-    console.log("g_can_start_vibration=" + g_can_start_vibration)
   },
 
   onShow: function() {
-    var that = this;
-    this.isShow = true;
-    wx.onAccelerometerChange(that.onAccelerometerChange)
-
   },
 
   onHide: function() {
-    this.isShow = false;
-  },
-
-  logScore : function() {
-    //console.log("my_score: " + this.data.myScore);
-    //console.log("your_score: " + this.data.yourScore);
   },
 
   onUnload: function () {
-    wx.stopAccelerometer();
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
   },
 
@@ -169,49 +96,25 @@ Page({
   },
 
   touchStart1: function(e) {
-    //console.log("touchStart:");
-    //console.log(e.changedTouches[0].x);
-    //console.log(e.changedTouches[0].y);
     this.start_x_1 = e.changedTouches[0].x;
     this.start_y_1 = e.changedTouches[0].y;
   },
 
   touchMove1: function(e) {
-    console.log("touchMove:");
-    console.log(e.changedTouches[0].x);
-    console.log(e.changedTouches[0].y);
   },
 
   touchEnd1: function(e) {
-    //console.log("touchEnd:");
-    //console.log(e.changedTouches[0].x);
-    //console.log(e.changedTouches[0].y);
-
     var end_x = e.changedTouches[0].x
     var end_y = e.changedTouches[0].y;
-
     this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
   },
 
   touchStart2: function (e) {
-    //console.log("touchStart:");
-    //console.log(e.changedTouches[0].x);
-    //console.log(e.changedTouches[0].y);
     this.start_x_2 = e.changedTouches[0].x;
     this.start_y_2 = e.changedTouches[0].y;
   },
 
-  touchMove2: function (e) {
-    //console.log("touchMove:");
-    //console.log(e.changedTouches[0].x);
-    //console.log(e.changedTouches[0].y);
-  },
-
   touchEnd2: function (e) {
-    //console.log("touchEnd:");
-    //console.log(e.changedTouches[0].x);
-    //console.log(e.changedTouches[0].y);
-
     var end_x = e.changedTouches[0].x
     var end_y = e.changedTouches[0].y;
 
@@ -226,11 +129,7 @@ Page({
     var change_x_abs = Math.abs(changeX);
     var change_y_abs = Math.abs(changeY);
 
-    //console.log("change_x: " + changeX);
-    //console.log("change_y: " + changeY);
-
     if (change_x_abs < 50 && change_y_abs < 50) return;
-
 
     if (change_y_abs < change_x_abs) {
       if (changeX > 0) {

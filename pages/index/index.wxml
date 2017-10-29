@@ -3,23 +3,14 @@
   
   <view  bindtap="bindViewTap" class="userinfo">
     <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
-    <text class="userinfo-nickname">{{userInfo.nickName}}</text>
   </view>
 
 </view>
 
 
-<view style="flex-direction:row;">
-   <view style="flex-item; text-align:center"  class="menu"> v2.0
-
-   </view>
   <view style="flex-item;"  class="menu">
-      <navigator url="../score_board2/score_board2" style="text-align:center">大记分牌</navigator>
+  <navigator url="../score_board2/score_board2" style="text-align:center">大记分牌</navigator>
   </view>
-
-  <!-- <view style="flex-item;menu" class="menu">
-      <navigator url="../score_board/score_board" style="text-align:center">竖版大记分牌</navigator>
-  </view> -->
 
 <view style="flex-item;menu" class="menu">
       <navigator url="../stat/users" style="text-align:center">球队成员</navigator>
@@ -33,6 +24,11 @@
       <navigator url="../stat/report" style="text-align:center">历史报表</navigator>
   </view>
 
+
+
+<view style="flex-direction:row; margin-top: 50px">
+   <view style="flex-item; text-align:center"  class="menu"> v2.3
+   </view>
 
 
 </view>

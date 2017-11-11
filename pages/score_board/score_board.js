@@ -27,7 +27,7 @@ Page({
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({
-      title: '大记分牌2'
+      title: '大记分牌'
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
@@ -145,7 +145,6 @@ Page({
   },
 
   changeMyScore: function (delta) {
-    console.log("changeMyScore")
     this.data.stat_items.push(this.createStatItem("", "", delta));
 
     var s = this.data.myScore + delta;

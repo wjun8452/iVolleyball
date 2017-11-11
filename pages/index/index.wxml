@@ -9,7 +9,7 @@
 
 
   <view style="flex-item;"  class="menu">
-  <navigator url="../score_board2/score_board2" style="text-align:center">大记分牌</navigator>
+  <navigator url="../score_board/score_board" style="text-align:center">新大记分牌</navigator>
   </view>
 
 <view style="flex-item;menu" class="menu">
@@ -25,9 +25,8 @@
   </view>
 
   <view style="flex-item;menu" class="menu">
-      <navigator url="../score_board/score_board" style="text-align:center">大记分牌2</navigator>
+      <navigator url="../score_board2/score_board2" style="text-align:center">原大记分牌</navigator>
   </view>
-
 
 
 <view style="flex-direction:row; margin-top: 50px">

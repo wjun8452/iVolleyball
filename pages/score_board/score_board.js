@@ -1,4 +1,5 @@
 // pages/score_board/score_board.js
+var court = require("../../utils/court.js")
 Page({
 
   /**

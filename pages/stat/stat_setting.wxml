@@ -1,16 +1,68 @@
-<view style="display: flex; flex-direction: column; justify-content: center">
-  <block wx:if="{{serve}}"> 
-    <switch style="flex:1; margin:10px" checked bindchange="onTapServe"> 我方发球 </switch>
-  </block>
-  
-  <block wx:if="{{!serve}}">
-      <switch style="flex:1; margin:10px"  unchecked bindchange="onTapServe"> 我方发球 </switch>
-  </block>
+<view>
 
-  <button style="flex:1; margin:10px"  type="default" bindtap="onReset"> 分数清零 </button>
+  <view style="margin: 2px; display: flex; flex-direction: row; ">
+    <picker style="flex:1; text-align:center; font-size: xx-large " bindchange="onChangeMyScore" value="{{myScore}}" range="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]}}">
+      <view class="picker">
+        {{myScore}}
+      </view>
+    </picker>
 
-  <button style="flex:1; margin:10px"  type="default" bindtap="onNextPosition">下一轮次</button>
+    <picker style="flex:1; text-align:center; font-size: xx-large " bindchange="onChangeYourScore" value="{{yourScore}}" range="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]}}">
+      <view class="picker">
+        {{yourScore}}
+      </view>
+    </picker>
+  </view>
 
-  <!-- <button style="flex:1; margin:10px"  type="primary" bindtap="onResetAll">恢复默认</button> -->
+  <view style="margin: 2px; display: flex; flex-direction: row; ">
+    <button bindtap='onReset' type="default" style="flex:1; margin:2px;">分数清零</button>
+  </view>
+
+
+  <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row; ">
+    <radio-group class="radio-group" bindchange="onTapMode">
+      <radio value="0" checked="{{front_back_mode}}" />前后排换位
+      <radio value="1" checked="{{!front_back_mode}}" />正常换位
+    </radio-group>
+  </view>
+
+
+  <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row;">
+    <block wx:for="{{[3,2,1]}}">
+      <view style="flex:1; margin: 2px; display: flex; flex-direction: column;">
+        <view style="margin: 2px; background-color: #FFCC00;">
+          <picker style="flex:1; text-align:center" bindchange="onPlayerChanged" data-position='{{item}}' value="{{players[item]}}" range="{{all_players}}">
+            <view class="picker">
+              {{players[item]}}
+            </view>
+          </picker>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view style="margin: 2px; display: flex; flex-direction: row;">
+    <block wx:for="{{[4,5,0]}}">
+      <view style="flex:1; margin: 2px; display: flex; flex-direction: column;">
+        <view style="flex:1; margin: 2px; background-color: #FFCC00;">
+          <picker style="flex:1;text-align:center" bindchange="onPlayerChanged" data-position='{{item}}' value="{{players[item]}}" range="{{all_players}}">
+            <view class="picker">
+              {{players[item]}}
+            </view>
+          </picker>
+          <block wx:if='{{item==0||front_back_mode}}'>
+          <checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckServe" data-position='{{item}}'>
+            <checkbox checked='{{serves[item]}}'>发球</checkbox>
+          </checkbox-group>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row;">
+    <button bindtap='onSave' type="primary" style="flex:1; margin:2px;">保存</button>
+    <button bindtap='onCancel' type="warn" style="flex:1; margin:2px;"> 取消 </button>
+  </view>
 
 </view>

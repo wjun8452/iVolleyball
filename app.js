@@ -26,6 +26,6 @@ App({
   },
   globalData:{
     userInfo:null,
-    cacheKey: "stats1.7"
+    cacheKey: "stats11"
   }
 })

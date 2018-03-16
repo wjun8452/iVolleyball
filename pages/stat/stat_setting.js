@@ -1,4 +1,5 @@
 // pages/stat/stat_setting.js
+var court = require("../../utils/court.js")
 Page({
 
   /**
@@ -69,47 +70,95 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-  
-  },
-
-  onTapServe: function(e) {
-    var serve = e.detail.value;
-    this.setData({serve: serve});
-    wx.navigateBack({
-      delta: 1
-    })
   },
 
   onReset: function() {
-    this.setData({myScore:0, yourScore:0, stat_items:[]});
-    wx.navigateBack({
-      delta: 1
-    })
+    this.data.myScore = 0;
+    this.data.yourScore = 0;
+    this.data.stat_items = [];
+    this.setData(this.data)
   },
 
-  onNextPosition: function() {
-    this.updatePosition();
-    wx.navigateBack({
-      delta: 1
-    })
+  onChangeMyScore: function(e) {
+    this.data.myScore = parseInt(e.detail.value);
+    this.setData(this.data);
   },
 
-  updatePosition: function () {
+  onChangeYourScore: function (e) {
+    this.data.yourScore = parseInt(e.detail.value);
+    this.setData(this.data);
+  },
+
+  onPlayerChanged: function (e) {
+    var position = e.target.dataset.position;
+    var new_player_index = e.detail.value;
+
     var players = this.data.players;
-    var player = players[5];
-    players[5] = players[0];
-    players[0] = players[1];
-    players[1] = players[2];
-    players[2] = players[3];
-    players[3] = players[4];
-    players[4] = player;
-    this.setData({ players: players });
+    var player = players[position];
+    var playerChosen = this.data.all_players[new_player_index];
+    //swap
+    for(var i in players) {
+      if (players[i] == playerChosen) {
+        players[i] = player;
+      }
+    }
+
+    players[position] = playerChosen;
+
+    this.setData({ players: players })
   },
 
-  // onResetAll: function() {
-  //   this.data = null;
-  //   wx.navigateBack({
-  //     delta: 1
-  //   })
-  // }
+  onCheckServe: function(e) {
+    var position = e.target.dataset.position;
+    var checked = e.detail.value.length==1;
+    var serves = this.data.serves;
+
+    //clear serves
+    for (var i in serves) {
+      serves[i] = false;
+    }
+
+    serves[position] = checked;
+
+    var serve = false;
+    for(var i in serves) {
+      if (serves[i]) {
+        serve = true;
+        break;
+      }
+    }
+
+    this.data.serve = serve;
+
+    this.setData({serves : serves})
+  },
+
+  onTapMode: function(e) {
+    var mode = e.detail.value; //0: front_back, 1: normal
+    if (mode == "0") {
+      this.data.front_back_mode = true;
+    } else {
+      this.data.front_back_mode = false;
+    }
+
+    var serves = this.data.serves;
+    for(var i in serves) {
+      serves[i] = false;
+    }
+    this.setData(this.data);
+  },
+
+  onSave: function() {
+    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+  onCancle: function() {
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
 })

@@ -9,28 +9,28 @@
 
 
   <view style="flex-item;"  class="menu">
-  <navigator url="../score_board/score_board" style="text-align:center">新大记分牌</navigator>
+  <navigator url="../score_board/score_board" style="text-align:center; text-font:x-large">新大记分牌</navigator>
   </view>
 
 <view style="flex-item;menu" class="menu">
-      <navigator url="../stat/users" style="text-align:center">球队成员</navigator>
+      <navigator url="../stat/users" style="text-align:center; text-font:x-large">球队成员</navigator>
   </view>
 
 <view style="flex-item;menu" class="menu">
-      <navigator url="../stat/stat" style="text-align:center">技术统计</navigator>
+      <navigator url="../stat/stat" style="text-align:center; text-font:x-large">技术统计</navigator>
   </view>
 
 <view style="flex-item;menu" class="menu">
-      <navigator url="../stat/report" style="text-align:center">历史报表</navigator>
+      <navigator url="../stat/report" style="text-align:center; text-font:x-large">历史报表</navigator>
   </view>
 
   <view style="flex-item;menu" class="menu">
-      <navigator url="../score_board2/score_board2" style="text-align:center">原大记分牌</navigator>
+      <navigator url="../score_board2/score_board2" style="text-align:center; text-font:x-large">原大记分牌</navigator>
   </view>
 
 
 <view style="flex-direction:row; margin-top: 50px">
-   <view style="flex-item; text-align:center"  class="menu"> v2.4
+   <view style="flex-item; text-align:center"  class="menu"> v3.0
    </view>
 
 

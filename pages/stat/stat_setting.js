@@ -148,17 +148,4 @@ Page({
     this.setData(this.data);
   },
 
-  onSave: function() {
-    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
-    wx.navigateBack({
-      delta: 1
-    })
-  },
-
-  onCancle: function() {
-    wx.navigateBack({
-      delta: 1
-    })
-  },
-
 })

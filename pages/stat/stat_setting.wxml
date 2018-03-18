@@ -60,9 +60,4 @@
     </block>
   </view>
 
-  <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row;">
-    <button bindtap='onSave' type="primary" style="flex:1; margin:2px;">保存</button>
-    <button bindtap='onCancel' type="warn" style="flex:1; margin:2px;"> 取消 </button>
-  </view>
-
 </view>

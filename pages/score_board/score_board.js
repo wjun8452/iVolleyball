@@ -134,7 +134,7 @@ Page({
     if (change_x_abs < 50 && change_y_abs < 50) return;
 
     if (change_y_abs < change_x_abs) {
-      if (changeX > 0) {
+      if (changeX < 0) {
         mine ? this.changeMyScore(1) : this.changeYourScore(1);
       } else {
         mine ? this.changeMyScore(-1) : this.changeYourScore(-1);

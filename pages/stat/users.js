@@ -70,7 +70,7 @@ Page({
     var player = e.detail.value.player;
     player = player.replace(/^\s*|\s*$/g, "");
     if (player != "") {
-      this.data.all_players.push(player);
+      this.data.all_players.unshift(player);
       this.data.temp_player_name = ""
       this.setData(this.data)
     }

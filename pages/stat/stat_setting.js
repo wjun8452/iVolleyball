@@ -169,7 +169,7 @@ Page({
       if (player == "") {
         
       } else if (this.data.all_players.indexOf(player) == -1) {
-        this.data.all_players.push(player);
+        this.data.all_players.unshift(player);
         this.data.players[position] = player;
         this.data.edit_pos = -1
         this.setData(this.data)

@@ -136,12 +136,15 @@ Page({
     if (change_y_abs < change_x_abs) {
       if (changeX < 0) {
         mine ? this.changeMyScore(1) : this.changeYourScore(1);
+        wx.vibrateShort();
       } else {
         mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
+        wx.vibrateShort();
       }
     } else if (change_y_abs > this.data.height*2/3) {
       this.changeMyScore(-this.data.myScore);
       this.changeYourScore(-this.data.yourScore);
+      wx.vibrateShort();
     }
   },
 

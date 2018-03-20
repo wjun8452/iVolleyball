@@ -3,7 +3,9 @@
 <view>
 
   <view style="display: flex; flex-direction: row; ">
-    <text style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}} : {{yourScore}}  </text> 
+    <text style="flex:1; text-align: center;"> 我方 </text>
+    <text style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}} : {{yourScore}}</text> 
+    <text style="flex:1;text-align: center; "> 对方 </text>
   </view>
   
 
@@ -26,8 +28,10 @@
 
 <view style="display: flex; flex-direction: row;">
   <button bindtap='onTapAddScore' type="primary" style="flex:1; margin:2px;">得分</button>
-  <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
   <button bindtap='onTapLooseScore' type="warn"  style="flex:1; margin:2px;"> 失分 </button>
+   <!-- button bindtap='onTapRevert' type="default" style="flex:1; margin:2px;">撤销</button> -->
+    <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
+  
 </view>
 
 

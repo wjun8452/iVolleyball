@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    
+    edit_pos: -1,
   },
 
   /**
@@ -18,7 +18,9 @@ Page({
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-
+    if (saved) {
+      saved.edit_pos = -1;
+    }
     this.setData(saved || this.data);
   },
 
@@ -26,21 +28,21 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-  
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-  
+
   },
 
   /**
@@ -56,14 +58,14 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-  
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-  
+
   },
 
   /**
@@ -72,14 +74,14 @@ Page({
   onShareAppMessage: function () {
   },
 
-  onReset: function() {
+  onReset: function () {
     this.data.myScore = 0;
     this.data.yourScore = 0;
     this.data.stat_items = [];
     this.setData(this.data)
   },
 
-  onChangeMyScore: function(e) {
+  onChangeMyScore: function (e) {
     this.data.myScore = parseInt(e.detail.value);
     this.setData(this.data);
   },
@@ -89,28 +91,28 @@ Page({
     this.setData(this.data);
   },
 
-  onPlayerChanged: function (e) {
-    var position = e.target.dataset.position;
-    var new_player_index = e.detail.value;
-
+  onChoosePlayer: function (e) {
     var players = this.data.players;
-    var player = players[position];
-    var playerChosen = this.data.all_players[new_player_index];
+    var player = e.target.dataset.player;
+    var pos = e.target.dataset.position;
+
     //swap
-    for(var i in players) {
-      if (players[i] == playerChosen) {
-        players[i] = player;
+    for (var i in players) {
+      if (players[i] == player) {
+        players[i] = this.data.players[pos];
       }
     }
 
-    players[position] = playerChosen;
+    this.data.players[pos] = player;
 
-    this.setData({ players: players })
+    this.data.edit_pos = -1;
+
+    this.setData(this.data)
   },
 
-  onCheckServe: function(e) {
+  onCheckServe: function (e) {
     var position = e.target.dataset.position;
-    var checked = e.detail.value.length==1;
+    var checked = e.detail.value.length == 1;
     var serves = this.data.serves;
 
     //clear serves
@@ -121,7 +123,7 @@ Page({
     serves[position] = checked;
 
     var serve = false;
-    for(var i in serves) {
+    for (var i in serves) {
       if (serves[i]) {
         serve = true;
         break;
@@ -130,10 +132,10 @@ Page({
 
     this.data.serve = serve;
 
-    this.setData({serves : serves})
+    this.setData({ serves: serves })
   },
 
-  onTapMode: function(e) {
+  onTapMode: function (e) {
     var mode = e.detail.value; //0: front_back, 1: normal
     if (mode == "0") {
       this.data.front_back_mode = true;
@@ -142,10 +144,62 @@ Page({
     }
 
     var serves = this.data.serves;
-    for(var i in serves) {
+    for (var i in serves) {
       serves[i] = false;
     }
     this.setData(this.data);
+  },
+
+  onClickPlayer: function (e) {
+    var position = e.target.dataset.position;
+    if (position == this.data.edit_pos) {
+      this.data.edit_pos = -1
+    } else {
+      this.data.edit_pos = position;
+    }
+
+    this.setData(this.data);
+  },
+
+  onAddPlayer: function (e) {
+    var position = e.target.dataset.position;
+    var player = e.detail.value;
+    if (player != null) {
+      player = player.replace(/^\s*|\s*$/g, "");
+      if (player == "") {
+        
+      } else if (this.data.all_players.indexOf(player) == -1) {
+        this.data.all_players.push(player);
+        this.data.players[position] = player;
+        this.data.edit_pos = -1
+        this.setData(this.data)
+      } else {
+        wx.showToast({
+          title: '球员已存在',
+        })
+      }
+    }
+  },
+
+  onDeletePlayer: function (e) {
+    var position = e.target.dataset.position;
+    var player = this.data.players[position];
+
+    this.data.edit_pos = -1
+
+    if (player != "??") {
+      this.data.players[position] = "??"
+    }
+
+    var index_all = this.data.all_players.indexOf(player)
+    if (index_all != -1) {
+      this.data.all_players.splice(index_all, 1);
+      wx.showToast({
+        title: '成功删除',
+      })
+    }
+
+    this.setData(this.data)
   },
 
 })

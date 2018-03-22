@@ -44,7 +44,7 @@
 
         <block wx:if="{{edit_pos==pos}}">
           <view style="border:1px dashed black;">
-            <input name="player" placeholder="输入姓名" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
+            <input name="player" placeholder="新队友" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
             <view style="display: flex; flex-direction: column;">
               <block wx:for="{{all_players}}" wx:for-item="player">
                 <block wx:if="{{item!=players[pos]}}">
@@ -76,7 +76,7 @@
 
         <block wx:if="{{edit_pos==pos}}">
           <view style="border:1px dashed black;">
-            <input name="player" placeholder="输入姓名" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
+            <input name="player" placeholder="新队友" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
             <view style="display: flex; flex-direction: column;">
               <block wx:for="{{all_players}}" wx:for-item="player">
                 <block wx:if="{{item!=players[pos]}}">

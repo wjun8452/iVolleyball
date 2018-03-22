@@ -5,14 +5,13 @@ Page({
   {
     myScore: 0,
     yourScore: 0,
-    all_players: ["1号", "2号", "3号", "4号", "5号", "6号", "接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
-    players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 场上显示位置, 0:1号位置, value: 姓名
-    positions: [5, 2, 3, 4, 1, 6], //index: 场上显示位置, value: 转位位置
+    all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
+    players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
+    positions: [5, 2, 3, 4, 1, 6], //index: 显示位置, value: 正常转位时应该站在哪个位置， 1号区域的球员应该站在5号区域
     play_items: [[], [], [], [], [], []], //items avaialbe for the player
     stat_items: [], //stat items in history
     serves: [false, false, false, false, false, false], //index: 场上显示位置, value: 是否发球
     front_back_mode: true,
-    serve: false //发球权在手
   },
 
   onLoad: function () {
@@ -75,7 +74,8 @@ Page({
   },
 
   onTapRevert: function (e) {
-    //todo:
+    court.popStatItem(this.data);
+    this.setData(this.data);
   },
 
 })

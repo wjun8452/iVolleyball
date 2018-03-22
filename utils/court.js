@@ -1,40 +1,28 @@
-/*
-  data:
-  {
-    "myScore": 0,
-    "yourScore": 0,
-    "all_players": ["1号", "2号", "3号", "4号", "5号", "6号"],
-    "players": ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 场上显示位置, 0:1号位置, value: 姓名
-    "positions": [5, 2, 3, 4, 1, 6], //index: 场上显示位置, value: 转位位置
-    "play_items": [[], [], [], [], [], []], //items avaialbe for the player
-    "stat_items": [], //stat items in history
-    "serves": [false, false, false, false, false, false], //index: 场上显示位置, value: 是否发球
-    "front_back_mode": true,
-    "serve": false //发球权在手
-  },
-*/
 
-function addScore (data) {
+function addScore(data) {
+  var serve = anyOneServe(data.serves);
   data.myScore = 1 + data.myScore;
-  data.stat_items.push(_createStatItem("", "", 1));
-  
-  if (!data.serve) {
-    data.serve = true;
-    nextPosition(data);
+  data.stat_items.push(_createStatItem("", "", 1, !serve));
+
+  if (!serve) {
+    _nextPosition(data);
     updatePlayItems(data);
   }
 }
 
 function looseScore(data) {
+  var serve = anyOneServe(data.serves);
   data.yourScore = 1 + data.yourScore;
-  data.stat_items.push(_createStatItem("", "", -1));
-  if (data.serve) {
-    data.serve = false;
+  data.stat_items.push(_createStatItem("", "", -1, serve));
+  if (serve) {
+    for (var i in data.serves) {
+      data.serves[i] = false;
+    }
     updatePlayItems(data);
   }
 }
 
-function nextPosition (data) { //only called when we win the score
+function _nextPosition(data) { //only called when we win the score
   var players = data.players;
   var serves = data.serves;
   var positions = data.positions;
@@ -93,76 +81,171 @@ function nextPosition (data) { //only called when we win the score
   }
 }
 
+function anyOneServe(serves) {
+  for (var i in serves) {
+    if (serves[i]) {
+      return true;
+    }
+  }
+  return false;
+}
 
-
-function updatePlayItems (data) {
-  var serve = data.serve;
+function updatePlayItems(data) {
   var serves = data.serves;
   var positions = data.positions;
-  var m_play_items = data.play_items;
+  var items = data.play_items;
+  var serve = anyOneServe(serves);
 
-  for (var index in m_play_items) {
-    m_play_items[index] = [];
-    var play_items = m_play_items[index];
+  for (var i in items) {
+    items[i] = [];
+    var item = items[i];
 
-    play_items.push(_createPlayItem("进攻", 1));
+    item.push(_createPlayItem("进攻", 1));
 
-    if (serve && serves[index]) {
-      play_items.push(_createPlayItem("发球", 1));
+    if (serves[i]) {
+      item.push(_createPlayItem("发球", 1));
     }
 
-    if (positions[index] >= 2 && positions[index] <= 4) {
-      play_items.push(_createPlayItem("拦网", 1));
+    if (positions[i] >= 2 && positions[i] <= 4) {
+      item.push(_createPlayItem("拦网", 1));
     }
 
     //--------- negative
-    play_items.push(_createPlayItem("进攻", -1));
-    play_items.push(_createPlayItem("串联", -1));
-    if (serve && serves[index]) {
-      play_items.push(_createPlayItem("发球", -1));
+    item.push(_createPlayItem("进攻", -1));
+    item.push(_createPlayItem("串联", -1));
+    if (serves[i]) {
+      item.push(_createPlayItem("发球", -1));
     }
 
     if (!serve) {
-      play_items.push(_createPlayItem("一传", -1));
+      item.push(_createPlayItem("一传", -1));
     }
 
-    if (positions[index] >= 2 && positions[index] <= 4) {
-      play_items.push(_createPlayItem("拦网", -1));
+    if (positions[i] >= 2 && positions[i] <= 4) {
+      item.push(_createPlayItem("拦网", -1));
     }
   }
 }
 
-function addPlayItem(data, position, item_index) {
-
+function addPlayItem(data, position, i) {
   var player = data.players[position];
-  var item = data.play_items[position][item_index];
+  var item = data.play_items[position][i];
+  var serve = anyOneServe(data.serves);
 
-  data.stat_items.push(_createStatItem(player, item.name, item.score));
+  var swap = false;
+
+  if (item.score == 1 && !serve) {
+    swap = true;
+  }
+
+  if (item.score == -1 && serve) {
+    swap = true;
+  }
+
+  data.stat_items.push(_createStatItem(player, item.name, item.score, swap));
 
   if (item.score == 1) {
     data.myScore = data.myScore + 1;
 
     //next position
-    if (!data.serve) {
-      data.serve = true;
-      nextPosition(data);
+    if (!serve) {
+      _nextPosition(data);
       updatePlayItems(data);
     }
 
   } else if (item.score == -1) {
     data.yourScore = data.yourScore + 1;
-    if (data.serve) {
-      data.serve = false;
+    if (serve) {
+      for(var i in data.serves) {
+        data.serves[i] = false;
+      }
       updatePlayItems(data);
     }
   }
 }
 
-function _createStatItem (player, item, score) {
+function popStatItem(data) {
+  var stat = data.stat_items.pop();
+  _prevPosition(data, stat);
+  if (stat.score > 0) {
+    data.myScore = data.myScore - stat.score;
+  } else if (stat.score < 0) {
+    data.yourScore = data.yourScore + stat.score;
+  }
+  updatePlayItems(data);
+}
+
+function _prevPosition(data, stat) { //called when pop stat
+  var players = data.players;
+  var serves = data.serves;
+  var positions = data.positions;
+
+  if (stat.swapServe && stat.score > 0) {//刚刚得分获得发球权
+    if (data.front_back_mode) {
+      for (var i in positions) {
+        if (positions[i] == 6) {
+          positions[i] = 1;
+        } else {
+          positions[i] = positions[i] + 1;
+        }
+      }
+    } else {
+      for (var i in positions) {
+        positions[i] = parseInt(i) - 1;
+      }
+    }
+  }
+
+  //现在谁发球，说明刚刚从前排换到后排
+  if (stat.swapServe && stat.score > 0) {
+    if (data.front_back_mode) {
+      if (serves[0] || serves[1]) {
+        _swap(0, 1, players);
+        _swap(0, 1, positions);
+      }
+
+      if (serves[2] || serves[5]) {
+        _swap(2, 5, players);
+        _swap(2, 5, positions);
+      }
+
+      if (serves[3] || serves[4]) {
+        _swap(3, 4, players);
+        _swap(3, 4, positions);
+      }
+
+      for (var i in serves) {
+        serves[i] = false;
+      }
+    } else {
+      var player = players[5];
+      players[5] = players[4];
+      players[4] = players[3];
+      players[3] = players[2];
+      players[2] = players[1];
+      players[1] = players[0];
+      players[0] = player;
+    }
+  }
+
+
+  if (stat.swapServe && stat.score < 0) { //刚刚失分失去发球权
+    for (var i in positions) {
+      if (positions[i] == 1) {
+        serves[i] = true;
+      } else {
+        serves[i] = false;
+      }
+    }
+  }
+}
+
+function _createStatItem(player, item, score, swap) {
   var obj = new Object();
   obj.player = player
   obj.item = item;
   obj.score = score;
+  obj.swapServe = swap;
   return obj;
 }
 
@@ -179,8 +262,10 @@ function _createPlayItem(name, score) {
   return obj;
 }
 
+
+
 module.exports.addScore = addScore;
 module.exports.looseScore = looseScore;
-module.exports.nextPosition = nextPosition;
 module.exports.addPlayItem = addPlayItem;
 module.exports.updatePlayItems = updatePlayItems;
+module.exports.popStatItem = popStatItem;

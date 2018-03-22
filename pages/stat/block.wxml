@@ -16,13 +16,13 @@
 
     <block wx:if="{{is_serve}}">
       <view style="flex:1; color:red; text-align:center">
-        {{players[position]}}-{{pos2}}
+        {{players[position]}}
       </view>
     </block>
 
     <block wx:if="{{!is_serve}}">
       <view style="flex:1; text-align:center">
-        {{players[position]}}-{{pos2}}
+        {{players[position]}}
       </view>
     </block>
   </view>

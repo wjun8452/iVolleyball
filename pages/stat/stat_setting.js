@@ -137,6 +137,9 @@ Page({
     var serve = e.detail.value; //0: 我方发球, 1: 对方发球
     if (serve == 0) {
       this.data.serve = true;
+      if (this.data.who_serve == -1) {
+        this.data.who_serve = 0;
+      }
     } else {
       this.data.serve = false;
       this.data.who_serve = -1;

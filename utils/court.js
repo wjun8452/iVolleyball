@@ -131,6 +131,7 @@ function addPlayItem(data, position, i) {
 
     //next position
     if (!serve) {
+      data.serve = true;
       _nextPosition(data);
       updatePlayItems(data);
     }
@@ -138,6 +139,7 @@ function addPlayItem(data, position, i) {
   } else if (item.score == -1) {
     data.yourScore = data.yourScore + 1;
     if (serve) {
+      data.serve = false;
       updatePlayItems(data);
     }
   }

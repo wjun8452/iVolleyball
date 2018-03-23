@@ -110,29 +110,17 @@ Page({
     this.setData(this.data)
   },
 
-  onCheckServe: function (e) {
+  onCheckWhoServe: function (e) {
     var position = e.target.dataset.position;
     var checked = e.detail.value.length == 1;
-    var serves = this.data.serves;
 
-    //clear serves
-    for (var i in serves) {
-      serves[i] = false;
+    if (checked) {
+      this.data.who_serve = position;
+    } else {
+      this.data.who_serve = -1;
     }
 
-    serves[position] = checked;
-
-    var serve = false;
-    for (var i in serves) {
-      if (serves[i]) {
-        serve = true;
-        break;
-      }
-    }
-
-    this.data.serve = serve;
-
-    this.setData({ serves: serves })
+    this.setData(this.data)
   },
 
   onTapMode: function (e) {
@@ -142,11 +130,18 @@ Page({
     } else {
       this.data.front_back_mode = false;
     }
+    this.setData(this.data);
+  },
 
-    var serves = this.data.serves;
-    for (var i in serves) {
-      serves[i] = false;
+  onTapServe: function (e) {
+    var serve = e.detail.value; //0: 我方发球, 1: 对方发球
+    if (serve == 0) {
+      this.data.serve = true;
+    } else {
+      this.data.serve = false;
+      this.data.who_serve = -1;
     }
+
     this.setData(this.data);
   },
 

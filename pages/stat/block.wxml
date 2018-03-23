@@ -14,13 +14,13 @@
       </block>
     </view>
 
-    <block wx:if="{{is_serve}}">
+    <block wx:if="{{serve && who_serve==position}}">
       <view style="flex:1; color:red; text-align:center">
         {{players[position]}}
       </view>
     </block>
 
-    <block wx:if="{{!is_serve}}">
+    <block wx:if="{{!(serve && who_serve==position)}}">
       <view style="flex:1; text-align:center">
         {{players[position]}}
       </view>

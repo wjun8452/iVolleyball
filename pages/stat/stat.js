@@ -7,11 +7,11 @@ Page({
     yourScore: 0,
     all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
     players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
-    positions: [5, 2, 3, 4, 1, 6], //index: 显示位置, value: 正常转位时应该站在哪个位置， 1号区域的球员应该站在5号区域
     play_items: [[], [], [], [], [], []], //items avaialbe for the player
     stat_items: [], //stat items in history
-    serves: [false, false, false, false, false, false], //index: 场上显示位置, value: 是否发球
-    front_back_mode: true,
+    who_serve: -1, //发球球员的index
+    serve: false,  //true: 我发发球， false: 我方接发球
+    front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
   },
 
   onLoad: function () {

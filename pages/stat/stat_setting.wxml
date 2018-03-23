@@ -27,6 +27,13 @@
     </radio-group>
   </view>
 
+<view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row; ">
+    <radio-group class="radio-group" bindchange="onTapServe">
+      <radio value="0" checked="{{serve}}" />我方发球
+      <radio value="1" checked="{{!serve}}" />对方发球
+    </radio-group>
+  </view>
+
 
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row;">
     <block wx:for="{{[3,2,1]}}" wx:for-item="pos">
@@ -36,8 +43,8 @@
         <view style="margin: 2px; background-color: #FFCC00;" bindtap="onClickPlayer">
           <text style="text-algin:center" data-position='{{pos}}' decode='True'> {{players[pos]}}&nbsp;›</text>
           <block wx:if='{{edit_pos!=pos && (pos==0||(front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
-            <checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckServe" data-position='{{pos}}'>
-              <checkbox checked='{{serves[pos]}}'>发球</checkbox>
+            <checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
+              <checkbox checked='{{who_serve==pos}}' disabled='{{!serve}}'>发球</checkbox>
             </checkbox-group>
           </block>
         </view>
@@ -68,8 +75,8 @@
         <view style="margin: 2px; background-color: #FFCC00;" bindtap="onClickPlayer">
           <text style="text-algin:center" data-position='{{pos}}' decode='True'> {{players[pos]}}&nbsp;›</text>
           <block wx:if='{{edit_pos!=pos && (pos==0||(front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
-            <checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckServe" data-position='{{pos}}'>
-              <checkbox checked='{{serves[pos]}}'>发球</checkbox>
+            <checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
+              <checkbox checked='{{pos==who_serve}}' disabled='{{!serve}}'>发球</checkbox>
             </checkbox-group>
           </block>
         </view>

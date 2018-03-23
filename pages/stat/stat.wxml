@@ -12,7 +12,7 @@
   <view style="display: flex; flex-direction: row;">
     <block wx:for="{{[3,2,1]}}">
       <view style="flex:1; margin: 2px; background-color: #FFCC00;">
-        <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], is_serve:serves[item]&&serve, pos2:positions[item]}}" />
+        <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve}}" />
       </view>
     </block>
   </view>
@@ -20,7 +20,7 @@
   <view style="display: flex; flex-direction: row;">
     <block wx:for="{{[4,5,0]}}">
       <view style="flex:1; margin: 2px; background-color: #FFCC00;">
-        <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], is_serve:serves[item]&&serve, pos2:positions[item]}}" />
+        <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve}}" />
       </view>
     </block>
   </view>

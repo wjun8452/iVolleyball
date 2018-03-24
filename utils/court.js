@@ -2,7 +2,7 @@
 function addScore(data) {
   var serve = data.serve
   data.myScore = 1 + data.myScore;
-  data.stat_items.push(_createStatItem("", "", 1, !serve));
+  data.stat_items.push(createStatItem("", "", 1, !serve));
 
   if (!serve) {
     data.serve = true;
@@ -14,7 +14,7 @@ function addScore(data) {
 function looseScore(data) {
   var serve = data.serve;
   data.yourScore = 1 + data.yourScore;
-  data.stat_items.push(_createStatItem("", "", -1, serve));
+  data.stat_items.push(createStatItem("", "", -1, serve));
   if (serve) {
     data.serve = false;
     updatePlayItems(data);
@@ -124,7 +124,7 @@ function addPlayItem(data, position, i) {
     swap = true;
   }
 
-  data.stat_items.push(_createStatItem(player, item.name, item.score, swap));
+  data.stat_items.push(createStatItem(player, item.name, item.score, swap));
 
   if (item.score == 1) {
     data.myScore = data.myScore + 1;
@@ -209,7 +209,7 @@ function _prevPosition(data, stat) { //called when pop stat
   }
 }
 
-function _createStatItem(player, item, score, swap) {
+function createStatItem(player, item, score, swap) {
   var obj = new Object();
   obj.player = player
   obj.item = item;
@@ -238,3 +238,4 @@ module.exports.looseScore = looseScore;
 module.exports.addPlayItem = addPlayItem;
 module.exports.updatePlayItems = updatePlayItems;
 module.exports.popStatItem = popStatItem;
+module.exports.createStatItem = createStatItem;

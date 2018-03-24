@@ -149,30 +149,18 @@ Page({
   },
 
   changeMyScore: function (delta) {
-    this.data.stat_items.push(this.createStatItem("", "", delta));
-
     var s = this.data.myScore + delta;
-
     if (s >= 0) {
-      this.setData({ myScore: s });
-    } else {
-
+      this.data.myScore = s;
+      this.setData(this.data);
     }
   },
 
   changeYourScore: function (delta) {
-    this.data.stat_items.push(this.createStatItem("", "", delta));
     var s = this.data.yourScore + delta;
     if (s >= 0) {
-      this.setData({ yourScore: s });
+      this.data.yourScore = s;
+      this.setData(this.data);
     }
-  },
-
-  createStatItem: function (player, item, score) {
-    var obj = new Object();
-    obj.player = player
-    obj.item = item;
-    obj.score = score;
-    return obj;
   },
 })

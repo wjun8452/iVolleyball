@@ -30,7 +30,7 @@
   </view>
 
 <view style="flex-direction:row; margin-top: 50px">
-   <view style="flex-item; text-align:center"  class="menu"> v3.1
+   <view style="flex-item; text-align:center"  class="menu"> v3.2
    </view>
 
 

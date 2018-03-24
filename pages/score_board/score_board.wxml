@@ -1,32 +1,15 @@
 <!--pages/score_board/score_board.wxml-->
-<scroll-view scroll-x:false scroll-y:false style="height:{{height}}px; width:{{width}}px;"> 
+<scroll-view scroll-x:false scroll-y:false style="height: {{height}}px"> 
   
-  <view style="height: 50%; width: 100%; text-align:center; border-style: solid; border-width: 0px 0px 1px 0px;" bindtouchstart="touchStart1" bindtouchmove="touchMove1" bindtouchend="touchEnd1">
-    <block wx:if="{{myScore < 10 }}" >
-        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{height*0.43}}px; text-align:right; padding-right: {{height*0.43*0.25}}px'> {{myScore}} 
+  <view style="height:50%; width: 99%; border-style: solid; border-width: 0px 0px 1px 0px;" bindtouchstart="touchStart1" bindtouchmove="touchMove1" bindtouchend="touchEnd1">
+        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center; padding:0'> {{myScore}} 
         </view>
-    </block>
-    
-    <block wx:if="{{myScore >= 10 }}" >
-        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{height*0.43}}px; text-align:right;'> {{myScore}} 
-        </view>
-     </block>
-
   </view>
  
 
-  <view style="height: 50%; width: 100%; text-align:center; border-style: solid; border-width: 1px 0px 0px 0px;" bindtouchstart="touchStart2" bindtouchmove="touchMove2" bindtouchend="touchEnd2">
-    
-    <block wx:if="{{yourScore < 10 }}" >
-        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{height*0.43}}px; text-align:right; padding-right: {{height*0.43*0.25}}px'> {{yourScore}} 
+  <view style="height:50%; width: 99%;  border-style: solid; border-width: 1px 0px 0px 0px;" bindtouchstart="touchStart2" bindtouchmove="touchMove2" bindtouchend="touchEnd2">
+        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0'> {{yourScore}} 
         </view>
-    </block>
-    
-    <block wx:if="{{yourScore >= 10 }}" >
-        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{height*0.43}}px; text-align:right;'> {{yourScore}} 
-        </view>
-     </block>
-
   </view>
    
 </scroll-view>

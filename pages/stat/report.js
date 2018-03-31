@@ -194,6 +194,16 @@ Page({
   
   },
 
+/*
+"副攻2": {
+    "进攻": 2
+    "拦网": 1 
+    },
+"主攻1": {
+    "进攻": -1
+    "拦网": 0
+    }
+*/
   createItemsByPlayer: function (stats) {
     var map = new HashMap();
     for(var index in stats) {
@@ -232,7 +242,11 @@ Page({
     return obj.keySet();
   },
 
-//key: item_name
+
+//Object tableData:Array(4)
+//0: (5)["姓名", "串联", "进攻", "拦网", "总计"]
+//1: (5)["副攻2", -1, 1, 0, 0]
+//2: (5)["主攻1", -2, 0, -1, -3]
   createReport: function (itemsByPlayer, itemNames) {
     var result = new Array();
 

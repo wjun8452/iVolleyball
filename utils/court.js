@@ -1,3 +1,18 @@
+var StatKey = {
+  ServeNormal: "发球一般",
+  ServeWin: "发球得分",
+  ServeLost: "发球失误",
+  ReceptionBad: "一传不到位",
+  ReceptionGood: "一传半到位",
+  ReceptionPerfect: "一传到位",
+  ReceptionLost: "一传失误",
+  AttackNormal: "进攻一般",
+  AttackBlk: "进攻拦死",
+  AttackWin: "进攻得分",
+  AttackLost: "进攻失误",
+  BlockWin: "拦网得分",
+
+};
 
 function addScore(data) {
   var serve = data.serve
@@ -82,29 +97,26 @@ function updatePlayItems(data) {
     items[i] = [];
     var item = items[i];
 
-    item.push(_createPlayItem("进攻", 1));
+    item.push(_createPlayItem(StatKey.AttackWin, 1));
+    //item.push(_createPlayItem(StatKey.AttackBlk, -1));
+    //item.push(_createPlayItem(StatKey.AttackNormal, 0));
+    item.push(_createPlayItem(StatKey.AttackLost, -1));
 
     if (serve && i==who_serve) {
-      item.push(_createPlayItem("发球", 1));
+      item.push(_createPlayItem(StatKey.ServeWin, 1));
+      item.push(_createPlayItem(StatKey.ServeLost, -1));
+      //item.push(_createPlayItem(StatKey.ServeNormal, 0));
     }
 
     if (i >= 1 && i <= 3) {
-      item.push(_createPlayItem("拦网", 1));
-    }
-
-    //--------- negative
-    item.push(_createPlayItem("进攻", -1));
-    item.push(_createPlayItem("串联", -1));
-    if (serve && who_serve==i) {
-      item.push(_createPlayItem("发球", -1));
+      item.push(_createPlayItem(StatKey.BlockWin, 1));
     }
 
     if (!serve) {
-      item.push(_createPlayItem("一传", -1));
-    }
-
-    if (i >= 1 && i <= 3) {
-      item.push(_createPlayItem("拦网", -1));
+      //item.push(_createPlayItem(StatKey.ReceptionBad, 0));
+      //item.push(_createPlayItem(StatKey.ReceptionGood, 0));
+      //item.push(_createPlayItem(StatKey.ReceptionPerfect, 0));
+      item.push(_createPlayItem(StatKey.ReceptionLost, -1));
     }
   }
 }
@@ -239,3 +251,4 @@ module.exports.addPlayItem = addPlayItem;
 module.exports.updatePlayItems = updatePlayItems;
 module.exports.popStatItem = popStatItem;
 module.exports.createStatItem = createStatItem;
+module.exports.StatKey = StatKey;

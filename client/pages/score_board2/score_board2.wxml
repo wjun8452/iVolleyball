@@ -1,0 +1,10 @@
+<view style="height:100%; width:100%; display:flex; flex-direction: column"> 
+ 
+  <canvas style="width: 100%; height: {{score_height}}px;" disable-scroll="true"    bindtouchstart="touchStart1" bindtouchmove="touchMove1" bindtouchend="touchEnd1"  canvas-id="myScore"> </canvas>
+
+  <canvas style="width: 100%; height: {{colon_height}}px;" disable-scroll="true"    bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd"  canvas-id="colon"> </canvas>
+
+<canvas style="width: 100%; height: {{score_height}}px;" disable-scroll="true"   bindtouchstart="touchStart2" bindtouchmove="touchMove2" bindtouchend="touchEnd2"  canvas-id="yourScore"> </canvas>
+
+
+</view>

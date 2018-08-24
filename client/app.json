@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/addCgi/addCgi",
+    "pages/index2/index",
+    "pages/logs/logs",
+    "pages/stat/stat",
+    "pages/stat/stat_setting",
+    "pages/stat/report",
+    "pages/stat/users",
+    "pages/score_board2/score_board2",
+    "pages/score_board/score_board"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "排球记分牌",
+    "navigationBarTextStyle": "black"
+  }
+}

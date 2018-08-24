@@ -1,0 +1,28 @@
+<view style="padding: 10px">
+
+  <form bindsubmit="onAddPlayer">
+    <view style="display:flex; flex-direction: row; padding:10px">
+      <view style="flex:1">
+        <input name="player" placeholder="输入名称" value="{{temp_player_name}}"> </input>
+      </view>
+      <view style="flex:1">
+        <button type="primary" size="mini" form-type="submit"> 添加 </button>
+      </view>
+    </view>
+  </form>
+
+
+  <block wx:for="{{all_players}}">
+    <view style="display:flex; flex-direction: row; padding:10px">
+      <view style="flex:1">
+        <text> {{item}} </text>
+      </view>
+
+      <view style="flex:1">
+        <button type="warn" size="mini" bindtap="onDeletePlayer" data-player_index="{{index}}"> 删除 </button>
+      </view>
+
+    </view>
+  </block>
+
+</view>

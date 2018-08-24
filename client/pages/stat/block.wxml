@@ -1,0 +1,33 @@
+<template name="block">
+  <!-- represents an area the player stands -->
+  <view style='display:flex; flex-direction:column; height:100%'>
+    <view style="flex:10; display: flex; flex-direction: row; flex-wrap: wrap; padding: 2px">
+      <block wx:for="{{play_items}}">
+        <block wx:if="{{item.score == 1}}">
+          <button bindtap='onTapPlayItem'  data-position='{{position}}' data-play_item_index='{{index}}' type="primary" style="flex:1;  margin:2px; text_align: center"> {{item.name}} </button>
+        </block>
+
+        <block wx:if="{{item.score == -1}}">
+          <button bindtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type="warn" style="flex:1;  margin:2px; text_align: center"> {{item.name}} </button>
+        </block>
+
+        <block wx:if="{{item.score == 0}}">
+          <button bindtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type="default" style="flex:1;  margin:2px; text_align: center"> {{item.name}} </button>
+        </block>
+
+      </block>
+    </view>
+
+    <block wx:if="{{serve && who_serve==position}}">
+      <view style="flex:1;color:red; text-align:center">
+        {{players[position]}}
+      </view>
+    </block>
+
+    <block wx:if="{{!(serve && who_serve==position)}}">
+      <view style="flex:1;text-align:center">
+        {{players[position]}}
+      </view>
+    </block>
+</view>
+</template>

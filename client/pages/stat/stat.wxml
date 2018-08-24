@@ -1,0 +1,48 @@
+<import src="block.wxml" />
+
+<view style="display: flex; flex-direction: column; height:{{height}}px; width: 100%;">
+  <view style="flex:1;">
+    <view style="display: flex; flex-direction: row; ">
+      <text style="flex:1; text-align: center;"> 我方 </text>
+      <text style="flex:1; text-align: center; font-size: xx-large ">  {{myScore}} : {{yourScore}}</text>
+      <text style="flex:1;text-align: center; "> 对方 </text>
+    </view>
+  </view>
+
+  <view style="flex:5;">
+    <view style="display: flex; flex-direction: row; height:100%">
+      <block wx:for="{{[3,2,1]}}">
+        <view style="flex:1; margin: 2px; background-color: #FFCC00;">
+          <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve}}" />
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view style="flex:5;">
+    <view style="display: flex; flex-direction: row;height:100%">
+      <block wx:for="{{[4,5,0]}}">
+        <view style="flex:1; margin: 2px; background-color: #FFCC00;">
+          <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve}}" />
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view style="flex:2;">
+    <view style="display: flex; flex-direction: row;">
+      <button bindtap='onTapAddScore' type="primary" style="flex:1; margin:2px;">得分</button>
+      <button bindtap='onTapLooseScore' type="warn" style="flex:1; margin:2px;"> 失分 </button>
+      <block>
+        <button bindtap='onTapRevert' disabled='{{stat_items.length==0}}' type="default" style="flex:1; margin:2px;">撤销</button>
+      </block>
+
+
+      <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
+    </view>
+
+  </view>
+
+
+
+</view>

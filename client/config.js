@@ -3,7 +3,10 @@
  */
 
 // 此处主机域名修改成腾讯云解决方案分配的域名
+// dev server
 var host = 'https://nzksqgth.qcloud.la';
+// production server
+// var host = 'https://638537841.ivolleyball.xyz';
 
 var config = {
 

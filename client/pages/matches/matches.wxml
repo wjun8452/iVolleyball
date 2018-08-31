@@ -1,0 +1,11 @@
+<navigator url="/pages/score_board/score_board" hover-class="navigator-hover"> 
+      create
+  </navigator>
+
+<view wx:for="{{data.data}}"  wx:key="create_time">
+  <navigator url="/pages/score_board/score_board?uuid={{item.uuid}}" hover-class="navigator-hover"> 
+<image src="{{item.owner.avatarUrl}}">  </image>
+
+{{index}}, {{item.uuid}}, {{item.score1}}:{{item.score2}}, {{item.create_time}}, {{item.lat}}, {{item.lon}}, {{item.place}}
+  </navigator>
+</view>

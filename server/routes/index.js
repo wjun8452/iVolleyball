@@ -32,4 +32,10 @@ router.get('/message', controllers.message.get)
 // POST 用来处理微信转发过来的客服消息
 router.post('/message', controllers.message.post)
 
+//--- 排球 ----
+router.post('/newmatch', validationMiddleware, controllers.newmatch)
+router.post('/matches', validationMiddleware, controllers.matches)
+router.post('/match', validationMiddleware, controllers.match)
+router.post('/updatematch', validationMiddleware, controllers.updatematch)
+
 module.exports = router

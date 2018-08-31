@@ -24,7 +24,15 @@ var config = {
         tunnelUrl: `${host}/weapp/tunnel`,
 
         // 上传图片接口
-        uploadUrl: `${host}/weapp/upload`
+        uploadUrl: `${host}/weapp/upload`,
+        
+        newmatchUrl: `${host}/weapp/newmatch`,
+
+        matchesUrl: `${host}/weapp/matches`,
+
+        matchUrl: `${host}/weapp/match`,
+
+        updatematchUrl: `${host}/weapp/updatematch`
     }
 };
 

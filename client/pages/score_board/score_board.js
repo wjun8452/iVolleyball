@@ -1,21 +1,21 @@
-// pages/score_board/score_board.js
 var court = require("../../utils/court.js")
-Page({
+var config = require("../../config.js")
+var util = require("../../utils/util.js")
+var qcloud = require('../../vendor/wafer2-client-sdk/index')
 
-  /**
-   * 页面的初始数据
-   */
+
+Page({
   data:
   {
-    "height": 0,
-    "width": 0,
-    "score_height": 0,
-    "score_width": 0,
-    "colon_height": 0,
-    "colon_width": 0,
-    "myScore": 0,
-    "yourScore": 0,
-    "stat_items": []
+    ui: {
+      height: 0,
+      width: 0,
+      score_height: 0,
+      score_width: 0,
+      colon_height: 0,
+      colon_width: 0
+    },
+    match: {}
   },
   start_x_1: 0,
   start_y_1: 0,
@@ -31,17 +31,13 @@ Page({
       title: '大记分牌'
     })
 
-    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.setData(saved || this.data);
-    var res = wx.getSystemInfoSync()
-    //can not use this.data.height to set score_height
-    this.setData({
-      height: res.windowHeight, width: res.windowWidth,
-      score_height: res.windowHeight / 80 * 39,
-      score_width: res.windowWidth,
-      colon_height: res.windowHeight / 80 * 2,
-      colon_width: res.windowWidth
-    })
+    this.adjustWindowSize()
+
+    if (options.uuid) {
+      this.fetchMatch(options.uuid)
+    } else {
+      this.createMatch()
+    }
   },
 
   /**
@@ -69,14 +65,12 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    wx.setStorageSync(getApp().globalData.cacheKey, this.data);
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-  
   },
 
   /**
@@ -96,20 +90,12 @@ Page({
   touchStart1: function (e) {
     this.start_x_1 = e.changedTouches[0].pageX;
     this.start_y_1 = e.changedTouches[0].pageY;
-    //console.log("touchstart: ");
-    //console.log(e);
-  },
-
-  touchMove1: function (e) {
-
   },
 
   touchEnd1: function (e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
     this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
-    //console.log("touchend: ");
-    //console.log(e);
   },
 
   touchStart2: function (e) {
@@ -141,26 +127,111 @@ Page({
         mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
         wx.vibrateShort();
       }
-    } else if (change_y_abs > this.data.height*2/3) {
-      this.changeMyScore(-this.data.myScore);
-      this.changeYourScore(-this.data.yourScore);
+    } else if (change_y_abs > this.data.ui.height*2/3) {
+      this.changeMyScore(-this.data.match.score1);
+      this.changeYourScore(-this.data.match.score2);
       wx.vibrateShort();
     }
   },
 
   changeMyScore: function (delta) {
-    var s = this.data.myScore + delta;
+    var s = this.data.match.score1 + delta;
     if (s >= 0) {
-      this.data.myScore = s;
-      this.setData(this.data);
+      this.data.match.score1 = s;
+      this.setData({match: this.data.match});
+      this.updateMatch(this.data.match);
     }
   },
 
   changeYourScore: function (delta) {
-    var s = this.data.yourScore + delta;
+    var s = this.data.match.score2 + delta;
     if (s >= 0) {
-      this.data.yourScore = s;
-      this.setData(this.data);
+      this.data.match.score2 = s;
+      this.setData({ match: this.data.match });
+      this.updateMatch(this.data.match);
     }
   },
+
+  updateMatch: function(match) {
+    const url = config.service.updatematchUrl
+    console.log("Navigated to " + url)
+    qcloud.request({
+      url: url,
+      method: 'POST',
+      data: match,
+      success: function (res) {
+        console.log(res)
+      },
+      fail: function (res) {
+        console.log(res)
+        wx.showToast({
+          title: '获取数据失败',
+        })
+      },
+      complete: function (res) {
+      }
+    })
+  },
+
+  adjustWindowSize: function() {
+    var res = wx.getSystemInfoSync()
+    this.setData({
+      ui: {
+        height: res.windowHeight,
+        width: res.windowWidth,
+        score_height: res.windowHeight / 80 * 39,
+        score_width: res.windowWidth,
+        colon_height: res.windowHeight / 80 * 2,
+        colon_width: res.windowWidth
+      }
+    })
+  },
+
+  fetchMatch: function(uuid) {
+    const url = config.service.matchUrl + '?uuid=' + uuid
+    var that = this;
+    console.log("Navigated to " + url)
+    util.showBusy("正在加载...")
+    qcloud.request({
+      url: url,
+      method: 'POST',
+      success: function (res) {
+        console.log(res)
+        that.setData({ match: res.data.data })
+      },
+      fail: function (res) {
+        console.log(res)
+      },
+      complete: function (res) {
+        util.hideToast()
+      }
+    })
+  },
+
+  createMatch: function () {
+    const url = config.service.newmatchUrl
+    var that = this;
+    console.log("Navigated to " + url)
+    util.showBusy("正在加载...")
+    qcloud.request({
+      url: url,
+      method: 'POST',
+      data : {
+        lat: getApp().globalData.lat,
+        lon: getApp().globalData.lon,
+        place: getApp().globalData.place
+      },
+      success: function (res) {
+        console.log(res)
+        that.setData({ match: res.data.data })
+      },
+      fail: function (res) {
+        console.log(res)
+      },
+      complete: function (res) {
+        util.hideToast()
+      }
+    })
+  }
+
 })

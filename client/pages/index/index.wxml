@@ -6,8 +6,6 @@
   </view>
 
 </view>
-
-
   <view style="flex-item;"  class="menu">
   <navigator url="../score_board/score_board" style="text-align:center; text-font:x-large">大记分牌</navigator>
   </view>

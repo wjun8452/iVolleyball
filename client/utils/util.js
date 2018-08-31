@@ -14,6 +14,7 @@ const formatNumber = n => {
   return n[1] ? n : '0' + n
 }
 
+var hideToast = text => wx.hideToast()
 
 // 显示繁忙提示
 var showBusy = text => wx.showToast({
@@ -161,4 +162,4 @@ function HashMap() {
 
 
 
-module.exports = { formatTime, showBusy, showSuccess, showModel }
+module.exports = { formatTime, showBusy, showSuccess, showModel, hideToast }

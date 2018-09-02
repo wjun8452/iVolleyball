@@ -2,17 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6b4d356-3fa4-4e85-8d52-2cbab798f434" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../client/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/../client/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/pages/index/index.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pages/index/index.wxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/pages/score_board/score_board.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pages/score_board/score_board.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/pages/score_board/score_board.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pages/score_board/score_board.wxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/utils/util.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/utils/util.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../project.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../project.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/response.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/response.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/pages/matches/matches.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pages/matches/matches.wxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/pages/matches/matches.wxss" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pages/matches/matches.wxss" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -75,8 +67,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/node_modules/wafer-node-sdk/lib/mysql/AuthDbService.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="30" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="30" />
+            <state relative-caret-position="435">
+              <caret line="29" column="3" lean-forward="true" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -299,12 +291,12 @@
       <workItem from="1535204401047" duration="2175000" />
       <workItem from="1535381204445" duration="1708000" />
       <workItem from="1535458748568" duration="2157000" />
-      <workItem from="1535461787074" duration="6778000" />
+      <workItem from="1535461787074" duration="7407000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12818000" />
+    <option name="totallyTimeSpent" value="13447000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="41" y="23" width="1399" height="877" extended-state="6" />
@@ -433,8 +425,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/wafer-node-sdk/lib/mysql/AuthDbService.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="30" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="30" />
+        <state relative-caret-position="435">
+          <caret line="29" column="3" lean-forward="true" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
         </state>
       </provider>
     </entry>

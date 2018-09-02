@@ -1,1 +1,4 @@
 /* pages/score_board/score_board.wxss */
+.showborder {
+  border: solid 1px red
+}

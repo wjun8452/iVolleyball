@@ -1,11 +1,43 @@
-<navigator url="/pages/score_board/score_board" hover-class="navigator-hover"> 
-      create
+<block wx:for="{{data.data}}" wx:key="create_time">
+  <navigator url="/pages/score_board/score_board?uuid={{item.uuid}}" hover-class="navigator-hover">
+    <view class="match-item">
+
+      <view style="display:block; text-align:center;">
+        <view >
+          <image class="userinfo-avatar" src="{{item.owner.avatarUrl}}" style="width: 100px; height: 100px"> </image>
+        </view>
+
+        <view >
+          {{item.owner.nickName}}
+        </view>  
+      </view>
+
+      <view style="display:flex; flex-direction:column;justify-content:space-around ">
+        <view >
+          松鼠队 vs 大象队
+        </view>
+
+        <view >
+          {{item.score1}}:{{item.score2}}
+        </view>
+
+        <view >
+          {{item.place}}
+        </view>
+        <view >
+          {{item.create_time}}
+        </view>
+      </view>
+    </view>
   </navigator>
+</block>
 
-<view wx:for="{{data.data}}"  wx:key="create_time">
+<navigator url="/pages/score_board/score_board" hover-class="navigator-hover">
+      <image class="add_icon" src="../../images/newmatch.png"></image>
+</navigator>
+
+<!-- view wx:for="{{data.data}}"  wx:key="create_time">
   <navigator url="/pages/score_board/score_board?uuid={{item.uuid}}" hover-class="navigator-hover"> 
-<image src="{{item.owner.avatarUrl}}">  </image>
-
 {{index}}, {{item.uuid}}, {{item.score1}}:{{item.score2}}, {{item.create_time}}, {{item.lat}}, {{item.lon}}, {{item.place}}
   </navigator>
-</view>
+</view -->

@@ -37,5 +37,7 @@ router.post('/newmatch', validationMiddleware, controllers.newmatch)
 router.post('/matches', validationMiddleware, controllers.matches)
 router.post('/match', validationMiddleware, controllers.match)
 router.post('/updatematch', validationMiddleware, controllers.updatematch)
+router.post('/updatematch_team', validationMiddleware, controllers.updatematch_team)
+router.post('/teams', validationMiddleware, controllers.teams)
 
 module.exports = router

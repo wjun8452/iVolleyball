@@ -10,10 +10,6 @@ Page({
     ui: {
       height: 0,
       width: 0,
-      score_height: 0,
-      score_width: 0,
-      colon_height: 0,
-      colon_width: 0
     },
     match: {}
   },
@@ -177,14 +173,12 @@ Page({
     var res = wx.getSystemInfoSync()
     this.setData({
       ui: {
-        height: res.windowHeight,
-        width: res.windowWidth,
-        score_height: res.windowHeight / 80 * 39,
-        score_width: res.windowWidth,
-        colon_height: res.windowHeight / 80 * 2,
-        colon_width: res.windowWidth
+        height: res.windowHeight-2,
+        width: res.windowWidth-2,
       }
     })
+    console.log("window height:" + this.data.ui.height + "px")
+    console.log("window width:" + this.data.ui.width + "px")
   },
 
   fetchMatch: function(uuid) {

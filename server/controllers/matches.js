@@ -6,6 +6,7 @@ module.exports = async ctx => {
   } else {
     const matches = await mysql('vmatch').select('*').orderBy('create_time','DESC').limit(20)
 
+    //convert JSON string to object
     for (var index in matches) {
       const owner = JSON.parse(matches[index].owner)
       matches[index].owner = owner

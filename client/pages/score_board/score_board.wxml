@@ -1,14 +1,19 @@
-<!--pages/score_board/score_board.wxml-->
-<scroll-view scroll-x:false scroll-y:false style="height: {{ui.height}}px"> 
-  <view style="height:50%; width: 99%; border-style: solid; border-width: 0px 0px 1px 0px;" bindtouchstart="touchStart2" bindtouchend="touchEnd2">
-        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{ui.height*0.4}}px; text-align:center; padding:0'> {{match.score2}} 
-        </view>
-  </view>
- 
+<view class="showborder" style="width:{{ui.height}}px; height:{{ui.width}}px; position: absolute; left: {{(ui.width-ui.height)/2}}px; top: {{(ui.height-ui.width)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;align-items:stretch;">
 
-  <view style="height:50%; width: 99%;  border-style: solid; border-width: 1px 0px 0px 0px;" bindtouchstart="touchStart1" bindtouchend="touchEnd1">
-        <view style='transform:rotate(-90deg); color: RED; font:Arial; font-weight:bold; font-size: {{ui.height*0.4}}px; text-align:center;padding:0'> {{match.score1}} 
-        </view>
+  <view class="border_bottom" style="display:flex;flex-direction:row;justify-content:space-around">
+    <text> {{match.team1}} </text>
+    <text> vs </text>
+    <text> {{match.team2}} </text>
   </view>
-   
-</scroll-view>
+
+
+  <view class="" style="display:flex;flex-direction:row;align-items:stretch">
+    <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" class="border_right" style="flex:1; color:RED; font:Arial; font-weight:bold; font-size: {{ui.height*0.4}}px; text-align:center;padding:0"> {{match.score1}} </text>
+    <text bindtouchstart="touchStart2" bindtouchend="touchEnd2" class="border_left" style="flex:1;color:RED; font:Arial; font-weight:bold; font-size: {{ui.height*0.4}}px; text-align:center;padding:0"> {{match.score2}} </text>
+  </view>
+</view>
+
+<!-- <view class="showborder" style="width:600px; height:372px; position: absolute; left: -114px; top: 114px; transform:rotate(-90deg);">
+
+
+</view> -->

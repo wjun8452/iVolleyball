@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/matches/matches",
+    "pages/score_board/score_board",
     "pages/index/index",
     "pages/addCgi/addCgi",
     "pages/index2/index",
@@ -9,8 +10,8 @@
     "pages/stat/stat_setting",
     "pages/stat/report",
     "pages/stat/users",
-    "pages/score_board2/score_board2",
-    "pages/score_board/score_board"
+    "pages/score_board2/score_board2"
+    
   ],
   "window": {
     "backgroundTextStyle": "light",

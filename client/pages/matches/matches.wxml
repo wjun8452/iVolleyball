@@ -14,7 +14,7 @@
 
       <view style="display:flex; flex-direction:column;justify-content:space-around ">
         <view >
-          松鼠队 vs 大象队
+          {{item.team1}} vs {{item.team2}}
         </view>
 
         <view >

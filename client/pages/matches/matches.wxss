@@ -1,6 +1,6 @@
-/* .showborder {
+.showborder {
   border:1px solid red;
-} */
+}
 
 .match-item {
   border: 1px solid grey;

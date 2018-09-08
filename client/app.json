@@ -19,5 +19,33 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "排球记分牌",
     "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/matches/matches",
+        "text": "记分牌",
+        "iconPath": "images/board.png",
+        "selectedIconPath": "images/board_sel.png"
+      },
+      {
+        "pagePath": "pages/stat/stat",
+        "text": "技术统计",
+        "iconPath": "images/stat.png",
+        "selectedIconPath": "images/stat_sel.png"
+      },
+      {
+        "pagePath": "pages/stat/report",
+        "text": "统计报告",
+        "iconPath": "images/report.png",
+        "selectedIconPath": "images/report_sel.png"
+      },
+      {
+        "pagePath": "pages/stat/users",
+        "text": "队员管理",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user_sel.png"
+      }
+    ]
   }
 }

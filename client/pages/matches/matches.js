@@ -8,12 +8,25 @@ Page({
    * 页面的初始数据
    */
   data: {
+    searchtype: 'mine',
+    winWidth: 0,
+    winHeight: 0,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var that = this;
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          winWidth: res.windowWidth,
+          winHeight: res.windowHeight
+        });
+      }
+    });
+
   },
 
   /**
@@ -65,6 +78,17 @@ Page({
   
   },
 
+  swichNav: function (e) {
+    if (this.data.searchtype == e.currentTarget.dataset.searchtype) {
+      return false;
+    } else {
+      this.setData({
+        searchtype: e.currentTarget.dataset.searchtype
+      })
+      this.fetchMatches();
+    }
+  },
+
   fetchMatches: function() {
     const that = this
     const url = config.service.matchesUrl
@@ -73,6 +97,11 @@ Page({
     qcloud.request({
       url: url,
       method: 'POST',
+      data: {
+        searchtype: that.data.searchtype,
+        lat: getApp().globalData.lat,
+        lon: getApp().globalData.lon,
+      },
       success: function (res) {
         that.setData(res)
         console.log(res)

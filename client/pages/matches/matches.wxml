@@ -1,8 +1,20 @@
+<!--index.wxml-->
+<view class="swiper-tab">
+  <view class="swiper-tab-list {{searchtype=='mine' ? 'on' : ''}}" data-searchtype="mine" bindtap="swichNav">
+    <image class="swiper-tab-list-img" src="../../images/mine{{searchtype=='mine' ? '_sel' : ''}}.png"></image>
+    <view>我的</view>
+  </view>
+  <view class="swiper-tab-list {{searchtype=='nearby' ? 'on' : ''}}" data-searchtype="nearby" bindtap="swichNav">
+    <image class="swiper-tab-list-img" src="../../images/nearby{{searchtype=='nearby' ? '_sel' : ''}}.png" ></image>
+    <view>附近</view>
+  </view>
+</view>
+
 <block wx:if="{{data.data.length==0}}">
-  <view class="" style="diaplay:flex;flex-direction:row;padding:20px">
-    <image class=""  src="../../images/smile.png" style="width:50px; height:50px" ></image>
-    <view class="" > 点击右下角图标，可以创建比赛哦！ </view>
-    </view>
+  <view style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
+    <image class="" src="../../images/smile.png" style="width:50px; height:50px"></image>
+    <view> 空空也~ </view>
+  </view>
 </block>
 
 <block wx:for="{{data.data}}" wx:key="create_time">
@@ -10,28 +22,28 @@
     <view class="match-item">
 
       <view style="display:block; text-align:center;">
-        <view >
+        <view>
           <image class="userinfo-avatar" src="{{item.owner.avatarUrl}}" style="width: 100px; height: 100px"> </image>
         </view>
 
-        <view >
+        <view>
           {{item.owner.nickName}}
-        </view>  
+        </view>
       </view>
 
       <view style="display:flex; flex-direction:column;justify-content:space-around ">
-        <view >
+        <view>
           {{item.team1}} vs {{item.team2}}
         </view>
 
-        <view >
+        <view>
           {{item.score1}}:{{item.score2}}
         </view>
 
-        <view >
+        <view>
           {{item.place}}
         </view>
-        <view >
+        <view>
           {{item.create_time}}
         </view>
       </view>
@@ -40,7 +52,7 @@
 </block>
 
 <navigator url="/pages/match/match" hover-class="navigator-hover">
-      <image class="add_icon" src="../../images/newmatch.png"></image>
+  <image class="add_icon" src="../../images/newmatch.png"></image>
 </navigator>
 
 <!-- view wx:for="{{data.data}}"  wx:key="create_time">

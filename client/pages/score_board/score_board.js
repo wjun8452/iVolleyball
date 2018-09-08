@@ -13,6 +13,7 @@ Page({
     },
     match: {}
   },
+  timer: null,
   start_x_1: 0,
   start_y_1: 0,
   start_x_2: 0,
@@ -32,7 +33,7 @@ Page({
     if (options.uuid) {
       this.fetchMatch(options.uuid)
     } else {
-      this.createMatch()
+      this.createMatch(options.team1, options.team2)
     }
   },
 
@@ -54,13 +55,14 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-  
+    clearTimeout(this.timer)
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
+    clearTimeout(this.timer)
   },
 
   /**
@@ -130,7 +132,29 @@ Page({
     }
   },
 
+  startTimer: function(uuid) {
+    var that = this;
+    this.timer = setTimeout(function() {
+      that.fetchMatch(uuid)
+    } ,5000);
+  },
+
+  checkPermission: function() {
+    if (getApp().globalData.logged) {
+      const userInfo = getApp().globalData.userInfo
+      if (userInfo.openId == this.data.match.openid) {
+        return true;
+      }
+    }
+    wx.showToast({title:'没有权限修改分数'})
+    return false;
+  },
+
   changeMyScore: function (delta) {
+    if (!this.checkPermission()) {
+      return;
+    }
+
     var s = this.data.match.score1 + delta;
     if (s >= 0) {
       this.data.match.score1 = s;
@@ -140,6 +164,10 @@ Page({
   },
 
   changeYourScore: function (delta) {
+    if (!this.checkPermission()) {
+      return;
+    }
+
     var s = this.data.match.score2 + delta;
     if (s >= 0) {
       this.data.match.score2 = s;
@@ -185,13 +213,14 @@ Page({
     const url = config.service.matchUrl + '?uuid=' + uuid
     var that = this;
     console.log("Navigated to " + url)
-    util.showBusy("正在加载...")
+    //util.showBusy("正在加载...")
     qcloud.request({
       url: url,
       method: 'POST',
       success: function (res) {
         console.log(res)
         that.setData({ match: res.data.data })
+        that.startTimer(uuid)
       },
       fail: function (res) {
         console.log(res)
@@ -202,22 +231,25 @@ Page({
     })
   },
 
-  createMatch: function () {
+  createMatch: function (team1, team2) {
     const url = config.service.newmatchUrl
     var that = this;
     console.log("Navigated to " + url)
-    util.showBusy("正在加载...")
+    //util.showBusy("正在加载...")
     qcloud.request({
       url: url,
       method: 'POST',
       data : {
         lat: getApp().globalData.lat,
         lon: getApp().globalData.lon,
-        place: getApp().globalData.place
+        place: getApp().globalData.place,
+        team1: team1,
+        team2: team2,
       },
       success: function (res) {
         console.log(res)
         that.setData({ match: res.data.data })
+        that.startTimer(res.data.data.uuid)
       },
       fail: function (res) {
         console.log(res)

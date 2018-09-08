@@ -39,7 +39,7 @@
   </navigator>
 </block>
 
-<navigator url="/pages/score_board/score_board" hover-class="navigator-hover">
+<navigator url="/pages/match/match" hover-class="navigator-hover">
       <image class="add_icon" src="../../images/newmatch.png"></image>
 </navigator>
 

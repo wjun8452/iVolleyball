@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/matches/matches",
+    "pages/match/match",
     "pages/score_board/score_board",
     "pages/index/index",
     "pages/addCgi/addCgi",

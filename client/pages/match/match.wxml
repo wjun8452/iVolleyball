@@ -1,0 +1,29 @@
+<view style="display:flex;flex-direction:row">
+  <view style="flex:1; display:block">
+    <input value="{{team1}}" bindinput="bindKeyInput1" auto-focus/>
+    <picker-view style="width: 100%; height:300px;" bindchange="bindChange1" value="0">
+      <picker-view-column>
+        <view wx:for="{{teams}}" style="line-height: 50px"> {{item.name}} </view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+
+  <view style="flex:1"> vs </view>
+
+  <view style="flex:1; display:block">
+    <input value="{{team2}}" bindinput="bindKeyInput2" auto-focus/>
+    <picker-view style="width: 100%; height: 300px;" bindchange="bindChange2" value="0">
+      <picker-view-column>
+        <view wx:for="{{teams}}" style="line-height: 50px"> {{item.name}}</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+
+
+</view>
+
+<view class="section ">
+  <navigator open-type='redirect' url="/pages/score_board/score_board?uuid={{item.uuid}}&team1={{team1}}&&team2={{team2}}" hover-class="navigator-hover">
+    <button bindtap="ok">确定</button>
+  </navigator>
+</view>

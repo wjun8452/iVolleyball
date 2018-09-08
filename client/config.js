@@ -32,7 +32,9 @@ var config = {
 
         matchUrl: `${host}/weapp/match`,
 
-        updatematchUrl: `${host}/weapp/updatematch`
+        updatematchUrl: `${host}/weapp/updatematch`,
+
+        teamsUrl: `${host}/weapp/teams`
     }
 };
 

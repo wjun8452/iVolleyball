@@ -15,6 +15,9 @@ Page({
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     // console.log(saved)
     this.setData(saved || this.data);
+    wx.setNavigationBarTitle({
+      title: '队员管理'
+    })
   },
 
   /**

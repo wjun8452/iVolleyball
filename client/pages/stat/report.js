@@ -132,7 +132,7 @@ Page({
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({
-      title: '历史报表'
+      title: '统计报告'
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);

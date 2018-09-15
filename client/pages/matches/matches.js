@@ -61,7 +61,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-  
+    this.fetchMatches();
   },
 
   /**
@@ -99,8 +99,7 @@ Page({
       method: 'POST',
       data: {
         searchtype: that.data.searchtype,
-        lat: getApp().globalData.lat,
-        lon: getApp().globalData.lon,
+        city: getApp().globalData.city,
       },
       success: function (res) {
         that.setData(res)

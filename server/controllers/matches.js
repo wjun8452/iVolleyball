@@ -19,8 +19,7 @@ module.exports = async ctx => {
   if (!ctx.state.$wxInfo.loginState) {
     ctx.throw(400, "user not login")
   } else {
-    const lat = ctx.request.body.lat
-    const lon = ctx.request.body.lon
+    const city = ctx.request.body.city
     const searchtype = ctx.request.body.searchtype;
     const openid = ctx.state.$wxInfo.userinfo.openId;
 
@@ -36,19 +35,15 @@ module.exports = async ctx => {
     }
 
     if (searchtype == 'nearby') {
-      const matches = await mysql('vmatch').select('*').where('openid', '!=', openid).orderBy('create_time', 'DESC').limit(200)
-
-      var results = []
+      const matches = await mysql('vmatch').select('*').whereNot(
+        'openid', openid).where('city', city).orderBy('create_time', 'DESC').limit(200)
 
       //convert JSON string to object
       for (var index in matches) {
         const owner = JSON.parse(matches[index].owner)
         matches[index].owner = owner
-        if (distance(lat, lon, matches[index].lat, matches[index].lon) <= MAX_DISTANCE) {
-          results.push(matches[index])
-        }
       }
-      ctx.state.data = results
+      ctx.state.data = matches
     }
   }
 }

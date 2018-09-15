@@ -11,6 +11,7 @@
     "pages/stat/stat_setting",
     "pages/stat/report",
     "pages/stat/users",
+    "pages/stat/invite",
     "pages/score_board2/score_board2"
     
   ],

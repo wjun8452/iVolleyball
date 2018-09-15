@@ -16,6 +16,7 @@ module.exports = async ctx => {
   const lat = ctx.request.body.lat
   const lon = ctx.request.body.lon
   const place = ctx.request.body.place
+  const city = ctx.request.body.city
   const team1 = ctx.request.body.team1
   const team2 = ctx.request.body.team2
   const owner = JSON.stringify(ctx.state.$wxInfo.userinfo)
@@ -32,7 +33,8 @@ module.exports = async ctx => {
     create_time,
     lat,
     lon,
-    place
+    place,
+    city
   })
 
   const team1_exist = await mysql('vteam').select('*').where({

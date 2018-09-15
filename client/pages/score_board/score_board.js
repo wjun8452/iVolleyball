@@ -133,6 +133,10 @@ Page({
   },
 
   startTimer: function(uuid) {
+    if (this.checkPermission()) {
+      return; //auther do not need refresh
+    }
+
     var that = this;
     this.timer = setTimeout(function() {
       that.fetchMatch(uuid)
@@ -243,6 +247,7 @@ Page({
         lat: getApp().globalData.lat,
         lon: getApp().globalData.lon,
         place: getApp().globalData.place,
+        city: getApp().globalData.city,
         team1: team1,
         team2: team2,
       },
@@ -258,6 +263,16 @@ Page({
         util.hideToast()
       }
     })
-  }
+  },
 
+  swapTeam: function() {
+    const team1 = this.data.match.team1
+    const team2 = this.data.match.team2
+    this.data.match.team1 = team2
+    this.data.match.team2 = team1
+    this.setData(this.data)
+    if(this.checkPermission()) {
+      this.updateMatch()
+    } 
+  }
 })

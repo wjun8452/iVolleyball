@@ -71,6 +71,7 @@ App({
           success: function (res) {
             console.log(res);
             that.globalData.place = res.result.formatted_addresses.recommend
+            that.globalData.city = res.result.address_component.city
           },
           fail: function (res) {
             console.log(res);
@@ -89,6 +90,7 @@ App({
     cacheKey: "stats15",
     lat:0,
     lon:0,
-    place:''
+    place:'',
+    city:''
   }
 })

@@ -2,7 +2,7 @@
 
   <view class="border_bottom" style="display:flex;flex-direction:row;justify-content:space-around">
     <text> {{match.team1}} </text>
-    <text> vs </text>
+    <image src="../../images/swap.png" style="width:20px;height:20px" bindtap='swapTeam'> </image>
     <text> {{match.team2}} </text>
   </view>
 

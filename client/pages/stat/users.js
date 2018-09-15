@@ -65,8 +65,23 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+      title: '邀请你加入球队',
+      path: '/pages/stat/invite?team=123',
+      success: function (res) {
+        // 转发成功
+        console.log("转发成功:" + JSON.stringify(res));
+      },
+      fail: function (res) {
+        // 转发失败
+        console.log("转发失败:" + JSON.stringify(res));
+      }
+    }
   },
 
   onAddPlayer: function (e) {

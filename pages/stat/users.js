@@ -5,6 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
     temp_player_name: ""
   },
 

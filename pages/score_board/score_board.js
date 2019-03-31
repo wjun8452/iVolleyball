@@ -15,8 +15,7 @@ Page({
     "colon_width": 0,
     "myScore": 0,
     "yourScore": 0,
-    "stat_items": [],
-    animationData: {}
+    "stat_items": []
   },
   start_x_1: 0,
   start_y_1: 0,

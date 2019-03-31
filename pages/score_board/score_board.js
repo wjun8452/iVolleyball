@@ -100,10 +100,6 @@ Page({
     //console.log(e);
   },
 
-  touchMove1: function (e) {
-
-  },
-
   touchEnd1: function (e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;

@@ -1,6 +1,4 @@
-var config = require("../../config.js")
 var util = require("../../utils/util.js")
-var qcloud = require('../../vendor/wafer2-client-sdk/index')
 
 Page({
 
@@ -8,9 +6,10 @@ Page({
    * 页面的初始数据
    */
   data: {
-    searchtype: 'mine',
+    searchtype: 'byOwner',
     winWidth: 0,
     winHeight: 0,
+    matches: []
   },
 
   /**
@@ -26,7 +25,6 @@ Page({
         });
       }
     });
-
   },
 
   /**
@@ -78,42 +76,53 @@ Page({
   
   },
 
-  swichNav: function (e) {
+  switchNav: function (e) {
     if (this.data.searchtype == e.currentTarget.dataset.searchtype) {
       return false;
     } else {
       this.setData({
         searchtype: e.currentTarget.dataset.searchtype
       })
+      
       this.fetchMatches();
     }
   },
 
   fetchMatches: function() {
+    const db = wx.cloud.database()
+    const matches = db.collection('vmatch')
     const that = this
-    const url = config.service.matchesUrl
-    console.log("Navigated to " + url)
+    
     util.showBusy("正在加载...")
-    qcloud.request({
-      url: url,
-      method: 'POST',
-      data: {
-        searchtype: that.data.searchtype,
-        city: getApp().globalData.city,
-      },
-      success: function (res) {
-        that.setData(res)
-        console.log(res)
-      },
-      fail: function (res) {
-        console.log(res)
-        wx.showToast({
-          title: '获取数据失败',
-        })
-      },
-      complete: function (res) {
+    
+    var byOwner = {
+      _openid: getApp().globalData.openid
+    }
+    
+    var byCity = {
+      city: getApp().globalData.city
+    }
+
+    var where = this.data.searchtype=='byOwner'?byOwner:byCity;
+
+    matches.where(where)
+      .get()
+      .then(res => {
+        console.log('[vmatch] get', this.data.searchtype, res.data)
+        that.setData({ matches: res.data })
         util.hideToast()
-      }
-    })
+      })
+      .catch(err => {
+        console.error('[vmatch] get', + this.data.searchtype, err)
+        util.hideToast()
+      })
+  },
+
+  tapMatch: function(e) {
+    var url = util.buildURL('/pages/score_board/score_board',  {match: e.currentTarget.dataset.match}, true)
+    console.log(url)
+      wx.navigateTo({
+        url: url
+      })
   }
 })

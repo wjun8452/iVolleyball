@@ -1,4 +1,3 @@
-var config = require("../../config.js")
 var util = require("../../utils/util.js")
 var qcloud = require('../../vendor/wafer2-client-sdk/index')
 
@@ -107,7 +106,7 @@ Page({
   loadTeams: function (e) {
     const url = config.service.teamsUrl
     var that = this;
-    console.log("Navigated to " + url)
+//    console.log("Navigated to " + url)
     util.showBusy("正在加载...")
     qcloud.request({
       url: url,

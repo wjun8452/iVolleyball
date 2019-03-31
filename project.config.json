@@ -1,8 +1,7 @@
 {
-	"client": "./client",
-	"svr": "./server",
-	"miniprogramRoot": "./client",
-	"qcloudRoot": "./server",
+	"miniprogramRoot": "client/",
+	"cloudfunctionRoot": "server/",
+  "cloudenv": "test",
 	"setting": {
 		"urlCheck": true,
 		"es6": true,
@@ -11,8 +10,8 @@
 		"newFeature": true
 	},
 	"appid": "wx573d66c4ffa25272",
-	"projectname": "demo",
-	"compileType": "miniprogram",
+	"projectname": "ivolleyball",
 	"libVersion": "2.2.5",
+	"compileType": "miniprogram",
 	"condition": {}
 }

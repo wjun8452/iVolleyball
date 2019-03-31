@@ -1,27 +1,28 @@
 <!--index.wxml-->
+
 <view class="swiper-tab">
-  <view class="swiper-tab-list {{searchtype=='mine' ? 'on' : ''}}" data-searchtype="mine" bindtap="swichNav">
-    <image class="swiper-tab-list-img" src="../../images/mine{{searchtype=='mine' ? '_sel' : ''}}.png"></image>
+  <view class="swiper-tab-list {{searchtype=='byOwner' ? 'on' : ''}}" data-searchtype="byOwner" bindtap="switchNav">
+    <image class="swiper-tab-list-img" src="../../images/mine{{searchtype=='byOwner' ? '_sel' : ''}}.png"></image>
     <view>我的</view>
   </view>
-  <view class="swiper-tab-list {{searchtype=='nearby' ? 'on' : ''}}" data-searchtype="nearby" bindtap="swichNav">
+  <view class="swiper-tab-list {{searchtype=='byCity' ? 'on' : ''}}" data-searchtype="byCity" bindtap="switchNav">
     <image class="swiper-tab-list-img" src="../../images/nearby{{searchtype=='nearby' ? '_sel' : ''}}.png" ></image>
     <view>附近</view>
   </view>
 </view>
 
-<block wx:if="{{data.data.length==0}}">
+<block wx:if="{{matches.length==0}}">
   <view style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
     <image class="" src="../../images/smile.png" style="width:50px; height:50px"></image>
-    <view> 空空也~ </view>
+    <view> 空空也~ 点击加号创建新的比赛计分 </view>
   </view>
 </block>
 
-<block wx:for="{{data.data}}" wx:key="create_time">
-  <navigator url="/pages/score_board/score_board?uuid={{item.uuid}}" hover-class="navigator-hover">
-    <view class="match-item">
+<block wx:for="{{matches}}" wx:key="create_time">
+  <!-- <navigator url="/pages/score_board/score_board?match={{item}}" hover-class="navigator-hover"> -->
+    <view class="match-item" bindtap='tapMatch' data-match="{{item}}">
 
-      <view style="display:block; text-align:center;">
+      <!-- 用户不授权，这些信息就拿不到，暂时不显示，不是必须的 <view style="display:block; text-align:center;">
         <view>
           <image class="userinfo-avatar" src="{{item.owner.avatarUrl}}" style="width: 100px; height: 100px"> </image>
         </view>
@@ -29,7 +30,7 @@
         <view>
           {{item.owner.nickName}}
         </view>
-      </view>
+      </view> -->
 
       <view style="display:flex; flex-direction:column;justify-content:space-around ">
         <view>
@@ -48,15 +49,9 @@
         </view>
       </view>
     </view>
-  </navigator>
+  <!-- </navigator> -->
 </block>
 
-<navigator url="/pages/match/match" hover-class="navigator-hover">
+<navigator url="/pages/score_board/score_board" hover-class="navigator-hover">
   <image class="add_icon" src="../../images/newmatch.png"></image>
 </navigator>
-
-<!-- view wx:for="{{data.data}}"  wx:key="create_time">
-  <navigator url="/pages/score_board/score_board?uuid={{item.uuid}}" hover-class="navigator-hover"> 
-{{index}}, {{item.uuid}}, {{item.score1}}:{{item.score2}}, {{item.create_time}}, {{item.lat}}, {{item.lon}}, {{item.place}}
-  </navigator>
-</view -->

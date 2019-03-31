@@ -1,53 +1,52 @@
 //app.js
-var qcloud = require('./vendor/wafer2-client-sdk/index')
-var config = require('./config')
-var util = require('./utils/util.js')
 var qqMap = require('./utils/qqmap-wx-jssdk1.0/qqmap-wx-jssdk.js')
 
 App({
   onLaunch: function () {
-    qcloud.setLoginUrl(config.service.loginUrl)
-    this.login()
-    this.initLocation()
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力')
+    } else {
+      wx.cloud.init({
+        traceUser: true
+      })
+
+      // 获取用户信息
+      wx.getSetting({
+        success: res => {
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+            wx.getUserInfo({
+              success: res => {
+                this.globalData.userInfo = res.userInfo
+                console.log('[getUserInfo]', res.userInfo)
+              },
+              fail: console.error('[getUserInfo] failed!')
+            })
+          }
+        }
+      })
+
+      this.initLocation()
+
+      this.fetchOpenId()
+    }
   },
 
-  login: function() {
-      if (this.globalData.logged) return
-      util.showBusy('正在登录')
-      const session = qcloud.Session.get()
-      const that = this
-      if (session) {
-        console.log("第二次登录")
-        console.log("Navigated to " + config.service.loginUrl)
-        // 第二次登录,或者本地已经有登录态,可使用本函数更新登录态
-        qcloud.loginWithCode({
-          success: res => {
-            that.globalData.userInfo = res
-            that.globalData.logged = true
-            util.showSuccess('登录成功')
-          },
-          fail: err => {
-            console.error(err)
-            util.showModel('登录错误', err.message)
-          }
-        })
-      } else {
-        console.log("首次登录")
-        console.log("Navigated to " + config.service.loginUrl)
-        // 首次登录
-        qcloud.login({
-          success: res => {
-            that.globalData.userInfo = res
-            that.globalData.logged = true
-            util.showSuccess('登录成功')
-          },
-          fail: err => {
-            console.error(err)
-            util.showModel('登录错误', err.message)
-          }
-        })
+  fetchOpenId: function () {
+    var that = this
+    // 调用云函数
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        console.log('[login]', res)
+        that.globalData.openid = res.result.openid
+      },
+      fail: err => {
+        console.error('[login] failed!', err)
       }
-    },
+    })
+  },
 
   initLocation: function () {
     var demo = new qqMap({
@@ -69,12 +68,12 @@ App({
             longitude: res.longitude
           },
           success: function (res) {
-            console.log(res);
+            console.log('[getLocation]', res);
             that.globalData.place = res.result.formatted_addresses.recommend
             that.globalData.city = res.result.address_component.city
           },
           fail: function (res) {
-            console.log(res);
+            console.error('[getLocation] failed!', res);
           },
           complete: function (res) {
             //console.log(res);
@@ -86,6 +85,7 @@ App({
 
   globalData:{
     logged: false,
+    openid: "",
     userInfo:null,
     cacheKey: "stats15",
     lat:0,

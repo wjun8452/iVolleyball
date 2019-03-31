@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d6e0b16f-b199-4d0d-aeb5-c26a08fb8c6d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/matches/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/matches/matches.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/matches/matches.json" beforeDir="false" afterPath="$PROJECT_DIR$/pages/matches/matches.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/score_board/score_board.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/score_board/score_board.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/score_board/score_board.wxml" beforeDir="false" afterPath="$PROJECT_DIR$/pages/score_board/score_board.wxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../project.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../project.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/controllers/matches.js" beforeDir="false" afterPath="$PROJECT_DIR$/../server/controllers/matches.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/controllers/newmatch.js" beforeDir="false" afterPath="$PROJECT_DIR$/../server/controllers/newmatch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/controllers/updatematch.js" beforeDir="false" afterPath="$PROJECT_DIR$/../server/controllers/updatematch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -25,6 +17,7 @@
     <session id="-56694787">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.opened" value="1" />
         </counts>
@@ -42,6 +35,7 @@
       <usages-collector id="statistics.file.types.edit" />
       <usages-collector id="statistics.js.language.service.starts" />
       <usages-collector id="statistics.file.extensions.edit" />
+      <usages-collector id="statistics.vcs.git.usages" />
     </session>
   </component>
   <component name="FileEditorManager">
@@ -184,12 +178,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1535636756430</updated>
-      <workItem from="1535636757843" duration="3492000" />
+      <workItem from="1535636757843" duration="3963000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3492000" />
+    <option name="totallyTimeSpent" value="3963000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="41" y="23" width="1399" height="877" extended-state="6" />

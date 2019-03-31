@@ -1,7 +1,6 @@
 var court = require("../../utils/court.js")
-var config = require("../../config.js")
 var util = require("../../utils/util.js")
-var qcloud = require('../../vendor/wafer2-client-sdk/index')
+//var qcloud = require('../../vendor/wafer2-client-sdk/index')
 
 
 Page({
@@ -22,6 +21,8 @@ Page({
 
   /**
    * 生命周期函数--监听页面加载
+   * options.uuid 显示指定id的比赛，本页面将根据id去server查询
+   * options.match 显示match的内容，无需查询
    */
   onLoad: function (options) {
     wx.setNavigationBarTitle({
@@ -32,6 +33,8 @@ Page({
 
     if (options.uuid) {
       this.fetchMatch(options.uuid)
+    } else if (options.match) {
+      this.showMatch(options)
     } else {
       this.createMatch(options.team1, options.team2)
     }
@@ -144,14 +147,14 @@ Page({
   },
 
   checkPermission: function() {
-    if (getApp().globalData.logged) {
-      const userInfo = getApp().globalData.userInfo
-      if (userInfo.openId == this.data.match.openid) {
+    if (this.data.match._openid == getApp().globalData.openid) {
         return true;
-      }
+    } else {
+      console.log("this match is owned by " + this.data.match._openid)
+      console.log("current user id " + getApp().globalData.openid)
+      wx.showToast({title:'没有权限修改分数'})
+      return false;
     }
-    wx.showToast({title:'没有权限修改分数'})
-    return false;
   },
 
   changeMyScore: function (delta) {
@@ -163,7 +166,7 @@ Page({
     if (s >= 0) {
       this.data.match.score1 = s;
       this.setData({match: this.data.match});
-      this.updateMatch(this.data.match);
+      this.updateScore();
     }
   },
 
@@ -176,27 +179,24 @@ Page({
     if (s >= 0) {
       this.data.match.score2 = s;
       this.setData({ match: this.data.match });
-      this.updateMatch(this.data.match);
+      this.updateScore();
     }
   },
 
-  updateMatch: function(match) {
-    const url = config.service.updatematchUrl
-    console.log("Navigated to " + url)
-    qcloud.request({
-      url: url,
-      method: 'POST',
-      data: match,
+  updateScore: function() {
+    const db = wx.cloud.database()
+    const vmatch = db.collection('vmatch')
+    util.showBusy("正在加载...")
+    vmatch.doc(this.data.match._id).update({
+      // data 传入需要局部更新的数据
+      data: {
+        // 表示将 done 字段置为 true
+        score1: this.data.match.score1,
+        score2: this.data.match.score2
+      },
       success: function (res) {
-        console.log(res)
-      },
-      fail: function (res) {
-        console.log(res)
-        wx.showToast({
-          title: '获取数据失败',
-        })
-      },
-      complete: function (res) {
+        console.log('[vmatch] update score succeed.')
+        util.hideToast()
       }
     })
   },
@@ -214,53 +214,82 @@ Page({
   },
 
   fetchMatch: function(uuid) {
-    const url = config.service.matchUrl + '?uuid=' + uuid
-    var that = this;
-    console.log("Navigated to " + url)
-    //util.showBusy("正在加载...")
-    qcloud.request({
-      url: url,
-      method: 'POST',
-      success: function (res) {
-        console.log(res)
-        that.setData({ match: res.data.data })
-        that.startTimer(uuid)
-      },
-      fail: function (res) {
-        console.log(res)
-      },
-      complete: function (res) {
+    var that = this
+    const db = wx.cloud.database()
+    const vmatches = db.collection('vmatch')
+    util.showBusy("正在加载...")
+    vmatches.where({
+      _id: uuid
+    }).skip(0) // 跳过结果集中的前 10 条，从第 11 条开始返回
+      .limit(10) // 限制返回数量为 10 条
+      .get()
+      .then(res => {
+        console.log(res.data)
         util.hideToast()
-      }
-    })
+        that.setData({match: res.data})
+      })
+      .catch(err => {
+        console.error(err)
+        util.hideToast()
+      })
   },
 
+  //   const url = config.service.matchUrl + '?uuid=' + uuid
+  //   var that = this;
+  //  // console.log("Navigated to " + url)
+  //   //util.showBusy("正在加载...")
+  //   qcloud.request({
+  //     url: url,
+  //     method: 'POST',
+  //     success: function (res) {
+  //       console.log(res)
+  //       that.setData({ match: res.data.data })
+  //       that.startTimer(uuid)
+  //     },
+  //     fail: function (res) {
+  //       console.log(res)
+  //     },
+  //     complete: function (res) {
+  //       util.hideToast()
+  //     }
+  //   })
+  // },
+
   createMatch: function (team1, team2) {
-    const url = config.service.newmatchUrl
     var that = this;
-    console.log("Navigated to " + url)
-    //util.showBusy("正在加载...")
-    qcloud.request({
-      url: url,
-      method: 'POST',
-      data : {
-        lat: getApp().globalData.lat,
-        lon: getApp().globalData.lon,
-        place: getApp().globalData.place,
-        city: getApp().globalData.city,
-        team1: team1,
-        team2: team2,
-      },
-      success: function (res) {
-        console.log(res)
-        that.setData({ match: res.data.data })
-        that.startTimer(res.data.data.uuid)
-      },
-      fail: function (res) {
-        console.log(res)
-      },
-      complete: function (res) {
+    const db = wx.cloud.database()
+    const vmatches = db.collection('vmatch')
+    var data = {
+      city: getApp().globalData.city,
+      create_time: db.serverDate(),
+      latlon: {
+        latitude: getApp().globalData.lat,
+        longitude: getApp().globalData.lon
+        },
+      place: getApp().globalData.place,
+      score1: 0,
+      score2: 0,
+      team1: team1,
+      team2: team2
+      }
+    util.showBusy("正在创建...")
+    vmatches.add({
+      data: data,
+      success: function(res) {
+        console.log("[vmatch] created. ", res)
+        data._id = res._id
+        that.setData({ match: data })
         util.hideToast()
+      },
+      fail: function(res) {
+        console.error("[vmatch] failed to create!", res)
+        util.hideToast()
+        util.showBusy("网络同步失败，创建在本地")
+        that.setData({ match: data })
+        util.hideToast()
+      },
+      complete: function() {
+        
       }
     })
   },
@@ -268,11 +297,19 @@ Page({
   swapTeam: function() {
     const team1 = this.data.match.team1
     const team2 = this.data.match.team2
-    this.data.match.team1 = team2
-    this.data.match.team2 = team1
-    this.setData(this.data)
-    if(this.checkPermission()) {
-      this.updateMatch()
-    } 
+    if (team1 != team2) {
+      this.data.match.team1 = team2
+      this.data.match.team2 = team1
+      this.setData(this.data)
+      if(this.checkPermission()) {
+        this.updateScore()
+      } 
+    }
+  },
+
+  showMatch: function(options) {
+    let match = util.decodeQuery(options).match
+    // console.log(match)
+    this.setData({match: match});
   }
 })

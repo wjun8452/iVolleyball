@@ -15,28 +15,32 @@ var StatKey = {
 };
 
 function addScore(data) {
+  data.myScore = 1 + data.myScore;
+}
+
+function addScoreRotate(data) {
   var serve = data.serve
   data.myScore = 1 + data.myScore;
   data.stat_items.push(createStatItem("", "", 1, !serve));
 
   if (!serve) {
     data.serve = true;
-    _nextPosition(data);
-    updatePlayItems(data);
+    rotate(data);
+    updateAvailableItems(data);
   }
 }
 
-function looseScore(data) {
+function looseScoreRotate(data) {
   var serve = data.serve;
   data.yourScore = 1 + data.yourScore;
   data.stat_items.push(createStatItem("", "", -1, serve));
   if (serve) {
     data.serve = false;
-    updatePlayItems(data);
+    updateAvailableItems(data);
   }
 }
 
-function _nextPosition(data) { //only called when we win the score
+function rotate(data) { //only called when we win the score or for adjust court
   var serve = data.serve;
   var players = data.players;
   var who_serve = data.who_serve;
@@ -88,7 +92,8 @@ function _nextPosition(data) { //only called when we win the score
   }
 }
 
-function updatePlayItems(data) {
+
+function updateAvailableItems(data) {
   var who_serve = data.who_serve;
   var items = data.play_items;
   var serve = data.serve;
@@ -121,7 +126,7 @@ function updatePlayItems(data) {
   }
 }
 
-function addPlayItem(data, position, i) {
+function stateRotate(data, position, i) {
   var player = data.players[position];
   var item = data.play_items[position][i];
   var serve = data.serve;
@@ -144,15 +149,15 @@ function addPlayItem(data, position, i) {
     //next position
     if (!serve) {
       data.serve = true;
-      _nextPosition(data);
-      updatePlayItems(data);
+      rotate(data);
+      updateAvailableItems(data);
     }
 
   } else if (item.score == -1) {
     data.yourScore = data.yourScore + 1;
     if (serve) {
       data.serve = false;
-      updatePlayItems(data);
+      updateAvailableItems(data);
     }
   }
 }
@@ -165,7 +170,7 @@ function popStatItem(data) {
     data.yourScore = data.yourScore + stat.score;
   }
   _prevPosition(data, stat);
-  updatePlayItems(data);
+  updateAvailableItems(data);
 }
 
 function _prevPosition(data, stat) { //called when pop stat
@@ -245,10 +250,11 @@ function _createPlayItem(name, score) {
 
 
 
-module.exports.addScore = addScore;
-module.exports.looseScore = looseScore;
-module.exports.addPlayItem = addPlayItem;
-module.exports.updatePlayItems = updatePlayItems;
+module.exports.addScoreRotate = addScoreRotate;
+module.exports.looseScoreRotate = looseScoreRotate;
+module.exports.stateRotate = stateRotate;
+module.exports.updateAvailableItems = updateAvailableItems;
 module.exports.popStatItem = popStatItem;
 module.exports.createStatItem = createStatItem;
 module.exports.StatKey = StatKey;
+module.exports.rotate = rotate;

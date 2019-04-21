@@ -1,1 +1,28 @@
 /* pages/score_board/score_board.wxss */
+.showborder {
+  border: solid 1px;
+}
+
+.border_bottom {
+  border: solid 2px #336699;
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom-style: solid 2px #336699;
+  border-left-style: none;
+}
+
+.border_right {
+  border: solid 1px #336699;
+  border-top-style: none;
+  border-right-style: solid 1px #336699;
+  border-bottom-style: none;
+  border-left-style: none;
+}
+
+.border_left {
+  border: solid 1px #336699;
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom-style: none;
+  border-left-style: solid 1px #336699;
+}

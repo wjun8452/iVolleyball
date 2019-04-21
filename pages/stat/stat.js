@@ -27,7 +27,7 @@ Page({
     console.log("onShow")
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.setData(saved || this.data);
-    court.updatePlayItems(this.data);
+    court.updateAvailableItems(this.data);
     this.setData(this.data)
   },
 
@@ -46,15 +46,13 @@ Page({
 
   onTapAddScore: function () {
     wx.vibrateShort();
-
-    court.addScore(this.data)
+    court.addScoreRotate(this.data)
     this.setData(this.data);
   },
 
   onTapLooseScore: function () {
     wx.vibrateShort();
-    
-    court.looseScore(this.data);
+    court.looseScoreRotate(this.data);
     this.setData(this.data);
   },
 
@@ -69,7 +67,7 @@ Page({
 
     var position = e.target.dataset.position;
     var item_index = e.target.dataset.play_item_index;
-    court.addPlayItem(this.data, position, item_index);
+    court.stateRotate(this.data, position, item_index);
     this.setData(this.data)
   },
 
@@ -77,5 +75,11 @@ Page({
     court.popStatItem(this.data);
     this.setData(this.data);
   },
+
+  onTapScore: function (e) {
+    wx.navigateTo({
+      url: '../score_board/score_board',
+    })
+  }
 
 })

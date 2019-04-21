@@ -15,7 +15,8 @@ Page({
     "colon_width": 0,
     "myScore": 0,
     "yourScore": 0,
-    "stat_items": []
+    "leftMode": false, //true：team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量
+    "team_name": ["对方", "我方"] //team_name[0]将始终显示在左边
   },
   start_x_1: 0,
   start_y_1: 0,
@@ -103,7 +104,7 @@ Page({
   touchEnd1: function (e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
-    this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
+    this.touch_end(this.data.leftMode, this.start_x_1, this.start_y_1, end_x, end_y);
     //console.log("touchend: ");
     //console.log(e);
   },
@@ -117,7 +118,7 @@ Page({
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
 
-    this.touch_end(false, this.start_x_2, this.start_y_2, end_x, end_y);
+    this.touch_end(!this.data.leftMode, this.start_x_2, this.start_y_2, end_x, end_y);
   },
 
   touch_end: function (mine, start_x, start_y, end_x, end_y) {
@@ -129,7 +130,7 @@ Page({
 
     if (change_x_abs < 50 && change_y_abs < 50) return;
 
-    if (change_y_abs < change_x_abs) {
+    if (change_y_abs < change_x_abs) {//上下滑动幅度大于左右
       if (changeX < 0) {
         mine ? this.changeMyScore(1) : this.changeYourScore(1);
         wx.vibrateShort();
@@ -137,7 +138,7 @@ Page({
         mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
         wx.vibrateShort();
       }
-    } else if (change_y_abs > this.data.height*2/3) {
+    } else if (change_y_abs > this.data.height*2/3) { //从左滑到右
       this.changeMyScore(-this.data.myScore);
       this.changeYourScore(-this.data.yourScore);
       wx.vibrateShort();
@@ -159,4 +160,16 @@ Page({
       this.setData(this.data);
     }
   },
+
+  swapTeam: function () {
+    this.data.leftMode = !this.data.leftMode;
+    var temp = this.data.team_name[0];
+    this.data.team_name[0] = this.data.team_name[1];
+    this.data.team_name[1] = temp;
+    this.setData(this.data);
+  },
+
+  stopPageScroll: function() {
+    return
+  }
 })

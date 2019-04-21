@@ -165,7 +165,7 @@ Page({
     if (player != null) {
       player = player.replace(/^\s*|\s*$/g, "");
       if (player == "") {
-        
+
       } else if (this.data.all_players.indexOf(player) == -1) {
         this.data.all_players.unshift(player);
         this.data.players[position] = player;
@@ -198,6 +198,64 @@ Page({
     }
 
     this.setData(this.data)
+  },
+
+  rotate: function (e) {
+    court.rotate(this.data);
+    this.setData(this.data);
+  },
+
+  touchStart1: function (e) {
+    this.start_x_1 = e.changedTouches[0].pageX;
+    this.start_y_1 = e.changedTouches[0].pageY;
+    // console.log("touchstart: ");
+    // console.log(e);
+  },
+
+  touchEnd1: function (e) {
+    var end_x = e.changedTouches[0].pageX;
+    var end_y = e.changedTouches[0].pageY;
+    this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
+    //console.log("touchend: ");
+    //console.log(e);
+  },
+
+  touchStart2: function (e) {
+    this.start_x_2 = e.changedTouches[0].pageX;
+    this.start_y_2 = e.changedTouches[0].pageY;
+    console.log("touchstart: ");
+    console.log(e);
+  },
+
+  touchEnd2: function (e) {
+    var end_x = e.changedTouches[0].pageX;
+    var end_y = e.changedTouches[0].pageY;
+
+    this.touch_end(false, this.start_x_2, this.start_y_2, end_x, end_y);
+  },
+
+  touch_end: function (mine, start_x, start_y, end_x, end_y) {
+    if (end_y < 50) {
+      mine ? this.changeMyScore(1) : this.changeYourScore(1);
+    } else {
+      mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
+    }
+  },
+
+  changeMyScore: function (delta) {
+    var s = this.data.myScore + delta;
+    if (s >= 0) {
+      this.data.myScore = s;
+      this.setData(this.data);
+    }
+  },
+
+  changeYourScore: function (delta) {
+    var s = this.data.yourScore + delta;
+    if (s >= 0) {
+      this.data.yourScore = s;
+      this.setData(this.data);
+    }
   },
 
 })

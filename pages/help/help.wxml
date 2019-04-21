@@ -1,7 +1,12 @@
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <text style="flex; margin-left: 5px;">记分牌手势：</text>
-  <text style="flex; margin-left: 15px;">  加分 - 单指从下往上划</text>
-  <text style="flex; margin-left: 15px;">  减分 -  单指从上往下划</text>
-  <text style="flex; margin-left: 15px;">  分数归0 - 单指从左划到右</text>
+  <text style="flex; margin-left: 15px;">  加分 - 单指从下往上划；</text>
+  <text style="flex; margin-left: 15px;">  减分 -  单指从上往下划；</text>
+  <text style="flex; margin-left: 15px;">  分数归0 - 单指从左划到右；</text>
+  <text style="flex; margin-left: 15px;">  左右互换 - 点击上方中间图标；</text>
+  <text style="flex; margin-left: 5px;">技术统计：</text>
+  <text style="flex; margin-left: 15px;">  点击分数可以跳转到记分牌；</text>
+  <text style="flex; margin-left: 5px;">技术统计-设置：</text>
+  <text style="flex; margin-left: 15px;">  点击分数方框内上半部分加分，点击下半部分减分；</text>
 </view>
 

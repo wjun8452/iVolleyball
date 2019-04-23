@@ -75,9 +75,7 @@ Page({
   },
 
   onReset: function () {
-    this.data.myScore = 0;
-    this.data.yourScore = 0;
-    this.data.stat_items = [];
+    court.reset(this.data)
     this.setData(this.data)
   },
 
@@ -118,6 +116,7 @@ Page({
       this.data.who_serve = position;
     } else {
       this.data.who_serve = -1;
+      this.data.serve = false;
     }
 
     this.setData(this.data)

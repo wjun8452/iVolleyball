@@ -64,6 +64,7 @@ function rotate(data) { //only called when we win the score or for adjust court
       }
   } else {
     //始终是1号位发球，无需更改
+    data.who_serve = 0;
   }
 
   //update players
@@ -173,6 +174,14 @@ function popStatItem(data) {
   updateAvailableItems(data);
 }
 
+function getTopItem(data) {
+  if (data.stat_items.length > 0) {
+    return data.stat_items[data.stat_items.length-1]
+  } else {
+    return null
+  }
+}
+
 function _prevPosition(data, stat) { //called when pop stat
   var players = data.players;
   var serve = data.serve;
@@ -248,7 +257,14 @@ function _createPlayItem(name, score) {
   return obj;
 }
 
-
+function reset(data) {
+  data.myScore = 0;
+  data.yourScore = 0;
+  data.stat_items = [];
+  data.who_serve = -1;
+  data.serve = false;
+  data.front_back_mode = true;
+}
 
 module.exports.addScoreRotate = addScoreRotate;
 module.exports.looseScoreRotate = looseScoreRotate;
@@ -258,3 +274,19 @@ module.exports.popStatItem = popStatItem;
 module.exports.createStatItem = createStatItem;
 module.exports.StatKey = StatKey;
 module.exports.rotate = rotate;
+module.exports.getTopItem = getTopItem;
+module.exports.reset = reset;
+
+
+// data:
+// {
+//   myScore: 0,
+//     yourScore: 0,
+//       all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
+//         players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
+//           play_items: [[], [], [], [], [], []], //items avaialbe for the player
+//             stat_items: [], //stat items in history
+//               who_serve: -1, //发球球员的index
+//                 serve: false,  //true: 我发发球， false: 我方接发球
+//                   front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
+// }

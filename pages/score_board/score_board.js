@@ -131,16 +131,29 @@ Page({
     if (change_x_abs < 50 && change_y_abs < 50) return;
 
     if (change_y_abs < change_x_abs) {//上下滑动幅度大于左右
-      if (changeX < 0) {
-        mine ? this.changeMyScore(1) : this.changeYourScore(1);
+      if (changeX < 0) { //加分
+        mine ? court.addScoreRotate(this.data) : court.looseScoreRotate(this.data);
         wx.vibrateShort();
-      } else {
-        mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
+        this.setData(this.data)
+      } else { //减分
+        var item = court.getTopItem(this.data)
+        if (item != null && mine && item.score > 0) {
+          court.popStatItem(this.data);
+          this.setData(this.data)
+          console.log("我方-1, popState")
+        } else if (item != null && (!mine) && item.score < 0) {
+          court.popStatItem(this.data);
+          this.setData(this.data)
+          console.log("对方-1, popState")
+        } else {
+          mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
+          console.log(mine ? "我方-1" : "对方-1")
+        }
         wx.vibrateShort();
       }
     } else if (change_y_abs > this.data.height*2/3) { //从左滑到右
-      this.changeMyScore(-this.data.myScore);
-      this.changeYourScore(-this.data.yourScore);
+      court.reset(this.data);
+      this.setData(this.data);
       wx.vibrateShort();
     }
   },

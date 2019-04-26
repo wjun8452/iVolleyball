@@ -261,9 +261,9 @@ function reset(data) {
   data.myScore = 0;
   data.yourScore = 0;
   data.stat_items = [];
-  data.who_serve = -1;
   data.serve = false;
   data.front_back_mode = true;
+  data.who_serve = 4 //下一次是二传发球
 }
 
 module.exports.addScoreRotate = addScoreRotate;

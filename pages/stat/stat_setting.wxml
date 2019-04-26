@@ -67,7 +67,7 @@
           <text style="text-algin:center" data-position='{{pos}}' decode='True'> {{players[pos]}}&nbsp;›</text>
           <block wx:if='{{edit_pos!=pos && (pos==0||(front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
             <checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
-              <checkbox checked='{{pos==who_serve && serve}}' disabled='{{!serve}}'>发球</checkbox>
+              <checkbox checked='{{pos==who_serve}}' disabled='{{!serve}}'>发球</checkbox>
             </checkbox-group>
           </block>
         </view>

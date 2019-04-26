@@ -115,7 +115,6 @@ Page({
     if (checked) {
       this.data.who_serve = position;
     } else {
-      this.data.who_serve = -1;
       this.data.serve = false;
     }
 
@@ -141,7 +140,7 @@ Page({
       }
     } else {
       this.data.serve = false;
-      this.data.who_serve = -1;
+      //this.data.who_serve = -1; //must not change who_serve, 记录上次我方是谁在发球，如果复位，则会丢失状态
     }
 
     this.setData(this.data);

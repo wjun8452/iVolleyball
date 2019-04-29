@@ -1,7 +1,20 @@
-var StatKey = {
-  ServeNormal: "发球一般",
+var StatCat = {
+  Serve: "发球",
+  Reception: "一传",
+  ErChuan: "二传",
+  Attack: "进攻",
+  Block: "拦网",
+  Defend: "防守"
+}
+
+//这是一个map
+var StatName = {
+  ServeNormal: "发球一般", //统计总数时需要
   ServeWin: "发球得分",
   ServeLost: "发球失误",
+  ErChuanGood: "二传到位",
+  ErChuanBad: "二传不到位",
+  ErChuanLost: "二传失误",
   ReceptionBad: "一传不到位",
   ReceptionGood: "一传半到位",
   ReceptionPerfect: "一传到位",
@@ -11,7 +24,11 @@ var StatKey = {
   AttackWin: "进攻得分",
   AttackLost: "进攻失误",
   BlockWin: "拦网得分",
-
+  BlockLost: "拦网失误",
+  DefendLost: "防守失误",
+  DefendGood: "防守到位",
+  DefendNormal: "防守一般",
+  
 };
 
 function addScore(data) {
@@ -21,7 +38,7 @@ function addScore(data) {
 function addScoreRotate(data) {
   var serve = data.serve
   data.myScore = 1 + data.myScore;
-  data.stat_items.push(createStatItem("", "", 1, !serve));
+  data.stat_items.push(createStatItem("", "无类别", "得分", 1, !serve));
 
   if (!serve) {
     data.serve = true;
@@ -33,7 +50,7 @@ function addScoreRotate(data) {
 function looseScoreRotate(data) {
   var serve = data.serve;
   data.yourScore = 1 + data.yourScore;
-  data.stat_items.push(createStatItem("", "", -1, serve));
+  data.stat_items.push(createStatItem("", "无类别", "失误", -1, serve));
   if (serve) {
     data.serve = false;
     updateAvailableItems(data);
@@ -93,37 +110,58 @@ function rotate(data) { //only called when we win the score or for adjust court
   }
 }
 
-
 function updateAvailableItems(data) {
   var who_serve = data.who_serve;
   var items = data.play_items;
   var serve = data.serve;
+  var cats = data.play_item_cats;
 
   for (var i in items) {
     items[i] = [];
     var item = items[i];
 
-    item.push(_createPlayItem(StatKey.AttackWin, 1));
-    //item.push(_createPlayItem(StatKey.AttackBlk, -1));
-    //item.push(_createPlayItem(StatKey.AttackNormal, 0));
-    item.push(_createPlayItem(StatKey.AttackLost, -1));
+    cats[i] = [];
+    var cat = cats[i];
 
+//添加顺序影响UI显示
     if (serve && i==who_serve) {
-      item.push(_createPlayItem(StatKey.ServeWin, 1));
-      item.push(_createPlayItem(StatKey.ServeLost, -1));
-      //item.push(_createPlayItem(StatKey.ServeNormal, 0));
-    }
-
-    if (i >= 1 && i <= 3) {
-      item.push(_createPlayItem(StatKey.BlockWin, 1));
+      item.push(_createPlayItem(StatCat.Serve, StatName.ServeWin, 1));
+      item.push(_createPlayItem(StatCat.Serve, StatName.ServeNormal, 0));
+      item.push(_createPlayItem(StatCat.Serve, StatName.ServeLost, -1));
+      cat.push(StatCat.Serve)
     }
 
     if (!serve) {
-      //item.push(_createPlayItem(StatKey.ReceptionBad, 0));
-      //item.push(_createPlayItem(StatKey.ReceptionGood, 0));
-      //item.push(_createPlayItem(StatKey.ReceptionPerfect, 0));
-      item.push(_createPlayItem(StatKey.ReceptionLost, -1));
+      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionPerfect, 0));
+      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionGood, 0));
+      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionBad, 0));
+      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionLost, -1));
+      cat.push(StatCat.Reception)
     }
+
+    item.push(_createPlayItem(StatCat.ErChuan, StatName.ErChuanGood, 0));
+    item.push(_createPlayItem(StatCat.ErChuan, StatName.ErChuanBad, 0));
+    item.push(_createPlayItem(StatCat.ErChuan, StatName.ErChuanLost, -1));
+    cat.push(StatCat.ErChuan)
+
+
+    item.push(_createPlayItem(StatCat.Attack, StatName.AttackWin, 1));
+    item.push(_createPlayItem(StatCat.Attack, StatName.AttackNormal, 0));
+    item.push(_createPlayItem(StatCat.Attack, StatName.AttackLost, -1));
+    //item.push(_createPlayItem(StatName.AttackBlk, -1));
+    cat.push(StatCat.Attack)
+
+    if (i >= 1 && i <= 3) {
+      item.push(_createPlayItem(StatCat.Block, StatName.BlockWin, 1));
+      item.push(_createPlayItem(StatCat.Block, StatName.BlockLost, -1));
+      cat.push(StatCat.Block)
+    }
+
+    item.push(_createPlayItem(StatCat.Defend, StatName.DefendGood, 0));
+    item.push(_createPlayItem(StatCat.Defend, StatName.DefendNormal, 0));
+    item.push(_createPlayItem(StatCat.Defend, StatName.DefendLost, -1));
+    cat.push(StatCat.Defend)
+
   }
 }
 
@@ -142,7 +180,8 @@ function stateRotate(data, position, i) {
     swap = true;
   }
 
-  data.stat_items.push(createStatItem(player, item.name, item.score, swap));
+//createStatItem and _createPlayItem需要统一。。。
+  data.stat_items.push(createStatItem(player, item.category, item.name, item.score, swap));
 
   if (item.score == 1) {
     data.myScore = data.myScore + 1;
@@ -235,11 +274,12 @@ function _prevPosition(data, stat) { //called when pop stat
   }
 }
 
-function createStatItem(player, item, score, swap) {
+function createStatItem(player, item_cat, item_name, item_score, swap) {
   var obj = new Object();
   obj.player = player
-  obj.item = item;
-  obj.score = score;
+  obj.category = item_cat
+  obj.item = item_name;
+  obj.score = item_score
   obj.swapServe = swap;
   return obj;
 }
@@ -250,8 +290,9 @@ function _swap(p1, p2, array) {
   array[p2] = obj;
 }
 
-function _createPlayItem(name, score) {
+function _createPlayItem(category, name, score) {
   var obj = new Object();
+  obj.category = category;
   obj.name = name;
   obj.score = score;
   return obj;
@@ -272,7 +313,8 @@ module.exports.stateRotate = stateRotate;
 module.exports.updateAvailableItems = updateAvailableItems;
 module.exports.popStatItem = popStatItem;
 module.exports.createStatItem = createStatItem;
-module.exports.StatKey = StatKey;
+module.exports.StatName = StatName;
+module.exports.StatCat = StatCat;
 module.exports.rotate = rotate;
 module.exports.getTopItem = getTopItem;
 module.exports.reset = reset;

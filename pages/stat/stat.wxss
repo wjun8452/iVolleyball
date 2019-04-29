@@ -11,3 +11,11 @@
 .addScore {
   margin:0px 0px 5px 0px;
 }
+
+
+
+.btn1 {
+  background-color: rgb(128, 62, 0);
+  color: white;
+  border-radius: 20rpx;
+}

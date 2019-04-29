@@ -1,36 +1,26 @@
- <view style="display: flex; flex-direction: column;">
-
-<block wx:for="{{summary_rows}}">
-    <view style="display: flex; flex-direction: row; ">
-        <block wx:for="{{item}}">
-            <view style="flex:1; margin: 2px; ">
-                {{item}}
-            </view>
+<view style="display: flex; flex-direction: column; font-size:medium">
+  <!--按统计大类循环，每个大类是一个表格 -->
+  <block wx:for='{{summary["标题"]}}' wx:for-index="category">
+    <view style="margin:1px 1px 8px 1px">
+     <!-- 表格名称 -->
+    <view style="text-align: center; font-size: large "> {{category}} </view>
+      <!--标题行-->
+      <view style="display: flex; flex-direction: row; background: #C0C0C0 ">
+        <view style="flex:1; margin: 2px;"> </view>
+        <block wx:for='{{summary["标题"][category]}}' wx:for-index="stat_name">
+          <view style="flex:1; margin: 2px;"> {{ stat_name }} </view>
         </block>
+      </view>
+
+      <!--数据行-->
+      <block wx:for="{{players}}" wx:for-item="player">
+        <view style='display: flex; flex-direction: row; background:{{index%2?"#E8E8E8":"#FFFFFF"}}' >
+          <view style="flex:1; margin: 2px;"> {{player}} </view>
+          <block wx:for='{{summary[player][category]}}' wx:for-item="count">
+            <view style="flex:1; margin: 2px; "> {{count}} </view>
+          </block>
+        </view>
+      </block>
     </view>
-</block>
-
-
-<block wx:for="{{positive_rows}}">
-  <view style="display: flex; flex-direction: row;">
-      <block wx:for="{{item}}">
-          <view style="flex:1; margin: 2px; ">
-              {{item}}
-          </view>
-      </block>
-  </view>
-</block>
-
-
-<block wx:for="{{negotive_rows}}">
-  <view style="display: flex; flex-direction: row;">
-      <block wx:for="{{item}}">
-          <view style="flex:1; margin: 2px; ">
-              {{item}}
-          </view>
-      </block>
-  </view>
-</block>
-
+  </block>
 </view>
-

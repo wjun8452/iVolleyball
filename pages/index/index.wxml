@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container">
+<view class="container" >
   
   <view  class="userinfo">
     <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
@@ -8,28 +8,28 @@
 </view>
 
 
-  <view style="flex-item;"  class="menu">
+  <view style="flex-item; font-size:large"  class="menu">
   <navigator url="../score_board/score_board" style="text-align:center; text-font:x-large">大记分牌</navigator>
   </view>
 
-<view style="flex-item;menu" class="menu">
+<view style="flex-item; font-size:large" class="menu">
       <navigator url="../stat/stat" style="text-align:center; text-font:x-large">技术统计</navigator>
   </view>
 
-<view style="flex-item;menu" class="menu">
-      <navigator url="../stat/report" style="text-align:center; text-font:x-large">历史报表</navigator>
+<view style="flex-item; font-size:large" class="menu">
+      <navigator url="../stat/report" style="text-align:center; text-font:x-large">统计报表</navigator>
   </view>
 
-<view style="flex-item;menu" class="menu">
+<view style="flex-item; font-size:large" class="menu">
       <navigator url="../stat/users" style="text-align:center; text-font:x-large">球队成员</navigator>
   </view>
 
-  <view style="flex-item;menu" class="menu">
+  <view style="flex-item; font-size:large" class="menu">
       <navigator url="../help/help" style="text-align:center; text-font:x-large">使用帮助</navigator>
   </view>
 
 <view style="flex-direction:row; margin-top: 50px">
-   <view style="flex-item; text-align:center"  class="menu"> v3.4
+   <view style="flex-item; text-align:center; font-size:large"  class="menu"> v3.5
    </view>
 
 

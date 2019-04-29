@@ -8,10 +8,13 @@ Page({
     all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
     players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
     play_items: [[], [], [], [], [], []], //items avaialbe for the player
+    play_item_cats: [[], [], [], [], [], []], //category for items available for the player
     stat_items: [], //stat items in history
     who_serve: -1, //发球球员的index
     serve: false,  //true: 我发发球， false: 我方接发球
     front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
+    opPosition: -1,  //哪个位置正在被技术统计
+    opCat: null, //选中的操作大项目是什么？为null则没有选中
   },
 
   onLoad: function () {
@@ -27,6 +30,8 @@ Page({
     console.log("onShow")
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.setData(saved || this.data);
+    this.data.opCat = null
+    this.data.opPosition = -1
     court.updateAvailableItems(this.data);
     this.setData(this.data)
   },
@@ -65,9 +70,12 @@ Page({
   onTapPlayItem: function (e) {
     wx.vibrateShort();
 
+    this.data.opCat = null
+    this.data.opPosition = -1
     var position = e.target.dataset.position;
     var item_index = e.target.dataset.play_item_index;
     court.stateRotate(this.data, position, item_index);
+
     this.setData(this.data)
   },
 
@@ -80,6 +88,20 @@ Page({
     wx.navigateTo({
       url: '../score_board/score_board',
     })
+  },
+
+  onTapCat: function(e) {
+    var position = e.target.dataset.position;
+    var category = e.target.dataset.cat;
+    this.data.opPosition = position
+    this.data.opCat = category
+    this.setData(this.data)
+  },
+
+  onTapBoard: function(e) {
+    this.data.opCat = null
+    this.data.opPosition = -1
+    this.setData(this.data)
   }
 
 })

@@ -1,160 +1,49 @@
-/** 
-* *********  操作实例  ************** 
-*   var map = new HashMap(); 
-*   map.put("key1","Value1"); 
-*   map.put("key2","Value2"); 
-*   map.put("key3","Value3"); 
-*   map.put("key4","Value4"); 
-*   map.put("key5","Value5"); 
-*   alert("size："+map.size()+" key1："+map.get("key1")); 
-*   map.remove("key1"); 
-*   map.put("key3","newValue"); 
-*   var values = map.values(); 
-*   for(var i in values){ 
-*       document.write(i+"："+values[i]+"   "); 
-*   } 
-*   document.write("<br>"); 
-*   var keySet = map.keySet(); 
-*   for(var i in keySet){ 
-*       document.write(i+"："+keySet[i]+"  "); 
-*   } 
-*   alert(map.isEmpty()); 
-*/
+var court = require("../../utils/court.js")
 
-function HashMap() {
-  //定义长度  
-  var length = 0;
-  //创建一个对象  
-  var obj = new Object();
 
-  /** 
-  * 判断Map是否为空 
-  */
-  this.isEmpty = function () {
-    return length == 0;
-  };
-
-  /** 
-  * 判断对象中是否包含给定Key 
-  */
-  this.containsKey = function (key) {
-    return (key in obj);
-  };
-
-  /** 
-  * 判断对象中是否包含给定的Value 
-  */
-  this.containsValue = function (value) {
-    for (var key in obj) {
-      if (obj[key] == value) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  /** 
-  *向map中添加数据 
-  */
-  this.put = function (key, value) {
-    if (!this.containsKey(key)) {
-      length++;
-    }
-    obj[key] = value;
-  };
-
-  /** 
-  * 根据给定的Key获得Value 
-  */
-  this.get = function (key) {
-    return this.containsKey(key) ? obj[key] : null;
-  };
-
-  /** 
-  * 根据给定的Key删除一个值 
-  */
-  this.remove = function (key) {
-    if (this.containsKey(key) && (delete obj[key])) {
-      length--;
-    }
-  };
-
-  /** 
-  * 获得Map中的所有Value 
-  */
-  this.values = function () {
-    var _values = new Array();
-    for (var key in obj) {
-      _values.push(obj[key]);
-    }
-    return _values;
-  };
-
-  /** 
-  * 获得Map中的所有Key 
-  */
-  this.keySet = function () {
-    var _keys = new Array();
-    for (var key in obj) {
-      _keys.push(key);
-    }
-    return _keys;
-  };
-
-  /** 
-  * 获得Map的长度 
-  */
-  this.size = function () {
-    return length;
-  };
-
-  /** 
-  * 清空Map 
-  */
-  this.clear = function () {
-    length = 0;
-    obj = new Object();
-  };
-}
-
- 
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    summary_rows: [],
+    summary: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     wx.setNavigationBarTitle({
       title: '历史报表'
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     if (saved) {
-      var itemMap = this.createItemsByPlayer(saved.stat_items);
-      var itemNames = this.createItemSet(saved.stat_items);
-      var tableData = this.createReport(itemMap, itemNames);
-      this.setData({summary_rows: tableData});
+      var statistics = this.createStatistics(saved.stat_items)
+      console.log("statistics: " + statistics)
+      var summary = this.createSummary(saved.players, statistics);
+      console.log("summary:" + summary)
+      this.setData({
+        summary: summary,
+        players: saved.players
+      });
+
+
     }
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-  
+  onReady: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
     var saved = wx.getStorageSync('stats');
     this.setData(saved || this.data);
   },
@@ -162,101 +51,383 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-  
+  onHide: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-  
+  onUnload: function() {
+
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-  
+  onPullDownRefresh: function() {
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-  
+  onReachBottom: function() {
+
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-  
+  onShareAppMessage: function() {
+
   },
 
-/*
-"副攻2": {
-    "进攻": 2
-    "拦网": 1 
-    },
-"主攻1": {
-    "进攻": -1
-    "拦网": 0
-    }
-*/
-  createItemsByPlayer: function (stats) {
-    var map = new HashMap();
-    for(var index in stats) {
+  //将项目次数按人头汇总
+  createStatistics: function(stats) {
+    var statistics = {}
+    for (var index in stats) {
       var stat = stats[index];
+
       var player = stat.player;
-      
       if (player.length == 0) {
         continue;
       }
 
-      if (!map.containsKey(player)) {
-        map.put(player, new HashMap());
-      }
+      if (statistics.hasOwnProperty(player)) {
+        console.log("add new stat")
+        var it = statistics[player]
+        this._addStatistic(it, stat.item)
 
-      var itemByNameMap = map.get(player);
-      if (!itemByNameMap.containsKey(stat.item)) {
-        itemByNameMap.put(stat.item, 0);
-      }
+      } else {
+        console.log("create new stat")
+        var it = this._createNewStatistic(player, stat.item);
+        statistics[player] = it;
 
-      var savedScore = itemByNameMap.get(stat.item);
-      var totalScore = savedScore + stat.score;
-      itemByNameMap.put(stat.item, totalScore);
+      }
     }
-    return map;
+
+    return statistics;
   },
 
-  createItemSet: function (stats) {
+  createSummary: function(players, statistics) {
+    var summary = {}
+
+    summary["标题"] = this.createSummaryForPlayer(null)
+
+    for (var index in players) {
+      var player = players[index]
+      var statistic = statistics[player]
+      var sum = this.createSummaryForPlayer(statistic)
+      summary[player] = sum
+    }
+    return summary
+  },
+
+  createSummaryForPlayer: function(statistic) {
+    var summary = {
+      "得分": {
+        "总得分": 0,
+        "发球防反阶段得分": 0,
+        "净得分": 0
+      },
+      "发球": {
+        "总数": 0,
+        "失误": 0,
+        "直接得分": 0,
+        "效率": 0
+      },
+      "一传": {
+        "总数": 0,
+        "失误": 0,
+        "到位率": 0,
+        "完美到位率": 0,
+        "到位效率": 0
+      },
+      "进攻": {
+        "总数": 0,
+        "失误": 0,
+        "被拦死": 0,
+        "得分": 0,
+        "成功率": 0,
+        "成功效率": 0
+      },
+      "拦网": {
+        "得分": 0,
+        "失误": 0
+      },
+      "防反起球": {
+        "总数": 0,
+        "失误": 0,
+        "到位": 0,
+        "到位率": 0,
+        "到位效率": 0
+      },
+      "传球": {
+        "总数": 0,
+        "失误": 0,
+        "到位率": 0,
+        "到位效率": 0
+      },
+    }
+
+    if (statistic == undefined || statistic == null) {
+      return summary;
+    }
+
+    //得分
+    var win = 0;
+    var win_items = [court.StatName.ServeWin, court.StatName.AttackWin, court.StatName.BlockWin];
+
+    for (var index in win_items) {
+      var item = win_items[index]
+      if (statistic.hasOwnProperty(item)) {
+        win += statistic[item]
+      }
+    }
+
+    summary["得分"]["总得分"] = win;
+
+    //净得分
+    var lost = 0;
+    var lost_items = [court.StatName.ServeLost, court.StatName.ErChuanLost, court.StatName.ReceptionLost, court.StatName.AttackLost, court.StatName.DefendLost]
+
+    for (var index in lost_items) {
+      var item = lost_items[index]
+      if (statistic.hasOwnProperty(item)) {
+        lost += statistic[item]
+      }
+    }
+
+    var net = win - lost
+    summary["得分"]["净得分"] = net
+
+    //发球
+    var total = 0
+    lost = 0
+    win = 0
+
+    //court.StatName.ServeLost, StatName.ServeNormal, StatName.ServeWin
+
+    if (statistic.hasOwnProperty(court.StatName.ServeLost)) {
+      lost += statistic[court.StatName.ServeLost]
+      total += statistic[court.StatName.ServeLost]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.ServeNormal)) {
+      total += statistic[court.StatName.ServeNormal]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.ServeWin)) {
+      win += statistic[court.StatName.ServeWin]
+      total += statistic[court.StatName.ServeWin]
+    }
+
+    summary["发球"]["总数"] = total
+    summary["发球"]["失误"] = lost
+    summary["发球"]["直接得分"] = win
+    summary["发球"]["效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+
+    //一传
+    total = 0
+    lost = 0 //不到位
+    win = 0 //完美到位
+    var normal = 0 //半到位
+    // ReceptionBad: "一传不到位",
+    // ReceptionGood: "一传半到位",
+    //   ReceptionPerfect: "一传到位",
+    //     ReceptionLost: "一传失误",
+
+    if (statistic.hasOwnProperty(court.StatName.ReceptionLost)) {
+      lost += statistic[court.StatName.ReceptionLost]
+      total += statistic[court.StatName.ReceptionLost]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.ReceptionGood)) {
+      normal += statistic[court.StatName.ReceptionGood]
+      total += statistic[court.StatName.ReceptionGood]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.ReceptionPerfect)) {
+      win += statistic[court.StatName.ReceptionPerfect]
+      total += statistic[court.StatName.ReceptionPerfect]
+    }
+
+    summary["一传"]["总数"] = total
+    summary["一传"]["失误"] = lost
+    summary["一传"]["到位率"] = total == 0 ? 0 : ((win + normal) / total).toFixed(1)
+    summary["一传"]["完美到位率"] = total == 0 ? 0 : (win / total).toFixed(1)
+    summary["一传"]["到位效率"] = total == 0 ? 0 : ((win + normal - lost) / total).toFixed(1)
+
+    //AttackNormal: "进攻一般",
+    // AttackBlk: "进攻拦死",
+    //   AttackWin: "进攻得分",
+    //     AttackLost: "进攻失误",
+    total = 0
+    lost = 0
+    win = 0
+    var block = 0
+
+    if (statistic.hasOwnProperty(court.StatName.AttackLost)) {
+      lost += statistic[court.StatName.AttackLost]
+      total += statistic[court.StatName.AttackLost]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.AttackBlk)) {
+      block += statistic[court.StatName.AttackBlk]
+      total += statistic[court.StatName.AttackBlk]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.AttackWin)) {
+      win += statistic[court.StatName.AttackWin]
+      total += statistic[court.StatName.AttackWin]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.AttackNormal)) {
+      total += statistic[court.StatName.AttackNormal]
+    }
+
+    summary["进攻"]["总数"] = total
+    summary["进攻"]["失误"] = lost
+    summary["进攻"]["被拦死"] = block
+    summary["进攻"]["得分"] = win
+    summary["进攻"]["成功率"] = total == 0 ? 0 : (win / total).toFixed(1)
+    summary["进攻"]["成功效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+
+
+    //BlockWin: "拦网得分",
+    // BlockLost: "拦网失误",
+
+    total = 0
+    lost = 0
+    win = 0
+
+    if (statistic.hasOwnProperty(court.StatName.BlockLost)) {
+      lost += statistic[court.StatName.BlockLost]
+      total += statistic[court.StatName.BlockLost]
+    }
+    if (statistic.hasOwnProperty(court.StatName.BlockWin)) {
+      win += statistic[court.StatName.BlockWin]
+      total += statistic[court.StatName.BlockWin]
+    }
+
+    summary["拦网"]["失误"] = lost
+    summary["拦网"]["得分"] = win
+
+    //   DefendLost: "防守失误",
+    //     DefendGood: "防守到位",
+    //       DefendNormal: "防守一般",
+    total = 0
+    lost = 0
+    win = 0
+    normal = 0
+
+    if (statistic.hasOwnProperty(court.StatName.DefendLost)) {
+      lost += statistic[court.StatName.DefendLost]
+      total += statistic[court.StatName.DefendLost]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.DefendNormal)) {
+      normal += statistic[court.StatName.DefendNormal]
+      total += statistic[court.StatName.DefendNormal]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.DefendGood)) {
+      win += statistic[court.StatName.DefendGood]
+      total += statistic[court.StatName.DefendGood]
+    }
+
+    summary["防反起球"]["总数"] = total
+    summary["防反起球"]["失误"] = lost
+    summary["防反起球"]["到位"] = win
+    summary["防反起球"]["到位率"] = total == 0 ? 0 : (win / total).toFixed(1)
+    summary["防反起球"]["到位效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+
+    //   ErChuanGood: "二传到位",
+    //     ErChuanBad: "二传不到位",
+    //       ErChuanLost: "二传失误",
+    total = 0
+    lost = 0
+    win = 0
+    normal = 0
+
+    if (statistic.hasOwnProperty(court.StatName.ErChuanLost)) {
+      lost += statistic[court.StatName.ErChuanLost]
+      total += statistic[court.StatName.ErChuanLost]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.ErChuanGood)) {
+      win += statistic[court.StatName.ErChuanGood]
+      total += statistic[court.StatName.ErChuanGood]
+    }
+
+    if (statistic.hasOwnProperty(court.StatName.ErChuanBad)) {
+      normal += statistic[court.StatName.ErChuanBad]
+      total += statistic[court.StatName.ErChuanBad]
+    }
+
+    summary["传球"]["总数"] = total
+    summary["传球"]["失误"] = lost
+    summary["传球"]["到位率"] = total == 0 ? 0 : (win / total).toFixed(1)
+    summary["传球"]["到位效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+
+    return summary
+  },
+
+  _addStatistic: function(stat, stat_name) {
+    if (stat.hasOwnProperty(stat_name)) {
+      stat[stat_name] = stat[stat_name] + 1
+    } else {
+      stat[stat_name] = 1;
+    }
+  },
+
+  _createNewStatistic: function(player, stat_name) {
+    var stat = new Object();
+    stat[stat_name] = 1;
+    return stat;
+  },
+
+  createItemSet: function(stats) {
     var obj = new HashMap();
-    for(var k in stats) {
-      var stat = stats[k].item;
-      if (stat.length == 0) continue;
+    for (var k in stats) {
+      var stat = stats[k];
+      if (stat.item.length == 0) continue;
+      if (stat.score == 0) continue;
       if (!obj.containsKey(stat.item)) {
-          obj.put(stat, 0)
+        obj.put(stat.item, 999)
+      }
+    }
+    return obj.keySet();
+  },
+
+  createNonscoreItemSet: function(stats) {
+    var obj = new HashMap();
+    for (var k in stats) {
+      var stat = stats[k];
+      if (stat.item.length == 0) continue;
+      if (!obj.containsKey(stat.item)) {
+        obj.put(stat.item, 999)
       }
     }
     return obj.keySet();
   },
 
 
-//Object tableData:Array(4)
-//0: (5)["姓名", "串联", "进攻", "拦网", "总计"]
-//1: (5)["副攻2", -1, 1, 0, 0]
-//2: (5)["主攻1", -2, 0, -1, -3]
-  createReport: function (itemsByPlayer, itemNames) {
+  //Object score_rows:Array(4)
+  //0: (5)["姓名", "串联", "进攻", "拦网", "总计"]
+  //1: (5)["副攻2", -1, 1, 0, 0]
+  //2: (5)["主攻1", -2, 0, -1, -3]
+  createReport: function(itemsByPlayer, score_item_names) {
     var result = new Array();
 
     var row = new Array();
     row.push("姓名");
-    row = row.concat(itemNames, ["总计"]); //1st row.
+    row = row.concat(score_item_names, ["总计"]); //1st row.
     result.push(row);
 
     var players = itemsByPlayer.keySet();
-    for(var index in players) {
+    for (var index in players) {
       var player = players[index];
       var items = itemsByPlayer.get(player);
 
@@ -265,12 +436,46 @@ Page({
 
       var total = 0;
 
-      for (var index in itemNames) {
-        var item = itemNames[index];
+      for (var index in score_item_names) {
+        var item = score_item_names[index];
         var score = 0;
         if (items.containsKey(item)) {
           score = items.get(item);
-        } 
+        }
+        total += score;
+        row.push(score);
+      }
+      row.push(total);
+      result.push(row);
+    }
+
+    return result;
+  },
+
+  createNonscoreReport: function(itemsByPlayer, score_item_names) {
+    var result = new Array();
+
+    var row = new Array();
+    row.push("姓名");
+    row = row.concat(score_item_names, ["总计"]); //1st row.
+    result.push(row);
+
+    var players = itemsByPlayer.keySet();
+    for (var index in players) {
+      var player = players[index];
+      var items = itemsByPlayer.get(player);
+
+      var row = new Array();
+      row.push(player);
+
+      var total = 0;
+
+      for (var index in score_item_names) {
+        var item = score_item_names[index];
+        var score = 0;
+        if (items.containsKey(item)) {
+          score = items.get(item);
+        }
         total += score;
         row.push(score);
       }

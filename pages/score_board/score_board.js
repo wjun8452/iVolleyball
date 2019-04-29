@@ -7,16 +7,24 @@ Page({
    */
   data:
   {
-    "height": 0,
-    "width": 0,
-    "score_height": 0,
-    "score_width": 0,
-    "colon_height": 0,
-    "colon_width": 0,
-    "myScore": 0,
-    "yourScore": 0,
-    "leftMode": false, //true：team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量
-    "team_name": ["对方", "我方"] //team_name[0]将始终显示在左边
+    height: 0,
+    width: 0,
+    score_height: 0,
+    score_width: 0,
+    colon_height: 0,
+    colon_width: 0,
+    myScore: 0,
+    yourScore: 0,
+    leftMode: false, //true：team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量
+    team_name: ["对方", "我方"], //team_name[0]将始终显示在左边
+    stat_items: [], //must have, otherwise exception in court.js
+    all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
+    players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
+    play_items: [[], [], [], [], [], []], //items avaialbe for the player
+    play_item_cats: [[], [], [], [], [], []], //category for items available for the player
+    who_serve: -1, //发球球员的index
+    serve: false,  //true: 我发发球， false: 我方接发球
+    front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
   },
   start_x_1: 0,
   start_y_1: 0,
@@ -140,14 +148,14 @@ Page({
         if (item != null && mine && item.score > 0) {
           court.popStatItem(this.data);
           this.setData(this.data)
-          console.log("我方-1, popState")
+          // console.log("我方-1, popState")
         } else if (item != null && (!mine) && item.score < 0) {
           court.popStatItem(this.data);
           this.setData(this.data)
-          console.log("对方-1, popState")
+          // console.log("对方-1, popState")
         } else {
           mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
-          console.log(mine ? "我方-1" : "对方-1")
+          // console.log(mine ? "我方-1" : "对方-1")
         }
         wx.vibrateShort();
       }

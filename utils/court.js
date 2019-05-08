@@ -96,7 +96,7 @@ var default_data = {
   front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
   opPosition: -1, //哪个位置正在被技术统计
   opCat: null, //选中的操作大项目是什么？为null则没有选中
-  player_allowed: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //统计目标
+  player_allowed: null, //统计目标
   cat_allowed: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
   cat_all: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception]
 }

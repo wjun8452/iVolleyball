@@ -18,8 +18,8 @@ Page({
     this.setData(saved || this.data);
     this.data.opCat = null
     this.data.opPosition = -1
-    if (this.data.palyers_allow_stat == null) {
-      this.data.palyers_allow_stat = this.data.players
+    if (this.data.player_allowed == null) {
+      this.data.player_allowed = this.data.players
     }
     court.updateAvailableItems(this.data);
     this.setData(this.data)

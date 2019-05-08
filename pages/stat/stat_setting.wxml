@@ -1,4 +1,4 @@
-<wxs module="util" src="./util.wxs"></wxs>
+<wxs module="utils" src="./util.wxs"></wxs>
 
 <scroll-view>
 
@@ -103,7 +103,7 @@
       <block wx:for="{{cat_all}}">
         <view style='flex:1; display:flex; flex-direction:column'>
           <view style='flex:1'> {{item}} </view>
-          <checkbox style='flex:1' value="{{item}}" checked="{{util.contains(cat_allowed, item)}}" />
+          <checkbox style='flex:1' value="{{item}}" checked="{{utils.contains(cat_allowed, item)}}" />
         </view>
       </block>
     </view>
@@ -113,10 +113,10 @@
   <view style="margin-top:10px">选择统计对象：</view>
   <checkbox-group bindchange="onCheckAllowedPlayer">
     <view style='display:flex; flex-direction:row; margin-left:5px'>
-      <block wx:for="{{util.sort(players)}}">
+      <block wx:for="{{ utils.sort(players) }}">
         <view style='flex:1; display:flex; flex-direction:column'>
           <view style='flex:1'> {{item}} </view>
-          <checkbox style='flex:1' value="{{item}}" checked="{{util.contains(player_allowed, item)}}" />
+          <checkbox style='flex:1' value="{{item}}" checked="{{utils.contains(player_allowed, item)}}" />
         </view>
       </block>
     </view>

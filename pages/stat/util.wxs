@@ -1,0 +1,15 @@
+// 支持es4语法
+var util = {
+  contains: function (arr, item) {
+    return (arr.indexOf(item)!=-1)
+  },
+
+  sort: function(arr) {
+      return arr.sort()
+  }
+}
+// 导出对外暴露的属性
+module.exports = {
+  contains: util.contains,
+  sort: util.sort
+}

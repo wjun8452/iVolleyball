@@ -28,8 +28,78 @@ var StatName = {
   DefendLost: "防守失误",
   DefendGood: "防守到位",
   DefendNormal: "防守一般",
-  
+
 };
+
+var all_items = [{
+    cat: StatCat.Serve,
+    stats: [StatName.ServeNormal, StatName.ServeWin, StatName.ServeLost]
+  },
+  {
+    cat: StatCat.ErChuan,
+    stats: [StatName.ErChuanGood, StatName.ErChuanBad, StatName.ErChuanLost]
+  },
+  {
+    cat: StatCat.Reception,
+    stats: [StatName.ReceptionBad, StatName.ReceptionGood, StatName.ReceptionPerfect, StatName.ReceptionLost]
+  },
+  {
+    cat: StatCat.Attack,
+    stats: [StatName.AttackNormal, StatName.AttackBlk, StatName.AttackWin, StatName.AttackLost]
+  },
+  {
+    cat: StatCat.Block,
+    stats: [StatName.BlockWin, StatName.BlockLost]
+  },
+  {
+    cat: StatCat.Defend,
+    stats: [StatName.DefendLost, StatName.DefendGood, StatName.DefendNormal]
+  }
+]
+
+
+function _initAllowedItems(all_stat_items) {
+  var allowed = []
+  for (var i in all_stat_items) {
+    var item = all_stat_items[i]
+    for (var j in item.stats) {
+      allowed.push(item.stats[j])
+    }
+  }
+  return allowed
+}
+
+var default_data = {
+  myScore: 0,
+  yourScore: 0,
+  all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
+  players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
+  play_items: [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ], //items avaialbe for the player
+  play_item_cats: [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ], //category for items available for the player
+  stat_items: [], //stat items in history
+  who_serve: -1, //发球球员的index
+  serve: false, //true: 我发发球， false: 我方接发球
+  front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
+  opPosition: -1, //哪个位置正在被技术统计
+  opCat: null, //选中的操作大项目是什么？为null则没有选中
+  player_allowed: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //统计目标
+  cat_allowed: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
+  cat_all: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception]
+}
 
 function addScore(data) {
   data.myScore = 1 + data.myScore;
@@ -64,21 +134,21 @@ function rotate(data) { //only called when we win the score or for adjust court
 
   //update serves
   if (data.front_back_mode) {
-      if (who_serve == -1) {
-        data.who_serve = 0;
-      }
+    if (who_serve == -1) {
+      data.who_serve = 0;
+    }
 
-      if (who_serve == 0) { //二传发球
-        data.who_serve = 5; //副攻发球 
-      }
+    if (who_serve == 0) { //二传发球
+      data.who_serve = 5; //副攻发球 
+    }
 
-      if (who_serve == 5) { //副攻
-        data.who_serve = 4;
-      }
+    if (who_serve == 5) { //副攻
+      data.who_serve = 4;
+    }
 
-      if (who_serve == 4) { //主攻
-        data.who_serve = 0;
-      }
+    if (who_serve == 4) { //主攻
+      data.who_serve = 0;
+    }
   } else {
     //始终是1号位发球，无需更改
     data.who_serve = 0;
@@ -98,8 +168,7 @@ function rotate(data) { //only called when we win the score or for adjust court
     if (who_serve == 4) {
       _swap(4, 3, players);
     }
-  }
-  else {
+  } else {
     var player = players[5];
     players[5] = players[0];
     players[0] = players[1];
@@ -110,11 +179,29 @@ function rotate(data) { //only called when we win the score or for adjust court
   }
 }
 
+//categories: output
+//items: output
+function _createItems(categories, items, cat_allowed, category, arr2) {
+  if (-1 != cat_allowed.indexOf(category)) {
+    for (var i in arr2) {
+      var name = arr2[i][0]
+      var score = arr2[i][1]
+      items.push(_createPlayItem(category, name, score));
+
+    }
+    categories.push(category)
+  }
+}
+
+
 function updateAvailableItems(data) {
   var who_serve = data.who_serve;
   var items = data.play_items;
   var serve = data.serve;
   var cats = data.play_item_cats;
+  var cat_allowed = data.cat_allowed
+  var player_allowed = data.player_allowed
+  var players = data.players
 
   for (var i in items) {
     items[i] = [];
@@ -123,45 +210,53 @@ function updateAvailableItems(data) {
     cats[i] = [];
     var cat = cats[i];
 
-//添加顺序影响UI显示
-    if (serve && i==who_serve) {
-      item.push(_createPlayItem(StatCat.Serve, StatName.ServeWin, 1));
-      item.push(_createPlayItem(StatCat.Serve, StatName.ServeNormal, 0));
-      item.push(_createPlayItem(StatCat.Serve, StatName.ServeLost, -1));
-      cat.push(StatCat.Serve)
+    if (-1 == player_allowed.indexOf(players[i])) {
+      continue; //该队员不做统计
+    }
+
+    //添加顺序影响UI显示
+    if (serve && i == who_serve) {
+      _createItems(cat, item, cat_allowed, StatCat.Serve, [
+        [StatName.ServeWin, 1],
+        [StatName.ServeNormal, 0],
+        [StatName.ServeLost, -1]
+      ]);
     }
 
     if (!serve) {
-      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionPerfect, 0));
-      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionGood, 0));
-      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionBad, 0));
-      item.push(_createPlayItem(StatCat.Reception, StatName.ReceptionLost, -1));
-      cat.push(StatCat.Reception)
+      _createItems(cat, item, cat_allowed, StatCat.Reception, [
+        [StatName.ReceptionPerfect, 0],
+        [StatName.ReceptionGood, 0],
+        [StatName.ReceptionBad, 0],
+        [StatName.ReceptionLost, -1]
+      ])
     }
 
-    item.push(_createPlayItem(StatCat.ErChuan, StatName.ErChuanGood, 0));
-    item.push(_createPlayItem(StatCat.ErChuan, StatName.ErChuanBad, 0));
-    item.push(_createPlayItem(StatCat.ErChuan, StatName.ErChuanLost, -1));
-    cat.push(StatCat.ErChuan)
+    _createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+      [StatName.ErChuanGood, 0],
+      [StatName.ErChuanBad, 0],
+      [StatName.ErChuanLost, -1]
+    ])
 
-
-    item.push(_createPlayItem(StatCat.Attack, StatName.AttackWin, 1));
-    item.push(_createPlayItem(StatCat.Attack, StatName.AttackNormal, 0));
-    item.push(_createPlayItem(StatCat.Attack, StatName.AttackLost, -1));
-    //item.push(_createPlayItem(StatName.AttackBlk, -1));
-    cat.push(StatCat.Attack)
+    _createItems(cat, item, cat_allowed, StatCat.Attack, [
+      [StatName.AttackWin, 1],
+      [StatName.AttackNormal, 0],
+      [StatName.AttackBlk, -1],
+      [StatName.AttackLost, -1]
+    ])
 
     if (i >= 1 && i <= 3) {
-      item.push(_createPlayItem(StatCat.Block, StatName.BlockWin, 1));
-      item.push(_createPlayItem(StatCat.Block, StatName.BlockLost, -1));
-      cat.push(StatCat.Block)
+      _createItems(cat, item, cat_allowed, StatCat.Block, [
+        [StatName.BlockWin, 1],
+        [StatName.BlockLost, -1]
+      ])
     }
 
-    item.push(_createPlayItem(StatCat.Defend, StatName.DefendGood, 0));
-    item.push(_createPlayItem(StatCat.Defend, StatName.DefendNormal, 0));
-    item.push(_createPlayItem(StatCat.Defend, StatName.DefendLost, -1));
-    cat.push(StatCat.Defend)
-
+    _createItems(cat, item, cat_allowed, StatCat.Defend, [
+      [StatName.DefendGood, 0],
+      [StatName.DefendNormal, 0],
+      [StatName.DefendLost, -1]
+    ])
   }
 }
 
@@ -180,7 +275,7 @@ function stateRotate(data, position, i) {
     swap = true;
   }
 
-//createStatItem and _createPlayItem需要统一。。。
+  //createStatItem and _createPlayItem需要统一。。。
   data.stat_items.push(createStatItem(player, item.category, item.name, item.score, swap));
 
   if (item.score == 1) {
@@ -215,7 +310,7 @@ function popStatItem(data) {
 
 function getTopItem(data) {
   if (data.stat_items.length > 0) {
-    return data.stat_items[data.stat_items.length-1]
+    return data.stat_items[data.stat_items.length - 1]
   } else {
     return null
   }
@@ -251,12 +346,12 @@ function _prevPosition(data, stat) { //called when pop stat
     }
   }
 
-  if (stat.swapServe && stat.score > 0) {//刚刚得分获得发球权
+  if (stat.swapServe && stat.score > 0) { //刚刚得分获得发球权
     data.serve = false;
 
     if (data.front_back_mode) {
       if (who_serve == 0) { //二传发球
-        data.who_serve = 4;//主攻发球
+        data.who_serve = 4; //主攻发球
       }
 
       if (who_serve == 5) { //副攻
@@ -298,15 +393,6 @@ function _createPlayItem(category, name, score) {
   return obj;
 }
 
-function reset(data) {
-  data.myScore = 0;
-  data.yourScore = 0;
-  data.stat_items = [];
-  data.serve = false;
-  data.front_back_mode = true;
-  data.who_serve = 4 //下一次是二传发球
-}
-
 module.exports.addScoreRotate = addScoreRotate;
 module.exports.looseScoreRotate = looseScoreRotate;
 module.exports.stateRotate = stateRotate;
@@ -315,20 +401,6 @@ module.exports.popStatItem = popStatItem;
 module.exports.createStatItem = createStatItem;
 module.exports.StatName = StatName;
 module.exports.StatCat = StatCat;
+module.exports.default_data = default_data;
 module.exports.rotate = rotate;
 module.exports.getTopItem = getTopItem;
-module.exports.reset = reset;
-
-
-// data:
-// {
-//   myScore: 0,
-//     yourScore: 0,
-//       all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
-//         players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
-//           play_items: [[], [], [], [], [], []], //items avaialbe for the player
-//             stat_items: [], //stat items in history
-//               who_serve: -1, //发球球员的index
-//                 serve: false,  //true: 我发发球， false: 我方接发球
-//                   front_back_mode: true, //true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6
-// }

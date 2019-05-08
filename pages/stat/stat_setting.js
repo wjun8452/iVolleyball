@@ -12,7 +12,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     wx.setNavigationBarTitle({
       title: '设置'
     })
@@ -27,28 +27,28 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
     console.log("onUnload")
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     // console.log(this.data);
@@ -57,39 +57,43 @@ Page({
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-  },
+  onShareAppMessage: function() {},
 
-  onReset: function () {
-    court.reset(this.data)
+  onReset: function() {
+    var players = this.data.players;
+    var all_palyers = this.data.all_palyers;
+    this.data = court.default_data
+    this.data.players = players
+    this.data.player_allowed = players
+    this.data.all_palyers = all_palyers
     this.setData(this.data)
   },
 
-  onChangeMyScore: function (e) {
+  onChangeMyScore: function(e) {
     this.data.myScore = parseInt(e.detail.value);
     this.setData(this.data);
   },
 
-  onChangeYourScore: function (e) {
+  onChangeYourScore: function(e) {
     this.data.yourScore = parseInt(e.detail.value);
     this.setData(this.data);
   },
 
-  onChoosePlayer: function (e) {
+  onChoosePlayer: function(e) {
     var players = this.data.players;
     var player = e.target.dataset.player;
     var pos = e.target.dataset.position;
@@ -108,7 +112,7 @@ Page({
     this.setData(this.data)
   },
 
-  onCheckWhoServe: function (e) {
+  onCheckWhoServe: function(e) {
     var position = e.target.dataset.position;
     var checked = e.detail.value.length == 1;
 
@@ -121,7 +125,7 @@ Page({
     this.setData(this.data)
   },
 
-  onTapMode: function (e) {
+  onTapMode: function(e) {
     var mode = e.detail.value; //0: front_back, 1: normal
     if (mode == "0") {
       this.data.front_back_mode = true;
@@ -131,7 +135,7 @@ Page({
     this.setData(this.data);
   },
 
-  onTapServe: function (e) {
+  onTapServe: function(e) {
     var serve = e.detail.value; //0: 我方发球, 1: 对方发球
     if (serve == 0) {
       this.data.serve = true;
@@ -146,7 +150,7 @@ Page({
     this.setData(this.data);
   },
 
-  onClickPlayer: function (e) {
+  onClickPlayer: function(e) {
     var position = e.target.dataset.position;
     if (position == this.data.edit_pos) {
       this.data.edit_pos = -1
@@ -157,7 +161,7 @@ Page({
     this.setData(this.data);
   },
 
-  onAddPlayer: function (e) {
+  onAddPlayer: function(e) {
     var position = e.target.dataset.position;
     var player = e.detail.value;
     if (player != null) {
@@ -177,7 +181,7 @@ Page({
     }
   },
 
-  onDeletePlayer: function (e) {
+  onDeletePlayer: function(e) {
     var position = e.target.dataset.position;
     var player = this.data.players[position];
 
@@ -198,19 +202,19 @@ Page({
     this.setData(this.data)
   },
 
-  rotate: function (e) {
+  rotate: function(e) {
     court.rotate(this.data);
     this.setData(this.data);
   },
 
-  touchStart1: function (e) {
+  touchStart1: function(e) {
     this.start_x_1 = e.changedTouches[0].pageX;
     this.start_y_1 = e.changedTouches[0].pageY;
     // console.log("touchstart: ");
     // console.log(e);
   },
 
-  touchEnd1: function (e) {
+  touchEnd1: function(e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
     this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
@@ -218,21 +222,21 @@ Page({
     //console.log(e);
   },
 
-  touchStart2: function (e) {
+  touchStart2: function(e) {
     this.start_x_2 = e.changedTouches[0].pageX;
     this.start_y_2 = e.changedTouches[0].pageY;
     console.log("touchstart: ");
     console.log(e);
   },
 
-  touchEnd2: function (e) {
+  touchEnd2: function(e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
 
     this.touch_end(false, this.start_x_2, this.start_y_2, end_x, end_y);
   },
 
-  touch_end: function (mine, start_x, start_y, end_x, end_y) {
+  touch_end: function(mine, start_x, start_y, end_x, end_y) {
     if (end_y < 50) {
       mine ? this.changeMyScore(1) : this.changeYourScore(1);
     } else {
@@ -240,7 +244,7 @@ Page({
     }
   },
 
-  changeMyScore: function (delta) {
+  changeMyScore: function(delta) {
     var s = this.data.myScore + delta;
     if (s >= 0) {
       this.data.myScore = s;
@@ -248,12 +252,22 @@ Page({
     }
   },
 
-  changeYourScore: function (delta) {
+  changeYourScore: function(delta) {
     var s = this.data.yourScore + delta;
     if (s >= 0) {
       this.data.yourScore = s;
       this.setData(this.data);
     }
+  },
+
+  onCheckAllowedStatItem: function(e) {
+    this.data.cat_allowed = e.detail.value;
+    this.setData(this.data)
+  },
+
+  onCheckAllowedPlayer: function (e) {
+    this.data.player_allowed = e.detail.value;
+    this.setData(this.data)
   },
 
 })

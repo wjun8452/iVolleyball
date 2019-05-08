@@ -226,7 +226,7 @@ Page({
     summary["发球"]["总数"] = total
     summary["发球"]["失误"] = lost
     summary["发球"]["直接得分"] = win
-    summary["发球"]["效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+    summary["发球"]["效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(2)
 
     //一传
     total = 0
@@ -255,9 +255,9 @@ Page({
 
     summary["一传"]["总数"] = total
     summary["一传"]["失误"] = lost
-    summary["一传"]["到位率"] = total == 0 ? 0 : ((win + normal) / total).toFixed(1)
-    summary["一传"]["完美到位率"] = total == 0 ? 0 : (win / total).toFixed(1)
-    summary["一传"]["到位效率"] = total == 0 ? 0 : ((win + normal - lost) / total).toFixed(1)
+    summary["一传"]["到位率"] = total == 0 ? 0.00 : ((win + normal) / total).toFixed(2)
+    summary["一传"]["完美到位率"] = total == 0 ? 0.00 : (win / total).toFixed(2)
+    summary["一传"]["到位效率"] = total == 0 ? 0.00 : ((win + normal - lost) / total).toFixed(2)
 
     //AttackNormal: "进攻一般",
     // AttackBlk: "进攻拦死",
@@ -291,8 +291,8 @@ Page({
     summary["进攻"]["失误"] = lost
     summary["进攻"]["被拦死"] = block
     summary["进攻"]["得分"] = win
-    summary["进攻"]["成功率"] = total == 0 ? 0 : (win / total).toFixed(1)
-    summary["进攻"]["成功效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+    summary["进攻"]["成功率"] = total == 0 ? 0.00 : (win / total).toFixed(2)
+    summary["进攻"]["成功效率"] = total == 0 ? 0.00 : ((win - lost) / total).toFixed(2)
 
 
     //BlockWin: "拦网得分",
@@ -340,8 +340,8 @@ Page({
     summary["防反起球"]["总数"] = total
     summary["防反起球"]["失误"] = lost
     summary["防反起球"]["到位"] = win
-    summary["防反起球"]["到位率"] = total == 0 ? 0 : (win / total).toFixed(1)
-    summary["防反起球"]["到位效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+    summary["防反起球"]["到位率"] = total == 0 ? 0 : (win / total).toFixed(2)
+    summary["防反起球"]["到位效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(2)
 
     //   ErChuanGood: "二传到位",
     //     ErChuanBad: "二传不到位",
@@ -368,8 +368,8 @@ Page({
 
     summary["传球"]["总数"] = total
     summary["传球"]["失误"] = lost
-    summary["传球"]["到位率"] = total == 0 ? 0 : (win / total).toFixed(1)
-    summary["传球"]["到位效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(1)
+    summary["传球"]["到位率"] = total == 0 ? 0 : (win / total).toFixed(2)
+    summary["传球"]["到位效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(2)
 
     return summary
   },

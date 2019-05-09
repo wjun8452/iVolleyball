@@ -291,8 +291,8 @@ Page({
     summary["进攻"]["失误"] = lost
     summary["进攻"]["被拦死"] = block
     summary["进攻"]["得分"] = win
-    summary["进攻"]["成功率"] = total == 0 ? 0.00 : (win / total).toFixed(2)
-    summary["进攻"]["成功效率"] = total == 0 ? 0.00 : ((win - lost) / total).toFixed(2)
+    summary["进攻"]["成功率"] = total == 0 ? 0 : (win / total).toFixed(2)
+    summary["进攻"]["成功效率"] = total == 0 ? 0 : ((win - lost) / total).toFixed(2)
 
 
     //BlockWin: "拦网得分",

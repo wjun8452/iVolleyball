@@ -210,7 +210,7 @@ function updateAvailableItems(data) {
     cats[i] = [];
     var cat = cats[i];
 
-    if (-1 == player_allowed.indexOf(players[i])) {
+    if (player_allowed!=null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
       continue; //该队员不做统计
     }
 

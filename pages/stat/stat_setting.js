@@ -75,11 +75,11 @@ Page({
 
   onReset: function() {
     var players = this.data.players;
-    var all_palyers = this.data.all_palyers;
+    var all_players = this.data.all_players;
     this.data = court.default_data
     this.data.players = players
     this.data.player_allowed = players
-    this.data.all_palyers = all_palyers
+    this.data.all_players = all_players
     this.setData(this.data)
   },
 

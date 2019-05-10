@@ -17,20 +17,16 @@ Page({
     wx.setNavigationBarTitle({
       title: '历史报表'
     })
-
+    this.data = Object.assign(court.default_data, this.data);
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    if (saved) {
-      var statistics = this.createStatistics(saved.stat_items)
-      console.log("statistics: " + statistics)
-      var summary = this.createSummary(saved.players, statistics);
-      console.log("summary:" + summary)
-      this.setData({
-        summary: summary,
-        players: saved.players
-      });
+    this.data = saved || this.data;
 
+    var statistics = this.createStatistics(this.data.stat_items)
+    console.log("statistics: " + statistics)
+    this.data.summary["标题"] = this.createSummaryForPlayer(null)
+    this.createSummary(this.data.summary, this.data.players, statistics);
+    this.setData(this.data);
 
-    }
   },
 
   /**
@@ -110,18 +106,13 @@ Page({
     return statistics;
   },
 
-  createSummary: function(players, statistics) {
-    var summary = {}
-
-    summary["标题"] = this.createSummaryForPlayer(null)
-
+  createSummary: function(summary, players, statistics) {
     for (var index in players) {
       var player = players[index]
       var statistic = statistics[player]
       var sum = this.createSummaryForPlayer(statistic)
       summary[player] = sum
     }
-    return summary
   },
 
   createSummaryForPlayer: function(statistic) {

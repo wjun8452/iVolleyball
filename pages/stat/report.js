@@ -22,7 +22,7 @@ Page({
     this.data = saved || this.data;
 
     var statistics = this.createStatistics(this.data.stat_items)
-    console.log("statistics: " + statistics)
+    // console.log("statistics: " + statistics)
     this.data.summary["标题"] = this.createSummaryForPlayer(null)
     this.createSummary(this.data.summary, this.data.players, statistics);
     this.setData(this.data);

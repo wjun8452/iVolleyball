@@ -13,6 +13,8 @@ Page({
     score_width: 0,
     colon_height: 0,
     colon_width: 0,
+    leftMode: false, //true：team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量 
+    team_name: ["对方", "我方"], //team_name[0]将始终显示在左边 
   },
   start_x_1: 0,
   start_y_1: 0,

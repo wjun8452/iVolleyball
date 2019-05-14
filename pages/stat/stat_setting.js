@@ -74,12 +74,9 @@ Page({
   onShareAppMessage: function() {},
 
   onReset: function() {
-    var players = this.data.players;
-    var all_players = this.data.all_players;
-    this.data = court.default_data
-    this.data.players = players
-    this.data.player_allowed = players
-    this.data.all_players = all_players
+    this.data.stat_items = []
+    this.data.myScore = 0
+    this.data.yourScore = 0
     this.setData(this.data)
   },
 

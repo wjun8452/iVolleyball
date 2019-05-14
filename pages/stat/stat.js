@@ -15,7 +15,7 @@ Page({
   onShow: function() {
     console.log("onShow")
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.setData(saved || this.data);
+    this.data = Object.assign(this.data, court.default_data, saved);
     this.data.opCat = null
     this.data.opPosition = -1
     if (this.data.player_allowed == null) {

@@ -17,10 +17,9 @@ Page({
     wx.setNavigationBarTitle({
       title: '历史报表'
     })
-    this.data = Object.assign(court.default_data, this.data);
+    
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.data = saved || this.data;
-
+    this.data = Object.assign(this.data, court.default_data, saved);
     var statistics = this.createStatistics(this.data.stat_items)
     // console.log("statistics: " + statistics)
     this.data.summary["标题"] = this.createSummaryForPlayer(null)

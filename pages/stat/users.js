@@ -1,4 +1,6 @@
 // pages/stat/users.js
+var court = require("../../utils/court.js")
+
 Page({
 
   /**
@@ -14,8 +16,8 @@ Page({
    */
   onLoad: function (options) {
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    // console.log(saved)
-    this.setData(saved || this.data);
+    this.data = Object.assign(this.data, court.default_data, saved);
+    this.setData(this.data);
   },
 
   /**

@@ -10,9 +10,13 @@
     <view style="width:50%; border-style: solid; border-width: 1px 1px 1px 1px; text-align:center; text-align:center; font:Arial; font-weight:bold; font-size: 70px;" bindtouchstart="touchStart2" bindtouchend="touchEnd2">
       {{yourScore}}
     </view>
-
   </view>
 
+
+<view style="margin: 2px; display: flex; flex-direction: row; ">
+    <button bindtap='onReset' type="default" style="flex:1; margin:2px;">比分清零</button>
+  </view>
+  
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row; ">
     <radio-group class="radio-group" bindchange="onTapMode">
       <radio value="0" checked="{{front_back_mode}}" />前后排换位
@@ -123,9 +127,7 @@
   </checkbox-group>
 
 
-  <view style="margin: 2px; display: flex; flex-direction: row; ">
-    <button bindtap='onReset' type="default" style="flex:1; margin:2px;">全部重置</button>
-  </view>
+  
 
   <!-- to add more views above -->
 </scroll-view>

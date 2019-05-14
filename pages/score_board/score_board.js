@@ -5,8 +5,7 @@ Page({
   /**
    * 页面的初始数据
    */
-  data:
-  {
+  data: {
     height: 0,
     width: 0,
     score_height: 0,
@@ -25,83 +24,81 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     wx.setNavigationBarTitle({
       title: '大记分牌'
     })
-    this.data = Object.assign(this.data, court.default_data)
-    // console.log(this.data)
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.setData(saved || this.data);
+    this.data = Object.assign(this.data, court.default_data, saved);
     // console.log(this.data)
     var res = wx.getSystemInfoSync()
     //can not use this.data.height to set score_height
-    this.setData({
-      height: res.windowHeight, width: res.windowWidth,
-      score_height: res.windowHeight / 80 * 39,
-      score_width: res.windowWidth,
-      colon_height: res.windowHeight / 80 * 2,
-      colon_width: res.windowWidth
-    })
+    this.data.height = res.windowHeight
+    this.data.width = res.windowWidth
+    this.data.score_height = res.windowHeight / 80 * 39
+    this.data.score_width = res.windowWidth
+    this.data.colon_height = res.windowHeight / 80 * 2
+    this.data.colon_width = res.windowWidth
+    this.setData(this.data)
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-  
+  onReady: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-  
+  onShow: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-  
+  onHide: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-  
+  onPullDownRefresh: function() {
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-  
+  onReachBottom: function() {
+
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-  
+  onShareAppMessage: function() {
+
   },
- 
-  touchStart1: function (e) {
+
+  touchStart1: function(e) {
     this.start_x_1 = e.changedTouches[0].pageX;
     this.start_y_1 = e.changedTouches[0].pageY;
     //console.log("touchstart: ");
     //console.log(e);
   },
 
-  touchEnd1: function (e) {
+  touchEnd1: function(e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
     this.touch_end(this.data.leftMode, this.start_x_1, this.start_y_1, end_x, end_y);
@@ -109,19 +106,19 @@ Page({
     //console.log(e);
   },
 
-  touchStart2: function (e) {
+  touchStart2: function(e) {
     this.start_x_2 = e.changedTouches[0].pageX;
     this.start_y_2 = e.changedTouches[0].pageY;
   },
 
-  touchEnd2: function (e) {
+  touchEnd2: function(e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
 
     this.touch_end(!this.data.leftMode, this.start_x_2, this.start_y_2, end_x, end_y);
   },
 
-  touch_end: function (mine, start_x, start_y, end_x, end_y) {
+  touch_end: function(mine, start_x, start_y, end_x, end_y) {
     var changeX = end_x - start_x;
     var changeY = end_y - start_y;
 
@@ -130,7 +127,7 @@ Page({
 
     if (change_x_abs < 50 && change_y_abs < 50) return;
 
-    if (change_y_abs < change_x_abs) {//上下滑动幅度大于左右
+    if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右
       if (changeX < 0) { //加分
         mine ? court.addScoreRotate(this.data) : court.looseScoreRotate(this.data);
         wx.vibrateShort();
@@ -151,14 +148,16 @@ Page({
         }
         wx.vibrateShort();
       }
-    } else if (change_y_abs > this.data.height*2/3) { //从左滑到右
-      this.data = court.default_data;
+    } else if (change_y_abs > this.data.height * 2 / 3) { //从左滑到右
+      this.data.stat_items = []
+      this.data.myScore = 0
+      this.data.yourScore = 0
       this.setData(this.data);
       wx.vibrateShort();
     }
   },
 
-  changeMyScore: function (delta) {
+  changeMyScore: function(delta) {
     var s = this.data.myScore + delta;
     if (s >= 0) {
       this.data.myScore = s;
@@ -166,7 +165,7 @@ Page({
     }
   },
 
-  changeYourScore: function (delta) {
+  changeYourScore: function(delta) {
     var s = this.data.yourScore + delta;
     if (s >= 0) {
       this.data.yourScore = s;
@@ -174,7 +173,7 @@ Page({
     }
   },
 
-  swapTeam: function () {
+  swapTeam: function() {
     this.data.leftMode = !this.data.leftMode;
     var temp = this.data.team_name[0];
     this.data.team_name[0] = this.data.team_name[1];

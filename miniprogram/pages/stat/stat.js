@@ -92,6 +92,53 @@ Page({
     this.data.opCat = null
     this.data.opPosition = -1
     this.setData(this.data)
+  },
+
+  isGameOver: function (s1, s2) {
+    return (s1 >= 25 || s2 >= 25) && (s1 - s2 >= 2 || s2 - s1 >= 2);
+  },
+
+  onTapUpload: function(e) {
+    if (this.isGameOver(this.data.myScore, this.data.yourScore)) {
+      const db = wx.cloud.database({
+        env: 'test-705bde'
+      })
+
+      var that = this
+
+      db.collection('vmatch').add({
+        data: this.data,
+        success: function (res) {
+          console.log(res)
+          that.data.stat_items = []
+          that.data.myScore = 0
+          that.data.yourScore = 0
+          if (that.data.history==null || that.data.hisotry==undefined) {
+          that.data.history = new Array()
+          }
+          that.data.history.push(res._id)
+          that.setData(that.data)
+          wx.showToast({
+            title: '上传成功!',
+            icon: 'success'
+          })
+          wx.navigateTo({
+            url: 'report?id='+res._id,
+          })
+        },
+        fail: function (res) {
+          wx.showToast({
+            title: '上传失败!',
+            icon: 'none'
+          })
+        }
+      })
+    } else {
+      wx.showToast({
+        title: '局分未结束，不能上传!',
+        icon: 'none'
+      })
+    }
   }
 
 })

@@ -1,3 +1,4 @@
+<wxs module="utils" src="./util.wxs"></wxs>
 <import src="block.wxml" />
 
 <view style="display: flex; flex-direction: column; height:{{height}}px; width: 100%;" bindtap="onTapBoard">
@@ -39,6 +40,10 @@
 
 
       <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
+
+
+      <button bindtap='onTapUpload' type="default" style="flex:1; margin:2px;" disabled='{{ !((myScore >= 25 || yourScore >= 25) && (myScore - yourScore >= 2 || yourScore - myScore >= 2)) }}'>上传</button>
+
     </view>
 
   </view>

@@ -1,11 +1,12 @@
-// pages/help.js
+// miniprogram/pages/history.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    histories: [] //以前上传过的比赛
+    
   },
 
   /**
@@ -56,4 +57,11 @@ Page({
   onReachBottom: function () {
 
   },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  }
 })

@@ -7,7 +7,8 @@
     "pages/stat/report",
     "pages/stat/users",
     "pages/score_board/score_board",
-    "pages/help/help"
+    "pages/help/help",
+    "pages/history/history"
   ],
   "window": {
     "backgroundTextStyle": "light",

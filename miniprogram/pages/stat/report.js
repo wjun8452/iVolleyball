@@ -7,7 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    summary: {}
+    summary: {}, //临时计算出来的
   },
 
   /**
@@ -17,15 +17,30 @@ Page({
     wx.setNavigationBarTitle({
       title: '历史报表'
     })
-    
-    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.data = Object.assign(this.data, court.default_data, saved);
-    var statistics = this.createStatistics(this.data.stat_items)
-    // console.log("statistics: " + statistics)
-    this.data.summary["标题"] = this.createSummaryForPlayer(null)
-    this.createSummary(this.data.summary, this.data.players, statistics);
-    this.setData(this.data);
 
+    wx.showLoading({
+      title: '加载中...',
+    })
+
+    //load data
+    if (options.id != null && options.id != undefined) {
+      this.loadData(options.id)
+    } else {
+      var saved = wx.getStorageSync(getApp().globalData.cacheKey);
+      this.data = Object.assign(this.data, court.default_data, saved);
+
+      //create summary
+      var statistics = this.createStatistics(this.data.stat_items)
+      this.data.summary["标题"] = this.createSummaryForPlayer(null)
+      this.data.summary['meta'] = {
+        myScore: this.data.myScore,
+        yourScore: this.data.yourScore
+      }
+      this.createSummary(this.data.summary, this.data.players, statistics);
+
+      wx.hideLoading();
+      this.setData(this.data);
+    }
   },
 
   /**
@@ -54,7 +69,6 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function() {
-
   },
 
   /**
@@ -74,8 +88,18 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {
-
+  onShareAppMessage: function(res) {
+    var path = '/pages/stat/report?id=' + this.data.summary.meta.id
+    console.log("share path=" + path)
+    return {
+      title: '分享本局赛况',
+      path: path,
+      fail: function(res) {
+        wx.showToast({
+          title: '分享失败',
+        })
+      }
+    }
   },
 
   //将项目次数按人头汇总
@@ -474,5 +498,41 @@ Page({
     }
 
     return result;
-  }
+  },
+
+  loadData: function(id) {
+    const db = wx.cloud.database({
+      env: 'test-705bde'
+    })
+
+    var that = this
+
+    db.collection('vmatch').where({
+        _id: id,
+      })
+      .get({
+        success(res) {
+          console.log(res)
+          //create summary
+          var statistics = that.createStatistics(res.data[0].stat_items)
+          that.data.summary["标题"] = that.createSummaryForPlayer(null)
+          that.data.summary['meta'] = {
+            myScore: res.data[0].myScore,
+            yourScore: res.data[0].yourScore,
+            id:id,
+          }
+          that.createSummary(that.data.summary, res.data[0].players, statistics);
+          wx.hideLoading()
+          that.setData(that.data)
+        },
+        fail(res) {
+          console.log(res)
+          wx.hideLoading()
+          wx.showToast({
+            title: '加载失败',
+          })
+        }
+      })
+  },
+
 })

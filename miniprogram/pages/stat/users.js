@@ -62,13 +62,6 @@ Page({
 
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
-
   onAddPlayer: function (e) {
     var player = e.detail.value.player;
     player = player.replace(/^\s*|\s*$/g, "");

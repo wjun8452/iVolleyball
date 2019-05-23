@@ -12,7 +12,7 @@
   </form>
 
 
-  <block wx:for="{{all_players}}" wx:for="*this">
+  <block wx:for="{{all_players}}" wx:key="*this">
     <view style="display:flex; flex-direction: row; padding:10px">
       <view style="flex:1">
         <text> {{item}} </text>

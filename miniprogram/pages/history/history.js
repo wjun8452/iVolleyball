@@ -91,7 +91,9 @@ Page({
         success(res) {
           console.log(res)
           that.data.matches = res.data
-          that.data.matches[0].create_time = that.data.matches[0].create_time.toLocaleString()
+          for (var i in that.data.matches) {
+            that.data.matches[i].create_time = that.data.matches[i].create_time.toLocaleString()
+          }
           that.data.isLoading = false
           wx.hideLoading()
           that.setData(that.data)

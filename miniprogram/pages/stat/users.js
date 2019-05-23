@@ -15,6 +15,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.setNavigationBarTitle({
+      title: '球员管理',
+    })
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.data = Object.assign(this.data, court.default_data, saved);
     this.setData(this.data);

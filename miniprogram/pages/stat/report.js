@@ -15,7 +15,7 @@ Page({
    */
   onLoad: function(options) {
     wx.setNavigationBarTitle({
-      title: '历史报表'
+      title: '比赛详情与技术统计'
     })
 
     wx.showLoading({
@@ -23,8 +23,8 @@ Page({
     })
 
     //load data
-    if (options.id != null && options.id != undefined) {
-      this.loadData(options.id)
+    if (options._id != null && options._id != undefined) {
+      this.loadData(options._id)
     } else {
       var saved = wx.getStorageSync(getApp().globalData.cacheKey);
       this.data = Object.assign(this.data, court.default_data, saved);
@@ -32,10 +32,6 @@ Page({
       //create summary
       var statistics = this.createStatistics(this.data.stat_items)
       this.data.summary["标题"] = this.createSummaryForPlayer(null)
-      this.data.summary['meta'] = {
-        myScore: this.data.myScore,
-        yourScore: this.data.yourScore
-      }
       this.createSummary(this.data.summary, this.data.players, statistics);
 
       wx.hideLoading();
@@ -53,10 +49,7 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
-    var saved = wx.getStorageSync('stats');
-    this.setData(saved || this.data);
-  },
+  onShow: function() {},
 
   /**
    * 生命周期函数--监听页面隐藏
@@ -68,8 +61,7 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
-  },
+  onUnload: function() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
@@ -89,7 +81,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function(res) {
-    var path = '/pages/stat/report?id=' + this.data.summary.meta.id
+    var path = '/pages/stat/report?_id=' + this.data._id
     console.log("share path=" + path)
     return {
       title: '分享本局赛况',
@@ -509,24 +501,29 @@ Page({
 
     db.collection('vmatch').where({
         _id: id,
-      })
-      .get({
+      }).field({
+        stat_items: true,
+        myScore: true,
+        yourScore: true,
+        players: true,
+        myTeam: true,
+        yourTeam: true,
+        create_time: true,
+        place: true,
+      }).get({
         success(res) {
-          console.log(res)
-          //create summary
-          var statistics = that.createStatistics(res.data[0].stat_items)
+          console.log(id,res)
+          var data = res.data[0]
+          that.data = Object.assign(that.data, data)
+          that.data.create_time = that.data.create_time.toLocaleString()
+          var statistics = that.createStatistics(that.data.stat_items)
           that.data.summary["标题"] = that.createSummaryForPlayer(null)
-          that.data.summary['meta'] = {
-            myScore: res.data[0].myScore,
-            yourScore: res.data[0].yourScore,
-            id:id,
-          }
-          that.createSummary(that.data.summary, res.data[0].players, statistics);
+          that.createSummary(that.data.summary, that.data.players, statistics);
           wx.hideLoading()
           that.setData(that.data)
         },
         fail(res) {
-          console.log(res)
+          console.log(id, res)
           wx.hideLoading()
           wx.showToast({
             title: '加载失败',

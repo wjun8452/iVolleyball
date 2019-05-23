@@ -1,1 +1,65 @@
-/* miniprogram/pages/history.wxss */
+.showborder {
+  border: 1px solid red;
+}
+
+.match-item {
+  border: 1px solid grey;
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom-style: 1px solid grey;
+  border-left-style: none;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 10rpx;
+  border-radius: 10%;
+}
+
+.add_icon {
+  position: fixed;
+  width: 42px;
+  height: 42px;
+  bottom: 30px;
+  right: 20px;
+}
+
+.swiper-tab {
+  display:flex;
+  flex-direction:row;
+  justify-content:space-around;
+  border-bottom: 2rpx solid #777;
+  text-align: center;
+}
+
+.swiper-tab-list {
+  flex:1;
+  display:flex;
+  flex-direction:row;
+  justify-content: center;
+  color: #777;
+}
+
+.on {
+  color: #da7c0c;
+  border-bottom: 5rpx solid #da7c0c;
+}
+
+.swiper-box {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.swiper-box view {
+  text-align: center;
+}
+.swiper-tab-list-img {
+  width:20px;
+  height:20px
+}

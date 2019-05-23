@@ -8,12 +8,13 @@ var util = {
       return arr.sort()
   },
 
-  gameOver: function(s1, s2) {
+  matchOver: function(s1, s2) {
     return (s1 >= 25 || s2 >= 25) && (s1 - s2 >= 2 || s2 - s1 >= 2);
-  }
+  },
 }
 // 导出对外暴露的属性
 module.exports = {
   contains: util.contains,
-  sort: util.sort
+  sort: util.sort,
+  matchOver: util.matchOver,
 }

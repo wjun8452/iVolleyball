@@ -1,26 +1,28 @@
 <view style="display: flex; flex-direction: column; font-size:medium">
   <!-- 得分信息 -->
-  <view style='text-align:center;'> 局分 {{summary['meta'].myScore}} : {{summary['meta'].yourScore}} </view>
+  <view style='text-align:center;'> {{myTeam}} vs {{yourTeam}}   {{myScore}} : {{yourScore}} </view>
+  <view style='text-align:center;'> {{place}} </view>
+  <view style='text-align:center;'> {{create_time}} </view>
   
   <!--按统计大类循环，每个大类是一个表格 -->
-  <block wx:for='{{summary["标题"]}}' wx:for-index="category">
+  <block wx:for='{{summary["标题"]}}' wx:for-index="category" wx:key='*this'>
     <view style="margin:1px 1px 8px 1px">
       <!-- 表格名称 -->
       <view style="text-align: center; font-size: large "> {{category}} </view>
       <!--标题行-->
       <view style="display: flex; flex-direction: row; background: #C0C0C0 ">
         <view style="flex:1; margin: 2px;"> </view>
-        <block wx:for='{{summary["标题"][category]}}' wx:for-index="stat_name">
+        <block wx:for='{{summary["标题"][category]}}' wx:for-index="stat_name" wx:key='*this'>
           <view style="flex:1; margin: 2px;"> {{ stat_name }} </view>
         </block>
       </view>
 
       <!--数据行-->
-      <block wx:for="{{summary}}" wx:for-index="player">
-        <block wx:if='{{player!="标题" && player!="meta"}}'>
+      <block wx:for="{{summary}}" wx:for-index="player" wx:key='*this'>
+        <block wx:if='{{player!="标题"}}'>
           <view style='display: flex; flex-direction: row; background:{{index%2?"#E8E8E8":"#FFFFFF"}}'>
             <view style="flex:1; margin: 2px;"> {{player}} </view>
-            <block wx:for='{{summary[player][category]}}' wx:for-item="count">
+            <block wx:for='{{summary[player][category]}}' wx:for-item="count" wx:key='*this'>
               <view style="flex:1; margin: 2px; "> {{count}} </view>
             </block>
           </view>
@@ -29,7 +31,7 @@
     </view>
   </block>
 
-<block wx:if='{{summary.meta.id!=null && summary.meta.id!=undefined}}'>
+<block wx:if='{{_id!=null && _id!=undefined}}'>
   <button style="width:100%" open-type="share"> 分享 </button>
 </block>
 

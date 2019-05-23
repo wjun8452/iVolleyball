@@ -23,6 +23,7 @@ Page({
     }
     court.updateAvailableItems(this.data);
     this.setData(this.data)
+    this.checkMatchOver()
     console.log(this.data)
   },
 
@@ -43,12 +44,14 @@ Page({
     wx.vibrateShort();
     court.addScoreRotate(this.data)
     this.setData(this.data);
+    this.checkMatchOver()
   },
 
   onTapLooseScore: function() {
     wx.vibrateShort();
     court.looseScoreRotate(this.data);
     this.setData(this.data);
+    this.checkMatchOver()
   },
 
   onTapSetting: function() {
@@ -67,11 +70,13 @@ Page({
     court.stateRotate(this.data, position, item_index);
 
     this.setData(this.data)
+    this.checkMatchOver()
   },
 
   onTapRevert: function(e) {
     court.popStatItem(this.data);
     this.setData(this.data);
+    this.checkMatchOver()
   },
 
   onTapScore: function(e) {
@@ -94,51 +99,81 @@ Page({
     this.setData(this.data)
   },
 
-  isGameOver: function (s1, s2) {
+  isMatchOver: function() {
+    var s1 = this.data.myScore
+    var s2 = this.data.yourScore
     return (s1 >= 25 || s2 >= 25) && (s1 - s2 >= 2 || s2 - s1 >= 2);
   },
 
-  onTapUpload: function(e) {
-    if (this.isGameOver(this.data.myScore, this.data.yourScore)) {
-      const db = wx.cloud.database({
-        env: 'test-705bde'
-      })
+  checkMatchOver: function() {
+    var that = this
+    if (this.isMatchOver()) {
+      wx.showModal({
+        title: '比赛结束？',
+        content: '确定结束本场计分？',
+        showCancel: true,
+        success: function(res) {
+          if (res.confirm) {
+            that.uploadData()
+          } else if (res.cancel) {
 
-      var that = this
-
-      db.collection('vmatch').add({
-        data: this.data,
-        success: function (res) {
-          console.log(res)
-          that.data.stat_items = []
-          that.data.myScore = 0
-          that.data.yourScore = 0
-          if (that.data.history==null || that.data.hisotry==undefined) {
-          that.data.history = new Array()
           }
-          that.data.history.push(res._id)
-          that.setData(that.data)
-          wx.showToast({
-            title: '上传成功!',
-            icon: 'success'
-          })
-          wx.navigateTo({
-            url: 'report?id='+res._id,
-          })
         },
-        fail: function (res) {
-          wx.showToast({
-            title: '上传失败!',
-            icon: 'none'
-          })
-        }
-      })
-    } else {
-      wx.showToast({
-        title: '局分未结束，不能上传!',
-        icon: 'none'
       })
     }
+  },
+
+  uploadData: function(e) {
+    const db = wx.cloud.database({
+      env: 'test-705bde'
+    })
+
+    var that = this
+    wx.showLoading({
+      title: '正在上传...',
+    })
+
+    this.data.city = getApp().globalData.city
+    this.data.create_time = db.serverDate()
+    this.data.latlon = {
+      latitude: getApp().globalData.lat,
+      longitude: getApp().globalData.lon
+    }
+    this.data.place = getApp().globalData.place
+    delete this.data._id  //向数据库插入数据时_id不能有哦，否则报内部错误
+
+    db.collection('vmatch').add({
+      data: this.data,
+      success: function(res) {
+        console.log(res)
+        that.data._id = res._id
+        that.resetData()
+        that.setData(that.data)
+        wx.hideLoading()
+        wx.showToast({
+          title: '上传成功!',
+          icon: 'success'
+        })
+        wx.navigateTo({
+          url: 'report?_id=' + res._id,
+        })
+      },
+      fail: function(res) {
+        console.log(res)
+        wx.hideLoading()
+        wx.showToast({
+          title: '上传失败!',
+          icon: 'none'
+        })
+      }
+    })
+  },
+
+  resetData: function() {
+    this.data.stat_items = []
+    this.data.myScore = 0
+    this.data.yourScore = 0
+    this.data._id = null
   }
 
 })

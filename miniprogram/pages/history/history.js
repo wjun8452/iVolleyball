@@ -5,15 +5,19 @@ Page({
    * 页面的初始数据
    */
   data: {
-    histories: [] //以前上传过的比赛
-    
+    matches: [], //以前上传过的比赛
+    isLoading: false
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    wx.setNavigationBarTitle({
+      title: '历史记录',
+    })
+    this.fetchData()
   },
 
   /**
@@ -58,10 +62,56 @@ Page({
 
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
+  fetchData: function() {
+    var app = getApp()
+    var openid = app.globalData.openid
 
+    this.data.isLoading = true
+    wx.showLoading({
+      title: '正在加载...',
+    })
+
+    const db = wx.cloud.database({
+      env: 'test-705bde'
+    })
+
+    var that = this
+
+    db.collection('vmatch').where({
+      _openid: openid,
+    }).field({
+      _id: true,
+      myScore: true,
+      yourScore: true,
+      create_time: true,
+      myTeam: true,
+      yourTeam: true,
+      place: true
+    }).get({
+        success(res) {
+          console.log(res)
+          that.data.matches = res.data
+          that.data.matches[0].create_time = that.data.matches[0].create_time.toLocaleString()
+          that.data.isLoading = false
+          wx.hideLoading()
+          that.setData(that.data)
+        },
+        fail(res) {
+          console.log(res)
+          that.data.isLoading = false
+          wx.hideLoading()
+          wx.showToast({
+            title: '加载失败',
+          })
+        }
+      })
+
+  },
+  tapMatch: function(e) {
+    var _id = e.currentTarget.dataset.matchid;
+    wx.navigateTo({
+      url: '../stat/report?_id=' + _id,
+    })
   }
+
 })

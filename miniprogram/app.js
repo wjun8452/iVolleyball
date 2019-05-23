@@ -1,17 +1,35 @@
 //app.js
+var qqMap = require('./utils/qqmap-wx-jssdk1.0/qqmap-wx-jssdk.js')
+
 App({
   onLaunch: function () {
-    //调用API从本地缓存中获取数据
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
     //初始化云
     wx.cloud.init({
       env: 'test-705bde',
       traceUser: true
     })
+
+    //获取openid
+    this.fetchOpenId()
+
+    this.initLocation()
   },
+
+  fetchOpenId: function () {
+    var that = this
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        console.log('[login]', res)
+        that.globalData.openid = res.result.openid
+      },
+      fail: err => {
+        console.error('[login] failed!', err)
+      }
+    })
+  },
+
   getUserInfo:function(cb){
     var that = this
     if(this.globalData.userInfo){
@@ -24,14 +42,56 @@ App({
             success: function (res) {
               that.globalData.userInfo = res.userInfo
               typeof cb == "function" && cb(that.globalData.userInfo)
+              console.log('userInfo', that.globalData.userInfo)
             }
           })
         }
       })
     }
   },
+
+  initLocation: function () {
+    var demo = new qqMap({
+      key: '6MWBZ-XDZL6-FPOSU-MKDSZ-DANKF-EOBRN' // 必填
+    });
+
+    var that = this
+
+    wx.getLocation({
+      type: 'gcj02',
+      success: function (res) {
+
+        that.globalData.lat = res.latitude
+        that.globalData.lon = res.longitude
+
+        demo.reverseGeocoder({
+          location: {
+            latitude: res.latitude,
+            longitude: res.longitude
+          },
+          success: function (res) {
+            console.log('[getLocation]', res);
+            that.globalData.place = res.result.formatted_addresses.recommend
+            that.globalData.city = res.result.address_component.city
+          },
+          fail: function (res) {
+            console.error('[getLocation] failed!', res);
+          },
+          complete: function (res) {
+            //console.log(res);
+          }
+        });
+      }
+    })
+  },
+
   globalData:{
+    openid:null,
     userInfo:null,
-    cacheKey: "stats15"
+    cacheKey: "stats15",
+    lat: 0,
+    lon: 0,
+    place: '',
+    city: ''
   }
 })

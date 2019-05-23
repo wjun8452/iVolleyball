@@ -13,7 +13,7 @@ Page({
     colon_height: 0,
     colon_width: 0,
     leftMode: false, //true：team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量 
-    team_name: ["对方", "我方"], //team_name[0]将始终显示在左边 
+    team_name: ["对方", "我方"], //team_name[0]将始终显示在左边，显示用
   },
   start_x_1: 0,
   start_y_1: 0,
@@ -39,6 +39,8 @@ Page({
     this.data.score_width = res.windowWidth
     this.data.colon_height = res.windowHeight / 80 * 2
     this.data.colon_width = res.windowWidth
+    this.data.team_name[0] = this.data.leftMode ? this.data.myTeam : this.data.yourTeam
+    this.data.team_name[1] = this.data.leftMode ? this.data.yourTeam : this.data.myTeam
     this.setData(this.data)
   },
 

@@ -4,15 +4,15 @@
 <view style="display: flex; flex-direction: column; height:{{height}}px; width: 100%;" bindtap="onTapBoard">
   <view style="flex:1;">
     <view style="display: flex; flex-direction: row; ">
-      <text style="flex:1; text-align: center;"> 我方 </text>
+      <text style="flex:1; text-align: center;"> {{myTeam}} </text>
       <text style="flex:1; text-align: center; font-size: xx-large " bindtap='onTapScore'>  {{myScore}} : {{yourScore}}</text>
-      <text style="flex:1;text-align: center; "> 对方 </text>
+      <text style="flex:1;text-align: center; "> {{yourTeam}} </text>
     </view>
   </view>
 
   <view style="flex:5;">
     <view style="display: flex; flex-direction: row; height:100%">
-      <block wx:for="{{[3,2,1]}}">
+      <block wx:for="{{[3,2,1]}}" wx:key="*this">
         <view style="flex:1; margin: 2px; background-color: #FFCC00;">
           <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item]}}" />
         </view>
@@ -22,7 +22,7 @@
 
   <view style="flex:5;">
     <view style="display: flex; flex-direction: row;height:100%">
-      <block wx:for="{{[4,5,0]}}">
+      <block wx:for="{{[4,5,0]}}" wx:key="*this">
         <view style="flex:1; margin: 2px; background-color: #FFCC00;">
           <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item]}}" />
         </view>
@@ -38,12 +38,7 @@
         <button bindtap='onTapRevert' disabled='{{stat_items.length==0}}' type="default" style="flex:1; margin:2px;">撤销</button>
       </block>
 
-
       <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
-
-
-      <button bindtap='onTapUpload' type="default" style="flex:1; margin:2px;" disabled='{{ !((myScore >= 25 || yourScore >= 25) && (myScore - yourScore >= 2 || yourScore - myScore >= 2)) }}'>上传</button>
-
     </view>
 
   </view>

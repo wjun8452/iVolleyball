@@ -17,7 +17,7 @@
   </view>
 
 <view style="flex-item; font-size:large" class="menu">
-      <navigator url="../stat/report" style="text-align:center; text-font:x-large">统计报表</navigator>
+      <navigator url="../history/history" style="text-align:center; text-font:x-large">历史记录</navigator>
   </view>
 
 <view style="flex-item; font-size:large" class="menu">
@@ -29,7 +29,7 @@
   </view>
 
 <view style="flex-direction:row; margin-top: 50px">
-   <view style="flex-item; text-align:center; font-size:large"  class="menu"> v3.6.3
+   <view style="flex-item; text-align:center; font-size:large"  class="menu"> v3.7
    </view>
 
 

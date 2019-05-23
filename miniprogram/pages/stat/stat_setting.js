@@ -14,7 +14,7 @@ Page({
    */
   onLoad: function(options) {
     wx.setNavigationBarTitle({
-      title: '设置'
+      title: '场上设置'
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);

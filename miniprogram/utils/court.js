@@ -98,7 +98,9 @@ var default_data = {
   opCat: null, //选中的操作大项目是什么？为null则没有选中
   player_allowed: null, //统计目标
   cat_allowed: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
-  cat_all: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception]
+  cat_all: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
+  myTeam: "我方",
+  yourTeam: "对方"
 }
 
 function addScore(data) {

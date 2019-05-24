@@ -1,9 +1,9 @@
 <view style="padding: 10px">
 
   <form bindsubmit="onAddPlayer">
-    <view style="display:flex; flex-direction: row; padding:10px">
+    <view style="display:flex; flex-direction: row; magin:5px">
       <view style="flex:1">
-        <input name="player" placeholder="输入名称" value="{{temp_player_name}}"> </input>
+        <input name="player" placeholder="输入球员名称" value="{{temp_player_name}}"> </input>
       </view>
       <view style="flex:1">
         <button type="primary" size="mini" form-type="submit"> 添加 </button>
@@ -13,7 +13,7 @@
 
 
   <block wx:for="{{all_players}}" wx:key="*this">
-    <view style="display:flex; flex-direction: row; padding:10px">
+    <view style="display:flex; flex-direction: row; margin:5px">
       <view style="flex:1">
         <text> {{item}} </text>
       </view>
@@ -24,5 +24,22 @@
 
     </view>
   </block>
+
+
+  <form bindsubmit="onTeamName">
+    <view style="display:flex; flex-direction: row; margin:5px; margin-top:20px">
+      <view style="flex:1">
+        <input name="team" placeholder="输入球队名称" value="{{temp_team_name}}"> </input>
+      </view>
+      <view style="flex:1">
+        <button type="primary" size="mini" form-type="submit"> 修改 </button>
+      </view>
+    </view>
+  </form>
+
+  <text> 球队名称: </text>
+  <text style="margin:5px; text-decoration:underline">  {{myTeam}} </text>
+  <text> 队 </text>
+
 
 </view>

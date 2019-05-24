@@ -23,7 +23,6 @@ Page({
     }
     court.updateAvailableItems(this.data);
     this.setData(this.data)
-    this.checkMatchOver()
     console.log(this.data)
   },
 
@@ -76,7 +75,6 @@ Page({
   onTapRevert: function(e) {
     court.popStatItem(this.data);
     this.setData(this.data);
-    this.checkMatchOver()
   },
 
   onTapScore: function(e) {
@@ -100,32 +98,22 @@ Page({
   },
 
   isMatchOver: function() {
+    var score = this.data.fifth ? 15 : 25
     var s1 = this.data.myScore
     var s2 = this.data.yourScore
-    return (s1 >= 25 || s2 >= 25) && (s1 - s2 >= 2 || s2 - s1 >= 2);
+    return (s1 >= score || s2 >= score) && (s1 - s2 >= 2 || s2 - s1 >= 2);
   },
 
   checkMatchOver: function() {
     var that = this
     if (this.isMatchOver()) {
-      wx.showModal({
-        title: '比赛结束？',
-        content: '确定结束本场计分？',
-        showCancel: true,
-        success: function(res) {
-          if (res.confirm) {
-            that.uploadData()
-          } else if (res.cancel) {
-
-          }
-        },
-      })
+      this.onTapMatchOver();
     }
   },
 
   uploadData: function(e) {
     const db = wx.cloud.database({
-      env: 'test-705bde'
+      env: getApp().globalData.env
     })
 
     var that = this
@@ -140,7 +128,7 @@ Page({
       longitude: getApp().globalData.lon
     }
     this.data.place = getApp().globalData.place
-    delete this.data._id  //向数据库插入数据时_id不能有哦，否则报内部错误
+    delete this.data._id //向数据库插入数据时_id不能有哦，否则报内部错误
 
     db.collection('vmatch').add({
       data: this.data,
@@ -174,6 +162,20 @@ Page({
     this.data.myScore = 0
     this.data.yourScore = 0
     this.data._id = null
+  },
+
+  onTapMatchOver: function() {
+    var that = this
+    wx.showModal({
+      title: '比赛结束?',
+      content: '点击确定将清零比分并上传数据',
+      showCancel: true,
+      success: function(res) {
+        if (res.confirm) {
+          that.uploadData()
+        } else if (res.cancel) {}
+      }
+    })
   }
 
 })

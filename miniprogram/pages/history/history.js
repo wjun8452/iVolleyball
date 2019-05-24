@@ -13,7 +13,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     wx.setNavigationBarTitle({
       title: '历史记录',
     })
@@ -23,42 +23,42 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-
+  onPullDownRefresh: function() {
+    this.fetchData()
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
@@ -72,22 +72,23 @@ Page({
     })
 
     const db = wx.cloud.database({
-      env: 'test-705bde'
+      env: getApp().globalData.env
     })
 
     var that = this
 
     db.collection('vmatch').where({
-      _openid: openid,
-    }).field({
-      _id: true,
-      myScore: true,
-      yourScore: true,
-      create_time: true,
-      myTeam: true,
-      yourTeam: true,
-      place: true
-    }).get({
+        _openid: openid,
+      }).field({
+        _id: true,
+        myScore: true,
+        yourScore: true,
+        create_time: true,
+        myTeam: true,
+        yourTeam: true,
+        place: true
+      }).orderBy('create_time', 'desc')
+      .get({
         success(res) {
           console.log(res)
           that.data.matches = res.data

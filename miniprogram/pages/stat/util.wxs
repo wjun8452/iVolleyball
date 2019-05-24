@@ -8,8 +8,9 @@ var util = {
       return arr.sort()
   },
 
-  matchOver: function(s1, s2) {
-    return (s1 >= 25 || s2 >= 25) && (s1 - s2 >= 2 || s2 - s1 >= 2);
+  matchOver: function(s1, s2, fifth) {
+    var score = fifth ? 15 : 25
+    return (s1 >= score || s2 >= score) && (s1 - s2 >= 2 || s2 - s1 >= 2);
   },
 }
 // 导出对外暴露的属性

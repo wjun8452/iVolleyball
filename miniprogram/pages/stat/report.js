@@ -84,7 +84,7 @@ Page({
     var path = '/pages/stat/report?_id=' + this.data._id
     console.log("share path=" + path)
     return {
-      title: '分享本局赛况',
+      title: '分享赛况',
       path: path,
       fail: function(res) {
         wx.showToast({
@@ -494,7 +494,7 @@ Page({
 
   loadData: function(id) {
     const db = wx.cloud.database({
-      env: 'test-705bde'
+      env: getApp().globalData.env
     })
 
     var that = this

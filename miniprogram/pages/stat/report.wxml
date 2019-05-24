@@ -1,9 +1,9 @@
 <view style="display: flex; flex-direction: column; font-size:medium">
   <!-- 得分信息 -->
-  <view style='text-align:center;'> {{myTeam}} vs {{yourTeam}}   {{myScore}} : {{yourScore}} </view>
+  <view style='text-align:center;'> {{myTeam}} vs {{yourTeam}} {{myScore}} : {{yourScore}} </view>
   <view style='text-align:center;'> {{place}} </view>
   <view style='text-align:center;'> {{create_time}} </view>
-  
+
   <!--按统计大类循环，每个大类是一个表格 -->
   <block wx:for='{{summary["标题"]}}' wx:for-index="category" wx:key='*this'>
     <view style="margin:1px 1px 8px 1px">
@@ -31,8 +31,7 @@
     </view>
   </block>
 
-<block wx:if='{{_id!=null && _id!=undefined}}'>
-  <button style="width:100%" open-type="share"> 分享 </button>
-</block>
-
+  <block wx:if='{{_id!=null && _id!=undefined}}'>
+    <button type='primary' style="width:100%" open-type="share"> 分享 </button>
+  </block>
 </view>

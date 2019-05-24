@@ -39,6 +39,7 @@
       </block>
 
       <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
+      <button bindtap='onTapMatchOver' type="default" style="flex:1; margin:2px;" disabled='{{ !utils.matchOver(myScore, yourScore, fifth) }}'>结束</button>
     </view>
 
   </view>

@@ -1,8 +1,18 @@
 <wxs module="utils" src="./util.wxs"></wxs>
 
 <scroll-view>
+  <view style="margin-left:2px; display: flex; flex-direction: row;">
+      <view style='flex:1;display:flex; flex-direction: row;'>
+        <text style='flex:1'>我方队名:</text>
+        <input bindconfirm='onEditTeam' data-obj="myTeam" value='{{myTeam}}' style='flex:1; text-decoration:underline' />
+      </view>
+   <view style='flex:1;display:flex; flex-direction: row;'>
+        <text style='flex:1'>对方队名:</text>
+        <input bindconfirm='onEditTeam' data-obj="yourTeam" value='{{yourTeam}}' style='flex:1; text-decoration:underline' />
+      </view>
+  </view>
 
-  <view style="margin: 2px; display: flex; flex-direction: row; height: 100px">
+  <view style="margin-top:10px; margin: 2px; display: flex; flex-direction: row; height: 100px">
     <view style="width:50%; border-style: solid; border-width: 1px 0px 1px 1px; text-align:center; font:Arial; font-weight:bold; font-size: 70px; " bindtouchstart="touchStart1" bindtouchend="touchEnd1">
       {{myScore}}
     </view>
@@ -13,11 +23,14 @@
   </view>
 
 
-<view style="margin: 2px; display: flex; flex-direction: row; ">
+  <view style="margin: 2px; display: flex; flex-direction: row; ">
     <button bindtap='onReset' type="default" style="flex:1; margin:2px;">比分清零</button>
   </view>
-  
+
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row; ">
+    <checkbox-group bindchange="onCheckFifth">
+      <checkbox checked='{{fifth}}'>第5局</checkbox>
+    </checkbox-group>
     <radio-group class="radio-group" bindchange="onTapMode">
       <radio value="0" checked="{{front_back_mode}}" />前后排换位
       <radio value="1" checked="{{!front_back_mode}}" />正常换位
@@ -127,7 +140,7 @@
   </checkbox-group>
 
 
-  
+
 
   <!-- to add more views above -->
 </scroll-view>

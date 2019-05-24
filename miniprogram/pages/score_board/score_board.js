@@ -86,13 +86,6 @@ Page({
 
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {
-
-  },
-
   touchStart1: function(e) {
     this.start_x_1 = e.changedTouches[0].pageX;
     this.start_y_1 = e.changedTouches[0].pageY;

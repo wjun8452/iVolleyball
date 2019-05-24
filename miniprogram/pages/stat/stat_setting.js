@@ -158,8 +158,16 @@ Page({
     var player = e.detail.value;
     if (player != null) {
       player = player.replace(/^\s*|\s*$/g, "");
-      if (player == "") {
-
+      if (player.length > 4) {
+        wx.showToast({
+          title: '名称不能超过4个字符或汉字!',
+          icon: 'none'
+        })
+      } else if (player.length == 0) {
+        wx.showToast({
+          title: '名称不能为空',
+          icon: 'none'
+        })
       } else if (this.data.all_players.indexOf(player) == -1) {
         this.data.all_players.unshift(player);
         this.data.players[position] = player;
@@ -260,6 +268,33 @@ Page({
   onCheckAllowedPlayer: function (e) {
     this.data.player_allowed = e.detail.value;
     this.setData(this.data)
+  },
+
+  onCheckFifth: function(e) {
+    this.data.fifth = !this.data.fifth
+    this.setData(this.data)
+  }, 
+
+  onEditTeam: function(e) {
+    let dataset = e.currentTarget.dataset
+    let name = e.detail.value
+
+    name = name.replace(/^\s*|\s*$/g, "");
+    if (name.length > 4) {
+      wx.showToast({
+        title: '名称不能超过4个字符或汉字!',
+        icon: 'none'
+      })
+    } else if (name.length > 0) {
+      this.data[dataset.obj] = e.detail.value
+      this.setData(this.data)
+    } else {
+      wx.showToast({
+        title: '名称不能为空！',
+        icon: 'none'
+      })
+    }
+    
   },
 
 })

@@ -100,7 +100,8 @@ var default_data = {
   cat_allowed: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
   cat_all: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
   myTeam: "我方",
-  yourTeam: "对方"
+  yourTeam: "对方",
+  fifth: false, //第5局？
 }
 
 function addScore(data) {

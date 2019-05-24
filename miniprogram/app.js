@@ -5,7 +5,7 @@ App({
   onLaunch: function () {
     //初始化云
     wx.cloud.init({
-      env: 'test-705bde',
+      env: this.globalData.env,
       traceUser: true
     })
 
@@ -92,6 +92,7 @@ App({
     lat: 0,
     lon: 0,
     place: '',
-    city: ''
+    city: '',
+    env: 'ilovevolleyball-d1813b' //,test-705bde
   }
 })

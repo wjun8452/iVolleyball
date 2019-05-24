@@ -8,9 +8,8 @@
   border-right-style: none;
   border-bottom-style: 1px solid grey;
   border-left-style: none;
-  display: flex;
-  flex-direction: row;
   margin-bottom: 10px;
+  margin-left: 2px;
 }
 
 .userinfo-avatar {

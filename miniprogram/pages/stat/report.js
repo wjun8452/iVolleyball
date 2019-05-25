@@ -532,4 +532,9 @@ Page({
       })
   },
 
+  gotoHome: function() {
+    wx.navigateTo({
+      url: '../index/index',
+    })
+  },
 })

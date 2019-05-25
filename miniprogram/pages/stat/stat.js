@@ -39,6 +39,10 @@ Page({
     console.log("onUnload")
   },
 
+  onShareAppMessage:function(e) {
+
+  },
+
   onTapAddScore: function() {
     wx.vibrateShort();
     court.addScoreRotate(this.data)

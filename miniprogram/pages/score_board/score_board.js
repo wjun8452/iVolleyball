@@ -72,6 +72,9 @@ Page({
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
   },
 
+  onShareAppMessage: function(e) {
+
+  },
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */

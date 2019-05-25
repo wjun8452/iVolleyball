@@ -34,4 +34,6 @@
   <block wx:if='{{_id!=null && _id!=undefined}}'>
     <button type='primary' style="width:100%" open-type="share"> 分享 </button>
   </block>
+
+  <button type='default' style="width:100%; margin-top:10px" bindtap='gotoHome'>  返回首页 </button>
 </view>

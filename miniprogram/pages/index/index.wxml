@@ -29,7 +29,7 @@
   </view>
 
 <view style="flex-direction:row; margin-top: 50px">
-   <view style="flex-item; text-align:center; font-size:large"  class="menu"> v3.7
+   <view style="flex-item; text-align:center; font-size:large"  class="menu"> v3.7.1
    </view>
 
 

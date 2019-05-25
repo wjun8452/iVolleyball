@@ -4,10 +4,15 @@ var qqMap = require('./utils/qqmap-wx-jssdk1.0/qqmap-wx-jssdk.js')
 App({
   onLaunch: function () {
     //初始化云
-    wx.cloud.init({
-      env: this.globalData.env,
-      traceUser: true
-    })
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: this.globalData.env,
+        traceUser: true
+      })
+    } else {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力')
+    }
+   
 
     //获取openid
     this.fetchOpenId()

@@ -23,14 +23,19 @@
 
       <view style="display:flex; flex-direction:column;justify-content:space-around ">
         <view>
-          {{item.myTeam}} vs {{item.yourTeam}} 比分 {{item.myScore}}:{{item.yourScore}}
+         队伍：{{item.myTeam}} vs {{item.yourTeam}}
         </view>
 
         <view>
-          {{item.place}}
+         比分：{{item.myScore}}:{{item.yourScore}}
         </view>
+
         <view>
-          {{ item.create_time }}
+          地点：{{item.place}}
+        </view>
+        
+        <view>
+          时间：{{ item.create_time }}
         </view>
       </view>
     </view>

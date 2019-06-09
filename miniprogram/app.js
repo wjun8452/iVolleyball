@@ -9,15 +9,18 @@ App({
         env: this.globalData.env,
         traceUser: true
       })
+
+      //获取openid
+      this.fetchOpenId()
+
+      this.initLocation()
+      
     } else {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
+      wx.showToast({
+        title: '云初始化失败，可能您的微信基础库版本太低哦',
+      })
     }
-   
-
-    //获取openid
-    this.fetchOpenId()
-
-    this.initLocation()
   },
 
   fetchOpenId: function () {

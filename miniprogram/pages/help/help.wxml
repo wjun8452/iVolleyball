@@ -17,6 +17,7 @@
   <text style="flex; margin-left: 15px;">  此处可以查看近期上传的比赛记录，点击可查看详情并分享给好友；</text>
   <text style="flex; margin-left: 5px;">5, 建议与反馈：</text>
   <text style="flex; margin-left: 15px;">  点击小程序右上角...，选择关于排球记分牌 - 投诉与反馈 - 功能异常 - 意见与建议，填写详细信息后点击提交即可</text>
+  <text style="flex; margin-left: 5px;">6, 如果你喜欢本软件，点击主页广告栏打赏一下哦~</text>
 
 </view>
 

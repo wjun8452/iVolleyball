@@ -1,7 +1,7 @@
 <!--pages/score_board/score_board.wxml-->
-<view class="showborder" style="overflow: hidden;width:{{height}}px; height:{{width}}px; position: absolute; left: {{(width-height)/2}}px; top: {{(height-width)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;align-items:stretch;" catchtouchmove='stopPageScroll'>
+<view style="overflow: hidden;width:{{height}}px; height:{{width}}px; position: absolute; left: {{(width-height)/2}}px; top: {{(height-width)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;align-items:stretch;" catchtouchmove='stopPageScroll'>
 
-  <view class="border_bottom" style="display:flex;flex-direction:row;justify-content:center">
+  <view style="display:flex;flex-direction:row;justify-content:center">
     
     <view style="display: flex; flex-direction: row;">
       <image src="../../images/swap.png" style="width:20px;height:40px" bindtap='swapTeam'> </image>
@@ -25,7 +25,7 @@
 
 
   <view class="" style="display:flex;flex-direction:row;align-items:stretch">
-    <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" class="border_right" style="flex:1; color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{ leftMode ? myScore : yourScore }} </text>
-    <text bindtouchstart="touchStart2" bindtouchend="touchEnd2" class="border_left" style="flex:1;color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{leftMode ?  yourScore : myScore}} </text>
+    <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{ leftMode ? myScore : yourScore }} </text>
+    <text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{leftMode ?  yourScore : myScore}} </text>
   </view>
 </view >

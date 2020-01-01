@@ -29,14 +29,14 @@
 
 .score_history_top {
   padding-left: 2px;
-  background-color: darkgrey;
+  background-color:black;
   color: white;
   border-radius: 0px 10px 0px 0px;
 }
 
 .score_history_bottom {
   padding-left: 2px;
-  background-color: darkgrey;
+  background-color: black;
   color: white;
   border-radius: 0px 0px 10px 0px;
 }
@@ -49,14 +49,12 @@
 
 .score_current_top {
   padding-left: 2px;
-  background-color: grey;
-  color: white;
+  border: 1px solid;
   border-radius: 0px 10px 0px 0px;
 }
 
 .score_current_bottom {
   padding-left: 2px;
-  background-color: grey;
-  color: white;
+  border: 1px solid;
   border-radius: 0px 0px 10px 0px;
 }

@@ -163,5 +163,12 @@ Page({
 
   stopPageScroll: function() {
     return
-  }
+  },
+
+  onReset: function() {
+    this.data.stat_items = []
+    this.data.myScore = 0
+    this.data.yourScore = 0
+    this.setData(this.data)
+  },
 })

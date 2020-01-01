@@ -19,7 +19,7 @@ Page({
   start_y_1: 0,
   start_x_2: 0,
   start_y_2: 0,
-
+  
 
   /**
    * 生命周期函数--监听页面加载
@@ -141,8 +141,7 @@ Page({
           this.setData(this.data)
           // console.log("对方-1, popState")
         } else {
-          mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
-          // console.log(mine ? "我方-1" : "对方-1")
+          console.log("should not happen")
         }
         wx.vibrateShort();
       }
@@ -152,22 +151,6 @@ Page({
       this.data.yourScore = 0
       this.setData(this.data);
       wx.vibrateShort();
-    }
-  },
-
-  changeMyScore: function(delta) {
-    var s = this.data.myScore + delta;
-    if (s >= 0) {
-      this.data.myScore = s;
-      this.setData(this.data);
-    }
-  },
-
-  changeYourScore: function(delta) {
-    var s = this.data.yourScore + delta;
-    if (s >= 0) {
-      this.data.yourScore = s;
-      this.setData(this.data);
     }
   },
 

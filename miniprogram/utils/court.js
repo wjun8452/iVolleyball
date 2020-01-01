@@ -111,7 +111,7 @@ function addScore(data) {
 function addScoreRotate(data) {
   var serve = data.serve
   data.myScore = 1 + data.myScore;
-  data.stat_items.push(createStatItem("", "无类别", "得分", 1, !serve));
+  data.stat_items.push(createStatItem("", "无类别", "得分", 1, !serve, data.myScore, data.yourScore));
 
   if (!serve) {
     data.serve = true;
@@ -123,7 +123,7 @@ function addScoreRotate(data) {
 function looseScoreRotate(data) {
   var serve = data.serve;
   data.yourScore = 1 + data.yourScore;
-  data.stat_items.push(createStatItem("", "无类别", "失误", -1, serve));
+  data.stat_items.push(createStatItem("", "无类别", "失误", -1, serve, data.myScore, data.yourScore));
   if (serve) {
     data.serve = false;
     updateAvailableItems(data);
@@ -278,12 +278,18 @@ function stateRotate(data, position, i) {
     swap = true;
   }
 
-  //createStatItem and _createPlayItem需要统一。。。
-  data.stat_items.push(createStatItem(player, item.category, item.name, item.score, swap));
-
   if (item.score == 1) {
     data.myScore = data.myScore + 1;
+  }
+  
+  if (item.score == -1) {
+    data.yourScore = data.yourScore + 1;
+  }
 
+  //createStatItem and _createPlayItem需要统一。。。
+  data.stat_items.push(createStatItem(player, item.category, item.name, item.score, swap, data.myScore, data.yourScore));
+
+  if (item.score == 1) {
     //next position
     if (!serve) {
       data.serve = true;
@@ -292,7 +298,6 @@ function stateRotate(data, position, i) {
     }
 
   } else if (item.score == -1) {
-    data.yourScore = data.yourScore + 1;
     if (serve) {
       data.serve = false;
       updateAvailableItems(data);
@@ -372,13 +377,15 @@ function _prevPosition(data, stat) { //called when pop stat
   }
 }
 
-function createStatItem(player, item_cat, item_name, item_score, swap) {
+function createStatItem(player, item_cat, item_name, item_score, swap, myscore, yourscore) {
   var obj = new Object();
   obj.player = player
   obj.category = item_cat
   obj.item = item_name;
   obj.score = item_score
   obj.swapServe = swap;
+  obj.myscore = myscore;
+  obj.yourscore = yourscore;
   return obj;
 }
 

@@ -135,13 +135,12 @@ Page({
         if (item != null && mine && item.score > 0) {
           court.popStatItem(this.data);
           this.setData(this.data)
-          // console.log("我方-1, popState")
         } else if (item != null && (!mine) && item.score < 0) {
           court.popStatItem(this.data);
           this.setData(this.data)
-          // console.log("对方-1, popState")
         } else {
-          console.log("should not happen")
+          court.revertScore(this.data, mine)
+          this.setData(this.data)
         }
         wx.vibrateShort();
       }

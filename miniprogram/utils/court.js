@@ -316,6 +316,24 @@ function popStatItem(data) {
   updateAvailableItems(data);
 }
 
+//mine: true: revert my score, false: revert your score
+function revertScore(data, mine) {
+  for (var j in data.stat_items) {
+    var i = data.stat_items.length - j - 1
+    if (mine && data.stat_items[i].score > 0) {
+      data.stat_items.splice(i, 1)
+      data.myScore = data.myScore - 1
+      break
+    }
+
+    if (!mine && data.stat_items[i].score < 0) {
+      data.stat_items.splice(i, 1)
+      data.yourScore = data.yourScore - 1;
+      break
+    }
+  }
+}
+
 function getTopItem(data) {
   if (data.stat_items.length > 0) {
     return data.stat_items[data.stat_items.length - 1]
@@ -414,3 +432,4 @@ module.exports.StatCat = StatCat;
 module.exports.default_data = default_data;
 module.exports.rotate = rotate;
 module.exports.getTopItem = getTopItem;
+module.exports.revertScore = revertScore;

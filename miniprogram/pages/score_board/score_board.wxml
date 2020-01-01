@@ -1,31 +1,35 @@
 <!--pages/score_board/score_board.wxml-->
 <view style="overflow: hidden;width:{{height}}px; height:{{width}}px; position: absolute; left: {{(width-height)/2}}px; top: {{(height-width)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;align-items:stretch;" catchtouchmove='stopPageScroll'>
 
-  <view style="display:flex;flex-direction:row;justify-content:center;align-items:center;">
-    
-    <view style="display: flex; flex-direction: row;">
+  <view style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;">
+
+    <view style="display: flex; flex-direction: row; margin-left:5px">
       <view style="display: flex; flex-direction: column;">
           <view class='score_current_top'>  {{team_name[0]}} </view>
           <view class='score_current_bottom'> {{team_name[1]}} </view>
       </view>
-    </view>
- 
-    <view wx:for="{{stat_items}}" wx:for-index="idx" wx:for-item="itemName" style="display: flex; flex-direction: column;">
-       <view class='{{leftMode ? (itemName.score>0?"score_history_top":"score_history_hidden") : (itemName.score<0 ? "score_history_top" : "score_history_hidden")}}' wx:if="{{itemName.score!=0 && (stat_items.length-idx) < 20}}">  {{leftMode ? (itemName.score>0 ? itemName.myscore : "-") : (itemName.score<0 ? itemName.yourscore : "-")}} </view>
-        <view class='{{leftMode ? (itemName.score<0?"score_history_bottom":"score_history_hidden") : (itemName.score>0?"score_history_bottom":"score_history_hidden")}}' wx:if="{{itemName.score!=0 && (stat_items.length-idx) < 20}}">  {{leftMode ? (itemName.score<0 ? itemName.yourscore : " -") : (itemName.score>0 ? itemName.myscore : "-")}} </view>
-    </view>
 
-    <view style="display: flex; flex-direction: column;">
+      <view wx:for="{{stat_items}}" wx:for-index="idx" wx:for-item="itemName" style="display: flex; flex-direction: column;">
+        <view class='{{leftMode ? (itemName.score>0?"score_history_top":"score_history_hidden") : (itemName.score<0 ? "score_history_top" : "score_history_hidden")}}' wx:if="{{itemName.score!=0 && (stat_items.length-idx) < 20}}">  
+          {{leftMode ? (itemName.score>0 ? itemName.myscore : "-") : (itemName.score<0 ? itemName.yourscore : "-")}} 
+        </view>
+
+        <view class='{{leftMode ? (itemName.score<0?"score_history_bottom":"score_history_hidden") : (itemName.score>0?"score_history_bottom":"score_history_hidden")}}' wx:if="{{itemName.score!=0 && (stat_items.length-idx) < 20}}">  
+            {{leftMode ? (itemName.score<0 ? itemName.yourscore : " -") : (itemName.score>0 ? itemName.myscore : "-")}} 
+        </view>
+      </view>
+
+      <view style="display: flex; flex-direction: column;">
           <view class='score_current_top'> {{leftMode ? myScore : yourScore}} </view>
           <view class='score_current_bottom'> {{leftMode ? yourScore : myScore}} </view>
+      </view>
     </view>
 
-    <image class="tool_button" src="../../images/swap.png" bindtap='swapTeam'> </image>
-
-    <image class="tool_button" src="../../images/reset.png" bindtap='onReset'> </image>
-
+    <view style="display: flex; flex-direction: row;">
+      <image class="tool_button" src="../../images/swap.png" bindtap='swapTeam'> </image>
+      <image class="tool_button" src="../../images/reset.png" bindtap='onReset'> </image>
+    </view>
   </view>
-
 
   <view class="" style="display:flex;flex-direction:row;align-items:stretch">
     <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{ leftMode ? myScore : yourScore }} </text>

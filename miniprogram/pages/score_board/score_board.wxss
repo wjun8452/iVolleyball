@@ -1,32 +1,32 @@
 /* pages/score_board/score_board.wxss */
 .score_history_top {
-  padding-left: 2px;
+  padding: 1px;
   background-color:black;
   color: white;
   border-radius: 0px 10px 0px 0px;
 }
 
 .score_history_bottom {
-  padding-left: 2px;
+  padding: 1px;
   background-color: black;
   color: white;
   border-radius: 0px 0px 10px 0px;
 }
 
 .score_history_hidden {
-  padding-left: 2px;
+  padding: 1px;
   background-color: white;
   color: white;
 }
 
 .score_current_top {
-  padding-left: 2px;
+  padding: 1px;
   border: 1px solid;
   border-radius: 0px 10px 0px 0px;
 }
 
 .score_current_bottom {
-  padding-left: 2px;
+  padding: 1px;
   border: 1px solid;
   border-radius: 0px 0px 10px 0px;
 }
@@ -35,5 +35,6 @@
   width:40px;
   height:40px;
   border: 1px solid;
-  margin: 5px;
+  margin: 2px;
+  border-radius: 5px 5px 5px 5px;
 }

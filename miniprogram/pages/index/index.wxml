@@ -2,7 +2,7 @@
 <view class="container" >
   
   <view  class="userinfo">
-    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+    <image class="userinfo-avatar" src="../../images/volleyball.png" background-size="cover"></image>
   </view>
 
 </view>
@@ -29,8 +29,7 @@
   </view>
 
 <view style="flex-direction:row; margin-top: 50px">
-   <view style="flex-item; text-align:center; font-size:large"  class="menu"> v3.8.2
-   </view>
+  <navigator url="../release/release" style="text-align:center;"> v3.8.3 </navigator>
 </view>
 
 <ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>

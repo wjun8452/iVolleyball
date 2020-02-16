@@ -2,48 +2,39 @@
 <import src="block.wxml" />
 
 <view style="display: flex; flex-direction: column; height:{{height}}px; width: 100%;" bindtap="onTapBoard">
-  <view style="flex:1;">
-    <view style="display: flex; flex-direction: row; ">
-      <text style="flex:1; text-align: center;"> {{myTeam}} </text>
-      <text style="flex:1; text-align: center; font-size: xx-large " bindtap='onTapScore'>  {{myScore}} : {{yourScore}}</text>
-      <text style="flex:1;text-align: center; "> {{yourTeam}} </text>
-    </view>
-  </view>
 
-  <view style="flex:5;">
-    <view style="display: flex; flex-direction: row; height:100%">
-      <block wx:for="{{[3,2,1]}}" wx:key="*this">
-        <view style="flex:1; margin: 2px; background-color: #FFCC00;">
-          <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item]}}" />
-        </view>
-      </block>
-    </view>
-  </view>
+	<view style="flex:1;" class="net">
+		<text style="flex:1; text-align: center;"> {{myTeam}} </text>
+		<text style="flex:1; text-align: center; font-size: xx-large " bindtap='onTapScore'> {{myScore}} : {{yourScore}}</text>
+		<text style="flex:1;text-align: center; "> {{yourTeam}} </text>
+	</view>
 
-  <view style="flex:5;">
-    <view style="display: flex; flex-direction: row;height:100%">
-      <block wx:for="{{[4,5,0]}}" wx:key="*this">
-        <view style="flex:1; margin: 2px; background-color: #FFCC00;">
-          <template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item]}}" />
-        </view>
-      </block>
-    </view>
-  </view>
+	<view style="flex:10;" class="court">
+		<view style="flex:1;" class="player_row">
+			<block wx:for="{{[3,2,1]}}" wx:key="*this">
+				<view style="flex:1;" class="player">
+					<template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item]}}" />
+				</view>
+			</block>
+		</view>
+		<view style="flex:1;" class="player_row">
+			<block wx:for="{{[4,5,0]}}" wx:key="*this">
+				<view style="flex:1;" class="player">
+					<template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item]}}" />
+				</view>
+			</block>
+		</view>
+	</view>
 
-  <view style="flex:2;">
-    <view style="display: flex; flex-direction: row;">
-      <button bindtap='onTapAddScore' type="primary" style="flex:1; margin:2px;">得分</button>
-      <button bindtap='onTapLooseScore' type="warn" style="flex:1; margin:2px;"> 失分 </button>
-      <block>
-        <button bindtap='onTapRevert' disabled='{{stat_items.length==0}}' type="default" style="flex:1; margin:2px;">撤销</button>
-      </block>
+	<view style="flex:1;display: flex; flex-direction: row;">
+		<button bindtap='onTapAddScore' type="primary" style="flex:1; margin:2px;">得分</button>
+		<button bindtap='onTapLooseScore' type="warn" style="flex:1; margin:2px;"> 失分 </button>
+		<block>
+			<button bindtap='onTapRevert' disabled='{{stat_items.length==0}}' type="default" style="flex:1; margin:2px;">撤销</button>
+		</block>
 
-      <button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
-      <button bindtap='onTapMatchOver' type="default" style="flex:1; margin:2px;" disabled='{{ !utils.matchOver(myScore, yourScore, fifth) }}'>结束</button>
-    </view>
-
-  </view>
-
-
+		<button bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
+		<button bindtap='onTapMatchOver' type="default" style="flex:1; margin:2px;" disabled='{{ !utils.matchOver(myScore, yourScore, fifth) }}'>结束</button>
+	</view>
 
 </view>

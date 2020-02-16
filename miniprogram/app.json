@@ -8,7 +8,8 @@
     "pages/stat/users",
     "pages/score_board/score_board",
     "pages/help/help",
-    "pages/history/history"
+    "pages/history/history",
+    "pages/release/release"
   ],
   "window": {
     "backgroundTextStyle": "light",

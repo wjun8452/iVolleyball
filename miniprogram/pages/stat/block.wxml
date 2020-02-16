@@ -1,8 +1,8 @@
 <template name="block">
-  <!-- represents an area the player stands -->
-  <view style='display:flex; flex-direction:column; height:100%'>
-    <view style="flex:10; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px">
-      <!-- <button bindtap='opAddScore' data-position='{{position}}' type='{{opPosition==position&&opScore==1?"default":"primary"}}' style='flex:1; margin:2px; text_align:center;' hidden='{{opScore!=1 && opPosition==position}}'>
+	<!-- represents an area the player stands -->
+	<view style='display:flex; flex-direction:column; height:100%;'>
+		<view style="flex:9; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px">
+			<!-- <button bindtap='opAddScore' data-position='{{position}}' type='{{opPosition==position&&opScore==1?"default":"primary"}}' style='flex:1; margin:2px; text_align:center;' hidden='{{opScore!=1 && opPosition==position}}'>
         {{opPosition==position? (opScore==1? "返回" : "得分") : "得分" }}
       </button>
 
@@ -14,20 +14,20 @@
         {{opPosition==position? (opScore==0? "返回" : "其他") : "其他" }}
       </button> -->
 
-    <block wx:for="{{play_item_cats}}" wx:for-item='category' wx:key="*this">
-      <button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; text_align: center" hidden='{{opCat!=null && opPosition==position}}' size="mini"> {{category}} </button>
-    </block>
+			<block wx:for="{{play_item_cats}}" wx:for-item='category' wx:key="*this">
+				<button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; text_align: center; background-color: grey; color: white; border: 1px solid white;" hidden='{{opCat!=null && opPosition==position}}' size="mini"> {{category}} </button>
+			</block>
 
-      <block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="*this">
-        <block wx:if='{{play_item.category==opCat && opPosition==position}}'>
-          <button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='{{play_item.score==1?"primary":(play_item.score==-1?"warn":"default")}}'  style="flex:1; margin:2px; text_align: center"  size="mini"> {{play_item.name}} </button>
-         </block>
-      </block>
-    </view>
+			<block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="*this">
+				<block wx:if='{{play_item.category==opCat && opPosition==position}}'>
+					<button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='default' style='flex:1; margin:2px; text_align: center; color: white; background-color: {{play_item.score==1? "green" : (play_item.score==-1?"red":"grey")}}; border: 1px solid white;' size="mini"> {{play_item.name}} </button>
+				</block>
+			</block>
+		</view>
 
-    <view style='flex:1; text-align:center; color: {{ (serve && who_serve==position) ? "red" : "black"}} '>
-      {{players[position]}}
-    </view>
+		<view style='flex:1; text-align:center; color: {{ (serve && who_serve==position) ? "yellow" : "white"}}; font-weight: bold; '>
+			{{players[position]}}
+		</view>
 
-  </view>
+	</view>
 </template>

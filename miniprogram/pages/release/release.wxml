@@ -1,0 +1,19 @@
+<!--pages/release/release.wxml-->
+<view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+	<text style="flex; margin-left: 5px;">v3.8.3 (2020/2/16) 增加logo, 修改技术统计的布局和颜色。</text>
+
+	<text style="flex; margin-left: 5px;">v3.8.2 (2020/1) 记分牌顶端增加分数树和工具按钮。</text>
+
+	<text style="flex; margin-left: 5px;">v3.8.0 (2019/8) 添加广告栏。</text>
+
+	<text style="flex; margin-left: 5px;">v3.7 (2019/5) 云端存储，技术报告分享好友。</text>
+
+	<text style="flex; margin-left: 5px;">v3.6 (2019/5) 可设置允许统计的项目，或者允许统计的队员。</text>
+
+	<text style="flex; margin-left: 5px;">v3.4 (2019/4) 转位和分数独立设计。</text>
+
+	<text style="flex; margin-left: 5px;">v3.3 (2019/3/31) 大记分牌增加帮助页面。</text>
+
+	<text style="flex; margin-left: 5px;">v3.2 (2019/3) 第一个版本。</text>
+
+</view>

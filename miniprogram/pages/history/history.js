@@ -90,7 +90,7 @@ Page({
       }).orderBy('create_time', 'desc')
       .get({
         success(res) {
-          console.log(res)
+          //console.log(res)
           that.data.matches = res.data
           for (var i in that.data.matches) {
             that.data.matches[i].create_time = that.data.matches[i].create_time.toLocaleString()

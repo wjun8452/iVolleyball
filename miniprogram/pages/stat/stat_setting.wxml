@@ -46,7 +46,7 @@
 
 
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row;">
-    <block wx:for="{{[3,2,1]}}" wx:for-item="pos">
+    <block wx:for="{{[3,2,1]}}" wx:for-item="pos" wx:key="*this">
 
       <!-- copy to next row -->
       <view style="flex:1; margin: 2px; display: flex; flex-direction: column;">
@@ -63,7 +63,7 @@
           <view style="border:1px dashed black;">
             <input name="player" placeholder="新队友" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
             <view style="display: flex; flex-direction: column;">
-              <block wx:for="{{all_players}}" wx:for-item="player">
+              <block wx:for="{{all_players}}" wx:for-item="player" wx:key="*this">
                 <block wx:if="{{item!=players[pos]}}">
                   <view style="flex:1 border:2px solid black;" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'> {{player}} </view>
                 </block>
@@ -78,7 +78,7 @@
   </view>
 
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row;">
-    <block wx:for="{{[4,5,0]}}" wx:for-item="pos">
+    <block wx:for="{{[4,5,0]}}" wx:for-item="pos" wx:key="*this">
 
       <!-- copy to next row -->
       <view style="flex:1; margin: 2px; display: flex; flex-direction: column;">
@@ -95,7 +95,7 @@
           <view style="border:1px dashed black;">
             <input name="player" placeholder="新队友" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
             <view style="display: flex; flex-direction: column;">
-              <block wx:for="{{all_players}}" wx:for-item="player">
+              <block wx:for="{{all_players}}" wx:for-item="player" wx:key="*this">
                 <block wx:if="{{item!=players[pos]}}">
                   <view style="flex:1 border:2px solid black;" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'> {{player}} </view>
                 </block>
@@ -117,7 +117,7 @@
   <view style="margin-top:10px">选择统计项目：</view>
   <checkbox-group bindchange="onCheckAllowedStatItem">
     <view style='display:flex; flex-direction:row; margin-left:5px'>
-      <block wx:for="{{cat_all}}">
+      <block wx:for="{{cat_all}}" wx:key="*this">
         <view style='flex:1; display:flex; flex-direction:column'>
           <view style='flex:1'> {{item}} </view>
           <checkbox style='flex:1' value="{{item}}" checked="{{utils.contains(cat_allowed, item)}}" />
@@ -130,7 +130,7 @@
   <view style="margin-top:10px">选择统计对象：</view>
   <checkbox-group bindchange="onCheckAllowedPlayer">
     <view style='display:flex; flex-direction:row; margin-left:5px'>
-      <block wx:for="{{ utils.sort(players) }}">
+      <block wx:for="{{ utils.sort(players) }}" wx:key="*this">
         <view style='flex:1; display:flex; flex-direction:column'>
           <view style='flex:1'> {{item}} </view>
           <checkbox style='flex:1' value="{{item}}" checked="{{utils.contains(player_allowed, item)}}" />

@@ -9,7 +9,7 @@
           <view class='score_current_bottom'> {{team_name[1]}} </view>
       </view>
 
-      <view wx:for="{{stat_items}}" wx:for-index="idx" wx:for-item="itemName" style="display: flex; flex-direction: column;">
+      <view wx:for="{{stat_items}}" wx:key="*this" wx:for-index="idx" wx:for-item="itemName" style="display: flex; flex-direction: column;">
         <view class='{{leftMode ? (itemName.score>0?"score_history_top":"score_history_hidden") : (itemName.score<0 ? "score_history_top" : "score_history_hidden")}}' wx:if="{{itemName.score!=0 && (stat_items.length-idx) < 20}}">  
           {{leftMode ? (itemName.score>0 ? itemName.myscore : "-") : (itemName.score<0 ? itemName.yourscore : "-")}} 
         </view>

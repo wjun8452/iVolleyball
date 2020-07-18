@@ -30,7 +30,6 @@
 				<image class="tool_button" src="../../images/swap.png" bindtap='swapTeam'> </image>
 				<image class='tool_button border_black' src="../../images/reset.png" bindtap='onReset'> </image>
 				<image class='tool_button {{ _id ? "border_red" : "border_black" }}' src="../../images/share.png" bindtap='onShare'> </image>
-				<!-- <button open-type='share' class='share_button {{ isOnline ? "border_red" : "border_black" }}' plain='true'> </button> -->
 			</view>
 		</block>
 

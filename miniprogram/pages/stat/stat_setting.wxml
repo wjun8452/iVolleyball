@@ -28,14 +28,19 @@
   </view>
 
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row; ">
-    <checkbox-group bindchange="onCheckFifth">
-      <checkbox checked='{{fifth}}'>第5局</checkbox>
-    </checkbox-group>
+
     <radio-group class="radio-group" bindchange="onTapMode">
       <radio value="0" checked="{{front_back_mode}}" />前后排换位
       <radio value="1" checked="{{!front_back_mode}}" />正常换位
     </radio-group>
-  </view>
+
+    <picker style="margin-left:10px" bindchange="bindTotalScoreChange" value="{{total_score-total_scores[0]}}" range="{{total_scores}}">
+        <view> 
+          局分: {{total_score}}
+        </view>
+    </picker>
+
+</view>
 
   <view style="margin-left:2px; margin-top: 15px; display: flex; flex-direction: row; ">
     <radio-group class="radio-group" bindchange="onTapServe">

@@ -5,9 +5,7 @@ Page({
   /**
    * 页面的初始数据
    */
-  data: {
-    edit_pos: -1,
-  },
+  data: {},
 
   /**
    * 生命周期函数--监听页面加载
@@ -16,20 +14,18 @@ Page({
     wx.setNavigationBarTitle({
       title: '场上设置'
     })
-
+    this.data.edit_pos = -1,
+      this.data.total_scores = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.data = Object.assign(this.data, court.default_data, saved);
 
-    var fromWechat = options._id != null && options._id != undefined;
-    var online = this.data._id != null && this.data._id != undefined;
-    if (fromWechat || online) {
-      if (fromWechat) {
-        this.data._id = options._id
-      }
-      this.data.isOnline = true;
-    } else {
-      this.data.isOnline = false;
+    console.log("setting onLoad, load last data", saved)
+
+    Object.assign(this.data, court.default_data, saved);
+
+    if (options._id) { //from url
+      this.data._id = options._id
     }
+
     this.onDataLoaded()
   },
 
@@ -59,6 +55,8 @@ Page({
    */
   onUnload: function () {
     console.log("onUnload")
+    delete this.data.total_scores;
+    delete this.data.edit_pos;
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     // console.log(this.data);
   },
@@ -86,7 +84,7 @@ Page({
     this.data.stat_items = []
     this.data.myScore = 0
     this.data.yourScore = 0
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["stat_items"] = this.data.stat_items;
       obj["myScore"] = this.data.myScore;
@@ -99,7 +97,7 @@ Page({
 
   onChangeMyScore: function (e) {
     this.data.myScore = parseInt(e.detail.value);
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["myScore"] = this.data.myScore;
       this.updateMatch(this.data._id, obj)
@@ -110,7 +108,7 @@ Page({
 
   onChangeYourScore: function (e) {
     this.data.yourScore = parseInt(e.detail.value);
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["yourScore"] = this.data.yourScore;
       this.updateMatch(this.data._id, obj)
@@ -135,7 +133,7 @@ Page({
 
     this.data.edit_pos = -1;
 
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["players"] = this.data.players;
       this.updateMatch(this.data._id, obj)
@@ -153,7 +151,7 @@ Page({
     } else {
       this.data.serve = false;
     }
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["who_serve"] = this.data.who_serve;
       obj["serve"] = this.data.serve;
@@ -170,14 +168,14 @@ Page({
     } else {
       this.data.front_back_mode = false;
     }
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["front_back_mode"] = this.data.front_back_mode;
       this.updateMatch(this.data._id, obj)
     } else {
       this.setData(this.data);
     }
-    
+
   },
 
   onTapServe: function (e) {
@@ -192,7 +190,7 @@ Page({
       //this.data.who_serve = -1; //must not change who_serve, 记录上次我方是谁在发球，如果复位，则会丢失状态
     }
 
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["who_serve"] = this.data.who_serve;
       obj["serve"] = this.data.serve;
@@ -232,7 +230,7 @@ Page({
         this.data.all_players.unshift(player);
         this.data.players[position] = player;
         this.data.edit_pos = -1
-        if (this.data.isOnline) {
+        if (this.data._id) {
           var obj = new Object()
           obj["all_players"] = this.data.all_players;
           obj["players"] = this.data.players;
@@ -265,7 +263,7 @@ Page({
         title: '成功删除',
       })
     }
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["players"] = this.data.players;
       this.updateMatch(this.data._id, obj)
@@ -276,7 +274,7 @@ Page({
 
   rotate: function (e) {
     court.rotate(this.data);
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["players"] = this.data.players;
       obj["who_serve"] = this.data.who_serve;
@@ -327,7 +325,7 @@ Page({
     var s = this.data.myScore + delta;
     if (s >= 0) {
       this.data.myScore = s;
-      if (this.data.isOnline) {
+      if (this.data._id) {
         var obj = new Object()
         obj["myScore"] = this.data.myScore;
         this.updateMatch(this.data._id, obj)
@@ -341,7 +339,7 @@ Page({
     var s = this.data.yourScore + delta;
     if (s >= 0) {
       this.data.yourScore = s;
-      if (this.data.isOnline) {
+      if (this.data._id) {
         var obj = new Object()
         obj["yourScore"] = this.data.yourScore;
         this.updateMatch(this.data._id, obj)
@@ -353,7 +351,7 @@ Page({
 
   onCheckAllowedStatItem: function (e) {
     this.data.cat_allowed = e.detail.value;
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["cat_allowed"] = this.data.cat_allowed;
       this.updateMatch(this.data._id, obj)
@@ -364,20 +362,9 @@ Page({
 
   onCheckAllowedPlayer: function (e) {
     this.data.player_allowed = e.detail.value;
-    if (this.data.isOnline) {
+    if (this.data._id) {
       var obj = new Object()
       obj["player_allowed"] = this.data.player_allowed;
-      this.updateMatch(this.data._id, obj)
-    } else {
-      this.setData(this.data)
-    }
-  },
-
-  onCheckFifth: function (e) {
-    this.data.fifth = !this.data.fifth
-    if (this.data.isOnline) {
-      var obj = new Object()
-      obj["fifth"] = this.data.fifth;
       this.updateMatch(this.data._id, obj)
     } else {
       this.setData(this.data)
@@ -398,7 +385,7 @@ Page({
       this.data[dataset.obj] = e.detail.value
       var update_parts = new Object()
       update_parts[dataset.obj] = e.detail.value
-      if (this.data.isOnline) {
+      if (this.data._id) {
         this.updateMatch(this.data._id, update_parts)
       } else {
         this.setData(this.data)
@@ -434,6 +421,21 @@ Page({
       }
     })
 
+  },
+
+  bindTotalScoreChange: function (e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    this.data.total_score = this.data.total_scores[e.detail.value]
+
+    if (this.data._id) {
+      var obj = new Object()
+      obj["total_score"] = this.data.total_score
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData({
+        total_score: this.data.total_score
+      })
+    }
   },
 
 

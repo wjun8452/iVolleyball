@@ -101,12 +101,11 @@ var default_data = {
   cat_all: [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception],
   myTeam: "我方",
   yourTeam: "对方",
-  fifth: false, //第5局？
   _openid: null, //owner's open id
   _id: null, //match's id
   isOwner: true, //temparary data, only for rendering this page, not saving to db.
   status: 1, //1 - on going, 0 - ended
-  total_score: 25, //
+  total_score: 25, //唐朝 〟咖啡®🏝 建议增加每局的总分设置，现在一局必须要打到25分才可以, 2020-06-04 18:28:58 联系方式: 17717693609
 }
 
 function addScore(data) {

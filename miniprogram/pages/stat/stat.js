@@ -17,14 +17,19 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    console.log("stat onShow")
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.data = Object.assign(this.data, court.default_data, saved);
 
+    console.log(this.data)
+
     if (this._id) {
+      console.log("this._id is valid, online mode.")
       this.data._id = this._id
     }
 
     if (this.data._id) {
+      console.log("this.data._id is valid, online mode.")
       const version = wx.getSystemInfoSync().SDKVersion
       if (this.compareVersion(version, '2.8.1') >= 0) {
         this.watchOnlinData(this.data._id, false)
@@ -59,6 +64,7 @@ Page({
   onHide: function () {
     if (this.data.isOwner && this.data.status==1) {
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
+      console.log("stat onHide", this.data)
     }
     if (this.watcher) {
       this.watcher.close()
@@ -68,6 +74,7 @@ Page({
   onUnload: function () {
     if (this.data.isOwner && this.data.status==1) {
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
+      console.log("stat onUnload", this.data)
     }
     if (this.watcher) {
       this.watcher.close()
@@ -181,7 +188,7 @@ Page({
   },
 
   isMatchOver: function () {
-    var score = this.data.fifth ? 15 : 25
+    var score = this.data.total_score;
     var s1 = this.data.myScore
     var s2 = this.data.yourScore
     return (s1 >= score || s2 >= score) && (s1 - s2 >= 2 || s2 - s1 >= 2);
@@ -286,10 +293,7 @@ Page({
       })
       .watch({
         onChange: function (snapshot) {
-          console.log('docs\'s changed events', snapshot.docChanges)
-          console.log('query result snapshot after the event', snapshot.docs)
-          console.log('is init data', snapshot.type === 'init')
-
+          console.log('vmatch onChange', snapshot)
           var data = snapshot.docs[0]
           that.data = Object.assign(that.data, data)
           that.data.create_time = that.data.create_time.toLocaleString()

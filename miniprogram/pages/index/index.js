@@ -27,9 +27,7 @@ Page({
 
     if (options._id != null && options._id != undefined) {
       this.data._id = options._id
-      this.data.isOnline = true
     } else {
-      this.data.isOnline = false
     }
 
     if (options._openid != null && options._openid != undefined) {

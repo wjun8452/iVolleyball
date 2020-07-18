@@ -34,7 +34,7 @@
 		</block>
 
 		<button disabled="{{!isOwner || status==0}}" bindtap='onTapSetting' type="default" style="flex:1; margin:2px;">设置</button>
-		<button bindtap='onTapMatchOver' type="default" style="flex:1; margin:2px;" disabled='{{ !isOwner || status==0 || !utils.matchOver(myScore, yourScore, fifth) }}'>结束</button>
+		<button bindtap='onTapMatchOver' type="default" style="flex:1; margin:2px;" disabled='{{ !isOwner || status==0 || !utils.matchOver(myScore, yourScore, total_score) }}'>结束</button>
 	</view>
 
 </view>

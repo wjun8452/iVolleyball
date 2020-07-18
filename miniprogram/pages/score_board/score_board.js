@@ -30,10 +30,16 @@ Page({
       title: '大记分牌'
     })
 
-    if (!options._id) {
+    console.log("score board onLoad")
+
+    //从主页点击进来
+    var fromIndex = !options._id
+
+    if (fromIndex) {
       var saved = wx.getStorageSync(getApp().globalData.cacheKey);
       this.data = Object.assign(this.data, court.default_data, saved);
-    } else {
+      console.log("load last data", this.data)
+    } else {//从其他页面点击进来，URL自带id
       this.data._id = options._id
       this.data._openid = options._openid
     }
@@ -41,7 +47,7 @@ Page({
     if (this.data._id) {
       const version = wx.getSystemInfoSync().SDKVersion
       if (this.compareVersion(version, '2.8.1') >= 0) {
-        this.watchOnlinData(this.data._id, false)
+        this.watchOnlinData(this.data._id, false, fromIndex)
       } else {
         this.loadOnlineData(this.data._id)
         // 如果希望用户在最新版本的客户端上体验您的小程序，可以这样子提示
@@ -97,6 +103,8 @@ Page({
    */
   onUnload: function () {
     if (this.data.isOwner && this.data.status==1) {
+      console.log("score board onUnload")
+      console.log(this.data)
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     }
 
@@ -227,7 +235,7 @@ Page({
     if (this.data._id) {
       wx.showModal({
         title: '比赛结束?',
-        content: '比赛结束之后将回到本地模式',
+        content: '回到本地模式',
         showCancel: true,
         success: function (res) {
           if (res.confirm) {
@@ -241,7 +249,7 @@ Page({
     } else {
       wx.showModal({
         title: '比赛结束?',
-        content: '比赛结束之后分数将清零',
+        content: '分数将清零',
         showCancel: true,
         success: function (res) {
           if (res.confirm) {
@@ -262,7 +270,7 @@ Page({
     this.setData(this.data)
   },
 
-  watchOnlinData: function (id, toShare) {
+  watchOnlinData: function (id, toShare, fromIndex) {
     wx.showLoading({
       title: '正在加载',
     })
@@ -277,10 +285,8 @@ Page({
       })
       .watch({
         onChange: function (snapshot) {
-          console.log('docs\'s changed events', snapshot.docChanges)
-          console.log('query result snapshot after the event', snapshot.docs)
-          console.log('is init data', snapshot.type === 'init')
-
+          console.log('vmatch onChange', snapshot)
+          
           wx.hideLoading()
 
           var data = snapshot.docs[0]
@@ -288,10 +294,16 @@ Page({
           if (data) {
             that.data = Object.assign(that.data, data)
             that.data.create_time = that.data.create_time.toLocaleString()
+            if (fromIndex && that.data.status==0) {//从主页点击进来，却已结束？这是个bug，用户再也没办法新建比赛了
+                that.data._id = null
+                that.data.status = 1
+                that.reset()
+            }
             that.onDataLoaded()
             if (snapshot.type === 'init') {
               if (toShare && that.data.isOwner) {
                 wx.setStorageSync(getApp().globalData.cacheKey, that.data);
+                console.log("to share", that.data)
                 wx.navigateTo({
                   url: '../share/share',
                 })
@@ -374,6 +386,9 @@ Page({
   onShare: function () {
     if (this.data._id) {
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
+
+      console.log("onShare", this.data)
+      
       wx.navigateTo({
         url: '../share/share',
       })
@@ -460,7 +475,7 @@ Page({
   },
 
   isMatchOver: function () {
-    var score = this.data.total_score
+    var score = this.data.total_score;
     var s1 = this.data.myScore
     var s2 = this.data.yourScore
     return (s1 >= score || s2 >= score) && (s1 - s2 >= 2 || s2 - s1 >= 2);

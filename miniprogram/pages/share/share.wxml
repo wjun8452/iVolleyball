@@ -1,10 +1,16 @@
-<view style="display: flex; flex-direction: column; font-size:medium">
-  <!-- 得分信息 -->
-  <view style='text-align:left;'> 队伍：{{myTeam}} vs {{yourTeam}}</view>
-  <view style='text-align:left;'> 比分：{{myScore}} : {{yourScore}} </view>
-  <view style='text-align:left;'> 地点：{{place}} </view>
-  <view style='text-align:left;'> 时间：{{create_time}} </view>
-  <block wx:if='{{_id!=null && _id!=undefined}}'>
-    <button type='primary' style="width:100%" open-type="share"> 分享 </button>
-  </block>
+<view style="font-size:medium; margin:10px 10px 10px 10px">
+	<view style="margin: 10px">
+		好友可以实时关注你的比赛情况哦！
+	</view>
+
+	<view style="margin: 10px">
+		<view style='text-align:left;'> 队伍：{{myTeam}} vs {{yourTeam}}</view>
+		<view style='text-align:left;'> 比分：{{myScore}} : {{yourScore}} </view>
+		<view style='text-align:left;'> 地点：{{place}} </view>
+		<view style='text-align:left;'> 时间：{{create_time}} </view>
+	</view>
+
+	<block wx:if='{{_id!=null && _id!=undefined}}'>
+		<button type='primary' style="width:100%" open-type="share"> 分享 </button>
+	</block>
 </view>

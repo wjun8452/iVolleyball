@@ -235,7 +235,7 @@ Page({
     if (this.data._id) {
       wx.showModal({
         title: '比赛结束?',
-        content: '回到本地模式',
+        content: '结束分享，回到本地模式重开一局',
         showCancel: true,
         success: function (res) {
           if (res.confirm) {

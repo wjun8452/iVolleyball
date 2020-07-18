@@ -86,7 +86,9 @@ Page({
         create_time: true,
         myTeam: true,
         yourTeam: true,
-        place: true
+        place: true,
+        _openid: true,
+        status: true,
       }).orderBy('create_time', 'desc')
       .get({
         success(res) {
@@ -111,10 +113,10 @@ Page({
 
   },
   tapMatch: function(e) {
-    var _id = e.currentTarget.dataset.matchid;
-    wx.navigateTo({
-      url: '../stat/report?_id=' + _id,
-    })
+    // var _id = e.currentTarget.dataset.matchid;
+    // wx.navigateTo({
+    //   url: '../match/match?_id=' + _id,
+    // })
   }
 
 })

@@ -102,6 +102,11 @@ var default_data = {
   myTeam: "我方",
   yourTeam: "对方",
   fifth: false, //第5局？
+  _openid: null, //owner's open id
+  _id: null, //match's id
+  isOwner: true, //temparary data, only for rendering this page, not saving to db.
+  status: 1, //1 - on going, 0 - ended
+  total_score: 25, //
 }
 
 function addScore(data) {

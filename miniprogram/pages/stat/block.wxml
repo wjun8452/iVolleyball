@@ -15,12 +15,12 @@
       </button> -->
 
 			<block wx:for="{{play_item_cats}}" wx:for-item='category' wx:key="*this">
-				<button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; text_align: center; background-color: grey; color: white; border: 1px solid white;" hidden='{{opCat!=null && opPosition==position}}' size="mini"> {{category}} </button>
+				<button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; text_align: center; background-color: grey; color: white; border: 1px solid white;" hidden='{{opCat!=null && opPosition==position}}' disabled="{{!isOwner || status==0}}"  size="mini"> {{category}} </button>
 			</block>
 
 			<block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="*this">
 				<block wx:if='{{play_item.category==opCat && opPosition==position}}'>
-					<button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='default' style='flex:1; margin:2px; text_align: center; color: white; background-color: {{play_item.score==1? "green" : (play_item.score==-1?"red":"grey")}}; border: 1px solid white;' size="mini"> {{play_item.name}} </button>
+					<button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='default' style='flex:1; margin:2px; text_align: center; color: white; background-color: {{play_item.score==1? "green" : (play_item.score==-1?"red":"grey")}}; border: 1px solid white;' disabled="{{!isOwner || status==0}}" size="mini"> {{play_item.name}} </button>
 				</block>
 			</block>
 		</view>

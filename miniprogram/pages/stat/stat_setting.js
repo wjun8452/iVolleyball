@@ -12,43 +12,52 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     wx.setNavigationBarTitle({
       title: '场上设置'
     })
 
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    if (saved) {
-      saved.edit_pos = -1;
+    this.data = Object.assign(this.data, court.default_data, saved);
+
+    var fromWechat = options._id != null && options._id != undefined;
+    var online = this.data._id != null && this.data._id != undefined;
+    if (fromWechat || online) {
+      if (fromWechat) {
+        this.data._id = options._id
+      }
+      this.data.isOnline = true;
+    } else {
+      this.data.isOnline = false;
     }
-    this.setData(saved || this.data);
+    this.onDataLoaded()
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {
+  onReady: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
+  onShow: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
+  onUnload: function () {
     console.log("onUnload")
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     // console.log(this.data);
@@ -57,35 +66,60 @@ Page({
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
-  
-  onReset: function() {
-    this.data.stat_items = []
-    this.data.myScore = 0
-    this.data.yourScore = 0
+
+  onDataLoaded: function () {
+    this.data.edit_pos = -1;
     this.setData(this.data)
   },
 
-  onChangeMyScore: function(e) {
+  onReset: function () {
+    this.data.stat_items = []
+    this.data.myScore = 0
+    this.data.yourScore = 0
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["stat_items"] = this.data.stat_items;
+      obj["myScore"] = this.data.myScore;
+      obj["yourScore"] = this.data.yourScore;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
+  },
+
+  onChangeMyScore: function (e) {
     this.data.myScore = parseInt(e.detail.value);
-    this.setData(this.data);
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["myScore"] = this.data.myScore;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data);
+    }
   },
 
-  onChangeYourScore: function(e) {
+  onChangeYourScore: function (e) {
     this.data.yourScore = parseInt(e.detail.value);
-    this.setData(this.data);
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["yourScore"] = this.data.yourScore;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data);
+    }
   },
 
-  onChoosePlayer: function(e) {
+  onChoosePlayer: function (e) {
     var players = this.data.players;
     var player = e.target.dataset.player;
     var pos = e.target.dataset.position;
@@ -101,10 +135,16 @@ Page({
 
     this.data.edit_pos = -1;
 
-    this.setData(this.data)
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["players"] = this.data.players;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
   },
 
-  onCheckWhoServe: function(e) {
+  onCheckWhoServe: function (e) {
     var position = e.target.dataset.position;
     var checked = e.detail.value.length == 1;
 
@@ -113,21 +153,34 @@ Page({
     } else {
       this.data.serve = false;
     }
-
-    this.setData(this.data)
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["who_serve"] = this.data.who_serve;
+      obj["serve"] = this.data.serve;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
   },
 
-  onTapMode: function(e) {
+  onTapMode: function (e) {
     var mode = e.detail.value; //0: front_back, 1: normal
     if (mode == "0") {
       this.data.front_back_mode = true;
     } else {
       this.data.front_back_mode = false;
     }
-    this.setData(this.data);
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["front_back_mode"] = this.data.front_back_mode;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data);
+    }
+    
   },
 
-  onTapServe: function(e) {
+  onTapServe: function (e) {
     var serve = e.detail.value; //0: 我方发球, 1: 对方发球
     if (serve == 0) {
       this.data.serve = true;
@@ -139,10 +192,17 @@ Page({
       //this.data.who_serve = -1; //must not change who_serve, 记录上次我方是谁在发球，如果复位，则会丢失状态
     }
 
-    this.setData(this.data);
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["who_serve"] = this.data.who_serve;
+      obj["serve"] = this.data.serve;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data);
+    }
   },
 
-  onClickPlayer: function(e) {
+  onClickPlayer: function (e) {
     var position = e.target.dataset.position;
     if (position == this.data.edit_pos) {
       this.data.edit_pos = -1
@@ -153,7 +213,7 @@ Page({
     this.setData(this.data);
   },
 
-  onAddPlayer: function(e) {
+  onAddPlayer: function (e) {
     var position = e.target.dataset.position;
     var player = e.detail.value;
     if (player != null) {
@@ -172,7 +232,14 @@ Page({
         this.data.all_players.unshift(player);
         this.data.players[position] = player;
         this.data.edit_pos = -1
-        this.setData(this.data)
+        if (this.data.isOnline) {
+          var obj = new Object()
+          obj["all_players"] = this.data.all_players;
+          obj["players"] = this.data.players;
+          this.updateMatch(this.data._id, obj)
+        } else {
+          this.setData(this.data)
+        }
       } else {
         wx.showToast({
           title: '球员已存在',
@@ -181,7 +248,7 @@ Page({
     }
   },
 
-  onDeletePlayer: function(e) {
+  onDeletePlayer: function (e) {
     var position = e.target.dataset.position;
     var player = this.data.players[position];
 
@@ -198,23 +265,35 @@ Page({
         title: '成功删除',
       })
     }
-
-    this.setData(this.data)
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["players"] = this.data.players;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
   },
 
-  rotate: function(e) {
+  rotate: function (e) {
     court.rotate(this.data);
-    this.setData(this.data);
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["players"] = this.data.players;
+      obj["who_serve"] = this.data.who_serve;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data);
+    }
   },
 
-  touchStart1: function(e) {
+  touchStart1: function (e) {
     this.start_x_1 = e.changedTouches[0].pageX;
     this.start_y_1 = e.changedTouches[0].pageY;
     // console.log("touchstart: ");
     // console.log(e);
   },
 
-  touchEnd1: function(e) {
+  touchEnd1: function (e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
     this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
@@ -222,21 +301,21 @@ Page({
     //console.log(e);
   },
 
-  touchStart2: function(e) {
+  touchStart2: function (e) {
     this.start_x_2 = e.changedTouches[0].pageX;
     this.start_y_2 = e.changedTouches[0].pageY;
     console.log("touchstart: ");
     console.log(e);
   },
 
-  touchEnd2: function(e) {
+  touchEnd2: function (e) {
     var end_x = e.changedTouches[0].pageX;
     var end_y = e.changedTouches[0].pageY;
 
     this.touch_end(false, this.start_x_2, this.start_y_2, end_x, end_y);
   },
 
-  touch_end: function(mine, start_x, start_y, end_x, end_y) {
+  touch_end: function (mine, start_x, start_y, end_x, end_y) {
     if (end_y < 50) {
       mine ? this.changeMyScore(1) : this.changeYourScore(1);
     } else {
@@ -244,38 +323,68 @@ Page({
     }
   },
 
-  changeMyScore: function(delta) {
+  changeMyScore: function (delta) {
     var s = this.data.myScore + delta;
     if (s >= 0) {
       this.data.myScore = s;
-      this.setData(this.data);
+      if (this.data.isOnline) {
+        var obj = new Object()
+        obj["myScore"] = this.data.myScore;
+        this.updateMatch(this.data._id, obj)
+      } else {
+        this.setData(this.data);
+      }
     }
   },
 
-  changeYourScore: function(delta) {
+  changeYourScore: function (delta) {
     var s = this.data.yourScore + delta;
     if (s >= 0) {
       this.data.yourScore = s;
-      this.setData(this.data);
+      if (this.data.isOnline) {
+        var obj = new Object()
+        obj["yourScore"] = this.data.yourScore;
+        this.updateMatch(this.data._id, obj)
+      } else {
+        this.setData(this.data);
+      }
     }
   },
 
-  onCheckAllowedStatItem: function(e) {
+  onCheckAllowedStatItem: function (e) {
     this.data.cat_allowed = e.detail.value;
-    this.setData(this.data)
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["cat_allowed"] = this.data.cat_allowed;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
   },
 
   onCheckAllowedPlayer: function (e) {
     this.data.player_allowed = e.detail.value;
-    this.setData(this.data)
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["player_allowed"] = this.data.player_allowed;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
   },
 
-  onCheckFifth: function(e) {
+  onCheckFifth: function (e) {
     this.data.fifth = !this.data.fifth
-    this.setData(this.data)
-  }, 
+    if (this.data.isOnline) {
+      var obj = new Object()
+      obj["fifth"] = this.data.fifth;
+      this.updateMatch(this.data._id, obj)
+    } else {
+      this.setData(this.data)
+    }
+  },
 
-  onEditTeam: function(e) {
+  onEditTeam: function (e) {
     let dataset = e.currentTarget.dataset
     let name = e.detail.value
 
@@ -287,14 +396,45 @@ Page({
       })
     } else if (name.length > 0) {
       this.data[dataset.obj] = e.detail.value
-      this.setData(this.data)
+      var update_parts = new Object()
+      update_parts[dataset.obj] = e.detail.value
+      if (this.data.isOnline) {
+        this.updateMatch(this.data._id, update_parts)
+      } else {
+        this.setData(this.data)
+      }
     } else {
       wx.showToast({
         title: '名称不能为空！',
         icon: 'none'
       })
     }
-    
+
   },
+
+  updateMatch: function (id, updated_parts) {
+    var that = this
+
+    wx.showLoading({
+      title: '正在上传',
+    })
+
+    const db = wx.cloud.database({
+      env: getApp().globalData.env
+    })
+
+
+    db.collection('vmatch').doc(id).update({
+      // data 传入需要局部更新的数据
+      data: updated_parts,
+      success: function (res) {
+        console.log(res.data)
+        that.setData(that.data)
+        wx.hideLoading()
+      }
+    })
+
+  },
+
 
 })

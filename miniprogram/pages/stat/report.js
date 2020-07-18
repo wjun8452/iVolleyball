@@ -23,7 +23,7 @@ Page({
     })
 
     //load data
-    if (options._id != null && options._id != undefined) {
+    if (options._id) {
       this.loadData(options._id)
     } else {
       var saved = wx.getStorageSync(getApp().globalData.cacheKey);

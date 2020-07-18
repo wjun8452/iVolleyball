@@ -96,7 +96,7 @@ App({
   globalData:{
     openid:null,
     userInfo:null,
-    cacheKey: "stats15",
+    cacheKey: "stats17",
     lat: 0,
     lon: 0,
     place: '',

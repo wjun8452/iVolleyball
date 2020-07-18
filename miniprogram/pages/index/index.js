@@ -3,7 +3,6 @@
 var app = getApp()
 Page({
   data: {
-    motto: '开始记分',
     userInfo: {}
   },
   //事件处理函数
@@ -16,7 +15,7 @@ Page({
   onShareAppMessage: function(e) {
   },
 
-  onLoad: function () {
+  onLoad: function (options) {
     var that = this
     //调用应用实例的方法获取全局数据
     app.getUserInfo(function(userInfo){
@@ -25,5 +24,21 @@ Page({
         userInfo:userInfo
       })
     })
+
+    if (options._id != null && options._id != undefined) {
+      this.data._id = options._id
+      this.data.isOnline = true
+    } else {
+      this.data.isOnline = false
+    }
+
+    if (options._openid != null && options._openid != undefined) {
+      this.data._openid = options._openid
+      this.data.isOwner = (getApp().globalData.openid == this.data._openid);
+    } else {
+      this.data.isOwner = true
+    }
+
+    this.setData(this.data)
   }
 })

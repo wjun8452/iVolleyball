@@ -1,17 +1,17 @@
 <wxs module="utils" src="../stat/util.wxs"></wxs>
 
 <block wx:if="{{matches.length==0 && !isLoading}}">
-  <view style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
-    <image class="" src="../../images/smile.png" style="width:50px; height:50px"></image>
-    <view> 你还没有上传任何记录哦~</view>
-  </view>
+	<view style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
+		<image class="" src="../../images/smile.png" style="width:50px; height:50px"></image>
+		<view> 你还没有上传任何记录哦~</view>
+	</view>
 </block>
 
 <block wx:for="{{matches}}" wx:key="create_time">
-  <!-- <navigator url="/pages/score_board/score_board?match={{item}}" hover-class="navigator-hover"> -->
-    <view class="match-item" bindtap='tapMatch' data-matchid="{{item._id}}">
+	<!-- <navigator url="/pages/score_board/score_board?match={{item}}" hover-class="navigator-hover"> -->
+	<view class="match-item" bindtap='tapMatch' data-matchid="{{item._id}}" data-status="{{item.status}}">
 
-      <!-- 用户不授权，这些信息就拿不到，暂时不显示，不是必须的 <view style="display:block; text-align:center;">
+		<!-- 用户不授权，这些信息就拿不到，暂时不显示，不是必须的 <view style="display:block; text-align:center;">
         <view>
           <image class="userinfo-avatar" src="{{item.owner.avatarUrl}}" style="width: 100px; height: 100px"> </image>
         </view>
@@ -21,25 +21,34 @@
         </view>
       </view> -->
 
-      <view style="display:flex; flex-direction:column;justify-content:space-around ">
-        <view>
-         队伍：{{item.myTeam}} vs {{item.yourTeam}}
-        </view>
+		<view style="display:flex; flex-direction:column;justify-content:space-around ">
+			<view>
+				队伍：{{item.myTeam}} vs {{item.yourTeam}}
+			</view>
 
-        <view>
-         比分：{{item.myScore}}:{{item.yourScore}}
-        </view>
+			<view>
+				比分：{{item.myScore}}:{{item.yourScore}}, {{item.status==0?"已结束":"进行中"}}
+			</view>
 
-        <view>
-          地点：{{item.place}}
-        </view>
-        
-        <view>
-          时间：{{ item.create_time }}
-        </view>
-      </view>
-    </view>
-  <!-- </navigator> -->
+			<view>
+				地点：{{item.place}}
+			</view>
+
+			<view>
+				时间：{{ item.create_time }}
+			</view>
+
+			<view style="display:flex; flex-direction:row; justify-content:space-between">
+
+				<navigator style="color:blue " url='../score_board/score_board?_id={{item._id}}&_openid={{item._openid}}'> 记分牌 </navigator>
+
+				<navigator style="color:blue " url='../stat/stat?_id={{item._id}}&_openid={{item._openid}}'> 技术统计 </navigator>
+
+				<navigator style="color:blue " url='../stat/report?_id={{item._id}}&_openid={{item._openid}}'> 统计报告 </navigator>
+			</view>
+		</view>
+	</view>
+	<!-- </navigator> -->
 </block>
 
 <!-- <navigator url="/pages/score_board/score_board" hover-class="navigator-hover">

@@ -1,5 +1,7 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+	<text style="flex; margin-left: 5px;">v3.8.4 (2020/3/31) 可分享记分牌给好友，好友可以实时关注比赛分数。</text>
+
 	<text style="flex; margin-left: 5px;">v3.8.3 (2020/2/16) 增加logo, 修改技术统计的布局和颜色。</text>
 
 	<text style="flex; margin-left: 5px;">v3.8.2 (2020/1) 记分牌顶端增加分数树和工具按钮。</text>

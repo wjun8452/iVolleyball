@@ -1,0 +1,10 @@
+<view style="display: flex; flex-direction: column; font-size:medium">
+  <!-- 得分信息 -->
+  <view style='text-align:left;'> 队伍：{{myTeam}} vs {{yourTeam}}</view>
+  <view style='text-align:left;'> 比分：{{myScore}} : {{yourScore}} </view>
+  <view style='text-align:left;'> 地点：{{place}} </view>
+  <view style='text-align:left;'> 时间：{{create_time}} </view>
+  <block wx:if='{{_id!=null && _id!=undefined}}'>
+    <button type='primary' style="width:100%" open-type="share"> 分享 </button>
+  </block>
+</view>

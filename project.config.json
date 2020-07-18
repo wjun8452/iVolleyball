@@ -11,7 +11,7 @@
 	},
 	"appid": "wx573d66c4ffa25272",
 	"projectname": "ivolleyball",
-	"libVersion": "2.2.5",
+	"libVersion": "2.10.3",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {
@@ -30,13 +30,32 @@
 		"game": {
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
 			"current": 0,
 			"list": [
 				{
 					"id": -1,
 					"name": "db guide",
-					"pathName": "pages/databaseGuide/databaseGuide"
+					"pathName": "pages/databaseGuide/databaseGuide",
+					"query": ""
+				},
+				{
+					"id": 1,
+					"name": "pages/index/index",
+					"pathName": "pages/index/index",
+					"query": "_id=42d70ff05e80c3ee00204af22ae0d7d0&_openid=oHxEZ0TgTN5RyaQvq1UYUAy-6rXM",
+					"scene": 1008
+				},
+				{
+					"id": -1,
+					"name": "pages/score_board/score_board",
+					"pathName": "pages/score_board/score_board",
+					"query": "_id=42d70ff05e80c3ee00204af22ae0d7d0&_openid=oHxEZ0TgTN5RyaQvq1UYUAy-6rXM",
+					"scene": null
 				}
 			]
 		}

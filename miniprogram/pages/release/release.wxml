@@ -1,26 +1,46 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 
-	<text style="flex; margin-left: 5px;">v3.8.6 (2020/10/7) 首页增加每日一句名言；优化首页布局；</text>
+	<view class="block1">
+		<text style="margin-left: 5px;">v3.8.6 (2020/10/7) 首页增加每日一句名言；统一各页面色系； </text>
+	</view>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.8.5 (2020/7/18) 修复无法开始新的计分牌的问题；局总分可设置；</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.8.5 (2020/7/18) 修复无法开始新的计分牌的问题；局总分可设置；</text>
-	
-	<text style="flex; margin-left: 5px;">v3.8.4 (2020/3/31) 可分享记分牌给好友，好友可以实时关注比赛分数。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.8.4 (2020/3/31) 可分享记分牌给好友，好友可以实时关注比赛分数。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.8.3 (2020/2/16) 增加logo, 修改技术统计的布局和颜色。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.8.3 (2020/2/16) 增加logo, 修改技术统计的布局和颜色。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.8.2 (2020/1) 记分牌顶端增加分数树和工具按钮。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.8.2 (2020/1) 记分牌顶端增加分数树和工具按钮。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.8.0 (2019/8) 添加广告栏。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.8.0 (2019/8) 添加广告栏。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.7 (2019/5) 云端存储，技术报告分享好友。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.7 (2019/5) 云端存储，技术报告分享好友。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.6 (2019/5) 可设置允许统计的项目，或者允许统计的队员。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.6 (2019/5) 可设置允许统计的项目，或者允许统计的队员。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.4 (2019/4) 转位和分数独立设计。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.4 (2019/4) 转位和分数独立设计。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.3 (2019/3/31) 大记分牌增加帮助页面。</text>
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.3 (2019/3/31) 大记分牌增加帮助页面。</text>
+	</view>
 
-	<text style="flex; margin-left: 5px;">v3.2 (2019/3) 第一个版本。</text>
-
+	<view class="block1">
+		<text style="flex; margin-left: 5px;">v3.2 (2019/3) 第一个版本。</text>
+	</view>
 </view>

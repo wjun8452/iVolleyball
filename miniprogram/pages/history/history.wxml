@@ -1,7 +1,7 @@
 <wxs module="utils" src="../stat/util.wxs"></wxs>
 
 <block wx:if="{{matches.length==0 && !isLoading}}">
-	<view style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
+	<view class="color3" style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
 		<image class="" src="../../images/smile.png" style="width:50px; height:50px"></image>
 		<view> 你还没有上传任何记录哦~</view>
 	</view>
@@ -9,18 +9,7 @@
 
 <block wx:for="{{matches}}" wx:key="create_time">
 	<!-- <navigator url="/pages/score_board/score_board?match={{item}}" hover-class="navigator-hover"> -->
-	<view class="match-item" bindtap='tapMatch' data-matchid="{{item._id}}" data-status="{{item.status}}">
-
-		<!-- 用户不授权，这些信息就拿不到，暂时不显示，不是必须的 <view style="display:block; text-align:center;">
-        <view>
-          <image class="userinfo-avatar" src="{{item.owner.avatarUrl}}" style="width: 100px; height: 100px"> </image>
-        </view>
-
-        <view>
-          {{item.owner.nickName}}
-        </view>
-      </view> -->
-
+	<view class="block1" bindtap='tapMatch' data-matchid="{{item._id}}" data-status="{{item.status}}">
 		<view style="display:flex; flex-direction:column;justify-content:space-around ">
 			<view>
 				队伍：{{item.myTeam}} vs {{item.yourTeam}}
@@ -38,13 +27,13 @@
 				时间：{{ item.create_time }}
 			</view>
 
-			<view style="display:flex; flex-direction:row; justify-content:space-between">
+			<view style="display:flex; flex-direction:row; justify-content:space-between; margin-top:2px">
 
-				<navigator style="color:blue " url='../score_board/score_board?_id={{item._id}}&_openid={{item._openid}}'> 记分牌 </navigator>
+				<navigator class="color1" url='../score_board/score_board?_id={{item._id}}&_openid={{item._openid}}'> 记分牌 </navigator>
 
-				<navigator style="color:blue " url='../stat/stat?_id={{item._id}}&_openid={{item._openid}}'> 技术统计 </navigator>
+				<navigator class="color1"  url='../stat/stat?_id={{item._id}}&_openid={{item._openid}}'> 技术统计 </navigator>
 
-				<navigator style="color:blue " url='../stat/report?_id={{item._id}}&_openid={{item._openid}}'> 统计报告 </navigator>
+				<navigator class="color1"  url='../stat/report?_id={{item._id}}&_openid={{item._openid}}'> 统计报告 </navigator>
 			</view>
 		</view>
 	</view>

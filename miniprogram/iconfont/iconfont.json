@@ -1,0 +1,30 @@
+{
+  "id": "2115994",
+  "name": "ivolleyball",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "排球记分牌微信小程序",
+  "glyphs": [
+    {
+      "icon_id": "851705",
+      "name": "分享",
+      "font_class": "fenxiang",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "13990891",
+      "name": "reset",
+      "font_class": "reset",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "16516778",
+      "name": "交换",
+      "font_class": "jiaohuan",
+      "unicode": "e6ba",
+      "unicode_decimal": 59066
+    }
+  ]
+}

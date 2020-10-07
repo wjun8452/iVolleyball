@@ -10,39 +10,40 @@
 	</block>
 
 
-	<view style="font-size:large">
+	<view style="font-size:large;" class="color3">
 		<navigator url='../score_board/score_board?_id={{_id}}&_openid={{_openid}}' style="text-align:center; text-font:x-large">大记分牌</navigator>
 	</view>
 
-	<view style="font-size:large">
+	<view style="font-size:large" class="color3">
 		<navigator url='../stat/stat?_id={{_id}}&_openid={{_openid}}' style="text-align:center; text-font:x-large">技术统计</navigator>
 	</view>
 
 	<block wx:if="{{isOwner}}">
-		<view style="font-size:large">
+		<view style="font-size:large" class="color3">
 			<navigator url="../history/history" style="text-align:center; text-font:x-large">历史记录</navigator>
 		</view>
 	</block>
 
 	<block wx:if="{{isOwner}}">
-		<view style="font-size:large">
+		<view style="font-size:large" class="color3">
 			<navigator url="../stat/users" style="text-align:center; text-font:x-large">球队成员</navigator>
 		</view>
 	</block>
 
 
-	<view style="font-size:large">
+	<view style="font-size:large" class="color3">
 		<navigator url="../help/help" style="text-align:center; text-font:x-large">使用帮助</navigator>
 	</view>
 
 	<view style="">
-		<navigator url="../release/release" style="text-align:center;"> v3.8.6 </navigator>
+		<navigator url="../release/release" style="text-align:center;" class="color3"> v3.8.6 </navigator>
 	</view>
 
-	<view style="width: {{windowWidth}}px; transform: translateX({{-marqueeDistance}}px); margin-bottom: 5px">
-		<text style="white-space: nowrap;">{{iciba}}</text>
+	<view style="text-align:center; font-style:italic; font-size:small; margin-bottom: 5px" class="color1">
+		<text style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ">{{iciba}}</text>
 	</view>
 
-	<ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>
-
+	<view>
+		<ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>
+	</view>
 </view>

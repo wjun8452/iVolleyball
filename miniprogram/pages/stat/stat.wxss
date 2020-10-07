@@ -14,7 +14,7 @@
 
 .btn1 {
   background-color: rgb(128, 62, 0);
-  color: white;
+  color: #FF9900;
   border-radius: 20rpx;
 }
 
@@ -29,7 +29,7 @@
   margin: 2px; 
   /*border: 1px solid grey; */
   border-radius: 5px 5px 5px 5px;
-  background-color: grey;
+  background-color: #FFFFCC;
 }
 
 .net {
@@ -41,5 +41,5 @@
 .court {
   display: flex;
   flex-direction: column; 
-  background-color: #FB8237;
+  background-color: #FF9900;
 }

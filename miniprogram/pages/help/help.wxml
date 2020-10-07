@@ -1,22 +1,33 @@
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
-  <text style="flex; margin-left: 5px;">1, 记分牌：</text>
-  <text style="flex; margin-left: 15px;">  加分 - 单指从下往上划；</text>
-  <text style="flex; margin-left: 15px;">  减分 -  单指从上往下划；</text>
-  <text style="flex; margin-left: 15px;">  分数归0 - 单指从左划到右；</text>
-  <text style="flex; margin-left: 15px;">  分享给好友实时关注比分，清零或比赛结束可退出分享模式；分享按钮红色表示在线模式</text>
-  <text style="flex; margin-left: 5px;">2, 技术统计：</text>
-  <text style="flex; margin-left: 15px;">  点击分数可以跳转到记分牌；</text>
-  <text style="flex; margin-left: 15px;">  可以通过统计报表菜单查看统计结果；</text>
-  <text style="flex; margin-left: 15px;">  结束计分之后可以选择上传，分享给好友</text>
-  
-  <text style="flex; margin-left: 5px;">3, 技术统计-设置：</text>
-  <text style="flex; margin-left: 15px;">  点击分数方框内上半部分加分，点击下半部分减分；</text>
-  <text style="flex; margin-left: 15px;">  减少统计项目或者只针对某个队员，可以大大简化统计工作；</text>
+	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+		<text style="flex; margin-left: 5px;">1, 记分牌：</text>
+		<text style="flex; margin-left: 15px;">  加分 - 单指从下往上划；</text>
+		<text style="flex; margin-left: 15px;">  减分 -  单指从上往下划；</text>
+		<text style="flex; margin-left: 15px;">  分数归0 - 单指从左划到右；</text>
+		<text style="flex; margin-left: 15px;">  分享给好友实时关注比分，清零或比赛结束可退出分享模式；分享按钮红色表示在线模式</text>
+	</view>
 
-  <text style="flex; margin-left: 5px;">4, 历史记录：</text>
-  <text style="flex; margin-left: 15px;">  此处可以查看近期上传的比赛记录；</text>
-  <text style="flex; margin-left: 5px;">5, 建议与反馈：</text>
-  <text style="flex; margin-left: 15px;">  点击小程序右上角...，选择 关于排球记分牌 - 投诉与反馈，或邮件至wjun_8452@163.com</text>
-  <text style="flex; margin-left: 5px;">7, 亲，您若喜欢，点击主页广告栏打赏一下哦~</text>
+	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+		<text style="flex; margin-left: 5px;">2, 技术统计：</text>
+		<text style="flex; margin-left: 15px;">  点击分数可以跳转到记分牌；</text>
+		<text style="flex; margin-left: 15px;">  可以通过统计报表菜单查看统计结果；</text>
+		<text style="flex; margin-left: 15px;">  结束计分之后可以选择上传，分享给好友</text>
+	</view>
+
+	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+		<text style="flex; margin-left: 5px;">3, 技术统计-设置：</text>
+		<text style="flex; margin-left: 15px;">  点击分数方框内上半部分加分，点击下半部分减分；</text>
+		<text style="flex; margin-left: 15px;">  减少统计项目或者只针对某个队员，可以大大简化统计工作；</text>
+	</view>
+	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+		<text style="flex; margin-left: 5px;">4, 历史记录：</text>
+		<text style="flex; margin-left: 15px;">  此处可以查看近期上传的比赛记录；</text>
+	</view>
+	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+		<text style="flex; margin-left: 5px;">5, 建议与反馈：</text>
+		<text style="flex; margin-left: 15px;">  点击小程序右上角...，选择 关于排球记分牌 - 投诉与反馈，或邮件至wjun_8452@163.com</text>
+	</view>
+	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+		<text style="flex; margin-left: 5px;">6, 亲，您若喜欢，点击主页广告栏打赏一下哦~</text>
+	</view>
 </view>
-

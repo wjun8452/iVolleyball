@@ -1,43 +1,48 @@
 <!--index.wxml-->
-<view class="container">
+<view style="height:{{windowHeight}}px; width: {{windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; " catchtouchmove='stopPageScroll'>
 
-	<view class="userinfo">
-		<image class="userinfo-avatar" src="../../images/volleyball.png" background-size="cover"></image>
+	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 30px; margin-bottom: 30px;">
+		<image style="width:128rpx; height:128rpx;" src="../../images/volleyball.png" background-size="cover"></image>
 	</view>
 
 	<block wx:if="{{!isOwner}}">
-		<view> 来自好友分享的比赛 </view>
+		<view style=""> 来自好友分享的比赛 </view>
 	</block>
-</view>
 
 
-<view style="flex-item; font-size:large" class="menu">
-	<navigator url='../score_board/score_board?_id={{_id}}&_openid={{_openid}}' style="text-align:center; text-font:x-large">大记分牌</navigator>
-</view>
-
-<view style="flex-item; font-size:large" class="menu">
-	<navigator url='../stat/stat?_id={{_id}}&_openid={{_openid}}' style="text-align:center; text-font:x-large">技术统计</navigator>
-</view>
-
-<block wx:if="{{isOwner}}">
-	<view style="flex-item; font-size:large" class="menu">
-		<navigator url="../history/history" style="text-align:center; text-font:x-large">历史记录</navigator>
+	<view style="font-size:large">
+		<navigator url='../score_board/score_board?_id={{_id}}&_openid={{_openid}}' style="text-align:center; text-font:x-large">大记分牌</navigator>
 	</view>
-</block>
 
-<block wx:if="{{isOwner}}">
-	<view style="flex-item; font-size:large" class="menu">
-		<navigator url="../stat/users" style="text-align:center; text-font:x-large">球队成员</navigator>
+	<view style="font-size:large">
+		<navigator url='../stat/stat?_id={{_id}}&_openid={{_openid}}' style="text-align:center; text-font:x-large">技术统计</navigator>
 	</view>
-</block>
+
+	<block wx:if="{{isOwner}}">
+		<view style="font-size:large">
+			<navigator url="../history/history" style="text-align:center; text-font:x-large">历史记录</navigator>
+		</view>
+	</block>
+
+	<block wx:if="{{isOwner}}">
+		<view style="font-size:large">
+			<navigator url="../stat/users" style="text-align:center; text-font:x-large">球队成员</navigator>
+		</view>
+	</block>
 
 
-<view style="flex-item; font-size:large" class="menu">
-	<navigator url="../help/help" style="text-align:center; text-font:x-large">使用帮助</navigator>
+	<view style="font-size:large">
+		<navigator url="../help/help" style="text-align:center; text-font:x-large">使用帮助</navigator>
+	</view>
+
+	<view style="">
+		<navigator url="../release/release" style="text-align:center;"> v3.8.6 </navigator>
+	</view>
+
+	<view style="width: {{windowWidth}}px; transform: translateX({{-marqueeDistance}}px); margin-bottom: 5px">
+		<text style="white-space: nowrap;">{{iciba}}</text>
+	</view>
+
+	<ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>
+
 </view>
-
-<view style="flex-direction:row; margin-top: 50px">
-	<navigator url="../release/release" style="text-align:center;"> v3.8.5 </navigator>
-</view>
-
-<ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>

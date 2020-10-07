@@ -1,5 +1,8 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+
+	<text style="flex; margin-left: 5px;">v3.8.6 (2020/10/7) 首页增加每日一句名言；优化首页布局；</text>
+
 	<text style="flex; margin-left: 5px;">v3.8.5 (2020/7/18) 修复无法开始新的计分牌的问题；局总分可设置；</text>
 	
 	<text style="flex; margin-left: 5px;">v3.8.4 (2020/3/31) 可分享记分牌给好友，好友可以实时关注比赛分数。</text>

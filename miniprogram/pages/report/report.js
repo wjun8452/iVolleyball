@@ -15,7 +15,7 @@ Page({
    */
   onLoad: function(options) {
     wx.setNavigationBarTitle({
-      title: '比赛详情与技术统计'
+      title: '统计报告'
     })
 
     wx.showLoading({

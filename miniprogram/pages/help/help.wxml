@@ -25,6 +25,6 @@
 	</view>
 	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 		<text style="flex; margin-left: 5px;">5, 建议与反馈：</text>
-		<text style="flex; margin-left: 15px;">  点击小程序右上角...，选择 关于排球记分牌 - 投诉与反馈，或邮件至wjun_8452@163.com</text>
+		<text style="flex; margin-left: 15px;">  点击小程序右上角...提出建议与反馈，或邮件至wjun_8452@163.com</text>
 	</view>
 </view>

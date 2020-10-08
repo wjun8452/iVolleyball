@@ -27,7 +27,7 @@
 
 		<block wx:if="{{isOwner && status!=0}}">
 			<view style="display: flex; flex-direction: row;">
-				<view class="tool_button iconbig iconfont iconjiaohuan" bindtap='swapTeam'> </view>
+				<view class="tool_button iconfont iconjiaohuan iconbig" bindtap='swapTeam'> </view>
 				<view class="tool_button iconbig iconfont iconreset" bindtap='onReset'> </view>
 				<view class='tool_button iconbig iconfont iconfenxiang {{ _id ? "border_color1" : "border_color3" }}' bindtap='onShare'> </view>
 			</view>

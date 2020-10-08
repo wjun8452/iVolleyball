@@ -6,6 +6,55 @@
   "description": "排球记分牌微信小程序",
   "glyphs": [
     {
+      "icon_id": "12686944",
+      "name": "交换",
+      "font_class": "jiaohuan",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "4329914",
+      "name": "用户管理",
+      "font_class": "yonghuguanli",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "8791333",
+      "name": "帮助",
+      "font_class": "bangzhu",
+      "unicode": "e728",
+      "unicode_decimal": 59176
+    },
+    {
+      "icon_id": "9041965",
+      "name": "版本",
+      "font_class": "banben",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "10149460",
+      "name": "历史记录",
+      "font_class": "lishijilu",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "11980161",
+      "name": "记分牌",
+      "font_class": "jifenpai",
+      "unicode": "e798",
+      "unicode_decimal": 59288
+    },
+    {
+      "icon_id": "12598991",
+      "name": "统计",
+      "font_class": "tongji",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
       "icon_id": "851705",
       "name": "分享",
       "font_class": "fenxiang",
@@ -18,13 +67,6 @@
       "font_class": "reset",
       "unicode": "e618",
       "unicode_decimal": 58904
-    },
-    {
-      "icon_id": "16516778",
-      "name": "交换",
-      "font_class": "jiaohuan",
-      "unicode": "e6ba",
-      "unicode_decimal": 59066
     }
   ]
 }

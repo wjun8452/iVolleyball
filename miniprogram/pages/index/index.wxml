@@ -36,7 +36,7 @@
 	</view>
 
 	<view style="">
-		<navigator url="../release/release" style="text-align:center;" class="color3"> v3.8.6 </navigator>
+		<navigator url="../release/release" style="text-align:center;" class="color3"> v3.8.7 </navigator>
 	</view>
 
 	<view style="text-align:center; font-style:italic; font-size:small; margin-bottom: 5px" class="color1">

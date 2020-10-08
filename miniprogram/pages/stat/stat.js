@@ -3,33 +3,43 @@ var court = require("../../utils/court.js")
 Page({
   data: court.default_data,
   _id: null,
+  _openid: null,
   watcher: null,
 
   onLoad: function (options) {
     wx.setNavigationBarTitle({
       title: '技术统计'
     })
-    
-    this._id = options._id;
+
+    if (options._id && options._openid) {
+      this._id = options._id;
+      this._openid = options._openid
+    }
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    console.log("stat onShow")
+    //always load from local storage if not explicitly said from URL
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.data = Object.assign(this.data, court.default_data, saved);
 
-    console.log(this.data)
-
     if (this._id) {
-      console.log("this._id is valid, online mode.")
-      this.data._id = this._id
+      this.data._id = this._id;
     }
 
-    if (this.data._id) {
-      console.log("this.data._id is valid, online mode.")
+    if (this._openid) {
+      this.data._openid = this._openid
+    }
+      
+    if (!this.data._openid && !this.data._id) {
+      this.data._openid = getApp().globalData.openid
+    }
+
+    console.log("[onShow] _id:", this.data._id, "_openid:", this.data._openid, "data", this.data)
+
+    if (this.data._id) { //if it has a vmatch id
       const version = wx.getSystemInfoSync().SDKVersion
       if (this.compareVersion(version, '2.8.1') >= 0) {
         this.watchOnlinData(this.data._id, false)
@@ -41,14 +51,14 @@ Page({
           content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。'
         })
       }
-
     } else {
       this.onDataLoaded()
     }
   },
 
   onDataLoaded: function () {
-    this.data.isOwner = (!this.data._openid) || getApp().globalData.openid == this.data._openid;
+    this.data.isOwner = (getApp().globalData.openid == this.data._openid);
+    console.log("isOwner:", this.data.isOwner)
     this.data.opCat = null
     this.data.opPosition = -1
     if (this.data.player_allowed == null) {
@@ -62,9 +72,9 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    if (this.data.isOwner && this.data.status==1) {
+    if (this.data.isOwner && this.data.status == 1) {
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
-      console.log("stat onHide", this.data)
+      console.log("[onHide] save data:", this.data)
     }
     if (this.watcher) {
       this.watcher.close()
@@ -72,13 +82,7 @@ Page({
   },
 
   onUnload: function () {
-    if (this.data.isOwner && this.data.status==1) {
-      wx.setStorageSync(getApp().globalData.cacheKey, this.data);
-      console.log("stat onUnload", this.data)
-    }
-    if (this.watcher) {
-      this.watcher.close()
-    }
+    this.onHide() //sometimes only onUnload called, onHide is not called
   },
 
   onShareAppMessage: function (e) {
@@ -123,7 +127,7 @@ Page({
 
   onTapSetting: function () {
     wx.navigateTo({
-      url: 'stat_setting',
+      url: '../stat_setting/stat_setting',
     })
   },
 
@@ -293,7 +297,7 @@ Page({
       })
       .watch({
         onChange: function (snapshot) {
-          console.log('vmatch onChange', snapshot)
+          console.log('[db.vmatch.watch] id:', id, snapshot)
           var data = snapshot.docs[0]
           that.data = Object.assign(that.data, data)
           that.data.create_time = that.data.create_time.toLocaleString()
@@ -312,7 +316,7 @@ Page({
         },
         onError: function (err) {
           wx.hideLoading()
-          console.error('the watch closed because of error', err)
+          console.error('[db.vmatch.watch] err:', err)
         }
       })
   },
@@ -337,8 +341,11 @@ Page({
         stat_items: stat_items
       },
       success: function (res) {
-        console.log(res.data)
+        console.log("[db.vmatch.update] id:", id)
         that.setData(that.data)
+      },
+      fail: function (res) {
+        console.error("[db.vmatch.update] id:", id, "err:", res)
       }
     })
 
@@ -355,7 +362,7 @@ Page({
       _id: id,
     }).get({
       success(res) {
-        console.log(id, res)
+        console.log("[db.vmatch.get] id:", id, "res:", res)
         var data = res.data[0]
         that.data = Object.assign(that.data, data)
         that.data.create_time = that.data.create_time.toLocaleString()
@@ -363,7 +370,7 @@ Page({
         that.onDataLoaded()
       },
       fail(res) {
-        console.log(id, res)
+        console.error("[db.vmatch.get] id:", id, "res", res)
         wx.hideLoading()
         wx.showToast({
           title: '加载失败',
@@ -425,16 +432,19 @@ Page({
       // data 传入需要局部更新的数据
       data: updated_parts,
       success: function (res) {
+        console.log("[db.vmatch.update] id:", id, "res", res)
         if (reset) {
-            that.resetData()
-            wx.navigateTo({
-              url: 'report?_id=' + id,
-            })
-        }
-        else {
+          that.resetData()
+          wx.navigateTo({
+            url: 'report?_id=' + id,
+          })
+        } else {
           that.setData(that.data)
         }
         wx.hideLoading()
+      },
+      fail: function (res) {
+        console.error("[db.vmatch.update] id:", id, "res", res)
       }
     })
 

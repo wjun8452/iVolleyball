@@ -1,4 +1,4 @@
-<wxs module="utils" src="./util.wxs"></wxs>
+<wxs module="utils" src="../../utils/util.wxs"></wxs>
 
 <view class="color3" style="margin:5px; display: flex; flex-direction: column;">
 	<view style="margin-bottom: 5px; display: flex; flex-direction: row;">

@@ -3,16 +3,9 @@
 var app = getApp()
 Page({
   data: {
-    userInfo: {},
-    iciba: "", //每日一句英语
+    iciba: "", //每日一句名言
     windowHeight: 0,
     windowWidth: 0,
-  },
-  //事件处理函数
-  bindViewTap: function () {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
   },
 
   onShareAppMessage: function (e) {},
@@ -34,20 +27,12 @@ Page({
       success: res => {
         var obj = JSON.parse(res.result)
         that.data.iciba = obj.note
-        //console.log('[iciba]', that.data.iciba)
+        console.log('[wx.cloud.iciba]', that.data.iciba)
         that.setData(that.data)
       },
       fail: err => {
-        console.error('[iciba] failed!', err)
+        console.error('[wx.cloud.iciba] failed!', err)
       }
-    })
-
-    //调用应用实例的方法获取全局数据
-    app.getUserInfo(function (userInfo) {
-      //更新数据
-      that.setData({
-        userInfo: userInfo
-      })
     })
 
     if (options._id != null && options._id != undefined) {

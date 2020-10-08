@@ -18,7 +18,7 @@
 				<button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; text_align: center; background-color: #FFFFCC; color: #336699; border: 1px solid #336699;" hidden='{{opCat!=null && opPosition==position}}' disabled="{{!isOwner || status==0}}"  size="mini"> {{category}} </button>
 			</block>
 
-			<block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="*this">
+			<block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="index">
 				<block wx:if='{{play_item.category==opCat && opPosition==position}}'>
 					<button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='default' style='flex:1; margin:2px; text_align: center; color: {{play_item.score==1? "#ffffff" : "#336699"}}; background-color: {{play_item.score==1? "#336699" : (play_item.score==-1?"#FF9900":"#FFFFCC")}}; border: 1px solid #336699;' disabled="{{!isOwner || status==0}}" size="mini"> {{play_item.name}} </button>
 				</block>

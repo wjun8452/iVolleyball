@@ -1,4 +1,4 @@
-// pages/stat/stat_setting.js
+// pages/stat_setting/stat_setting.js
 var court = require("../../utils/court.js")
 Page({
 
@@ -17,14 +17,13 @@ Page({
     this.data.edit_pos = -1,
       this.data.total_scores = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-
-    console.log("setting onLoad, load last data", saved)
-
     Object.assign(this.data, court.default_data, saved);
 
     if (options._id) { //from url
       this.data._id = options._id
     }
+
+    console.log("[onLoad] data:", this.data)
 
     this.onDataLoaded()
   },
@@ -54,7 +53,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    console.log("onUnload")
+    console.log("[onUnload]")
     delete this.data.total_scores;
     delete this.data.edit_pos;
     wx.setStorageSync(getApp().globalData.cacheKey, this.data);
@@ -84,6 +83,7 @@ Page({
     this.data.stat_items = []
     this.data.myScore = 0
     this.data.yourScore = 0
+    
     if (this.data._id) {
       var obj = new Object()
       obj["stat_items"] = this.data.stat_items;

@@ -20,7 +20,6 @@ Page({
   start_x_2: 0,
   start_y_2: 0,
   watcher: null,
-  fromWechat: false,
 
   /**
    * 生命周期函数--监听页面加载
@@ -30,24 +29,27 @@ Page({
       title: '大记分牌'
     })
 
-    console.log("score board onLoad")
+    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
+    this.data = Object.assign(this.data, court.default_data, saved);
 
-    //从主页点击进来
-    var fromIndex = !options._id
-
-    if (fromIndex) {
-      var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-      this.data = Object.assign(this.data, court.default_data, saved);
-      console.log("load last data", this.data)
-    } else {//从其他页面点击进来，URL自带id
+    if (options._id) {
       this.data._id = options._id
+    }
+
+    if (options._openid) {
       this.data._openid = options._openid
     }
+
+    if (!this.data._id && !this.data._openid) {//新创建的本地比赛最初是没有openid的
+        this.data._openid = getApp().globalData.openid
+    }
+
+    console.log("[onLoad] _id:", this.data._id, "_openid:", this.data._openid)
 
     if (this.data._id) {
       const version = wx.getSystemInfoSync().SDKVersion
       if (this.compareVersion(version, '2.8.1') >= 0) {
-        this.watchOnlinData(this.data._id, false, fromIndex)
+        this.watchOnlinData(this.data._id, false)
       } else {
         this.loadOnlineData(this.data._id)
         // 如果希望用户在最新版本的客户端上体验您的小程序，可以这样子提示
@@ -56,8 +58,7 @@ Page({
           content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。'
         })
       }
-
-    } else {
+    } else { //onDataLoaded will be invoked too in above if branch
       this.onDataLoaded()
     }
   },
@@ -74,7 +75,7 @@ Page({
     this.data.colon_width = res.windowWidth
     this.data.team_name[0] = this.data.leftMode ? this.data.myTeam : this.data.yourTeam
     this.data.team_name[1] = this.data.leftMode ? this.data.yourTeam : this.data.myTeam
-    this.data.isOwner = (!this.data._openid) || getApp().globalData.openid == this.data._openid;
+    this.data.isOwner = getApp().globalData.openid == this.data._openid;
     this.setData(this.data)
   },
 
@@ -103,8 +104,7 @@ Page({
    */
   onUnload: function () {
     if (this.data.isOwner && this.data.status==1) {
-      console.log("score board onUnload")
-      console.log(this.data)
+      //console.log("score board onUnload")
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
     }
 
@@ -270,7 +270,7 @@ Page({
     this.setData(this.data)
   },
 
-  watchOnlinData: function (id, toShare, fromIndex) {
+  watchOnlinData: function (id, toShare) {
     wx.showLoading({
       title: '正在加载',
     })
@@ -285,7 +285,7 @@ Page({
       })
       .watch({
         onChange: function (snapshot) {
-          console.log('vmatch onChange', snapshot)
+          console.log('[db.vmatch.watch]', id, snapshot)
           
           wx.hideLoading()
 
@@ -294,16 +294,11 @@ Page({
           if (data) {
             that.data = Object.assign(that.data, data)
             that.data.create_time = that.data.create_time.toLocaleString()
-            if (fromIndex && that.data.status==0) {//从主页点击进来，却已结束？这是个bug，用户再也没办法新建比赛了
-                that.data._id = null
-                that.data.status = 1
-                that.reset()
-            }
             that.onDataLoaded()
             if (snapshot.type === 'init') {
               if (toShare && that.data.isOwner) {
                 wx.setStorageSync(getApp().globalData.cacheKey, that.data);
-                console.log("to share", that.data)
+                //console.log("to share", that.data)
                 wx.navigateTo({
                   url: '../share/share',
                 })
@@ -324,7 +319,7 @@ Page({
             title: '加载失败!',
             icon: 'none'
           })
-          console.error('the watch closed because of error', err)
+          console.error('[db.vmatch.watch]', id, err)
         }
       })
   },
@@ -340,7 +335,7 @@ Page({
       _id: id,
     }).get({
       success(res) {
-        console.log(id, res)
+        console.log("[db.vmatch.get]", id)
         var data = res.data[0]
         that.data = Object.assign(that.data, data)
         that.data.create_time = that.data.create_time.toLocaleString()
@@ -348,7 +343,7 @@ Page({
         that.onDataLoaded()
       },
       fail(res) {
-        console.log(id, res)
+        console.log("[db.vmatch.get]", id, res)
         wx.hideLoading()
         wx.showToast({
           title: '加载失败',
@@ -386,9 +381,6 @@ Page({
   onShare: function () {
     if (this.data._id) {
       wx.setStorageSync(getApp().globalData.cacheKey, this.data);
-
-      console.log("onShare", this.data)
-      
       wx.navigateTo({
         url: '../share/share',
       })
@@ -420,17 +412,18 @@ Page({
     db.collection('vmatch').add({
       data: this.data,
       success: function (res) {
-        console.log(res)
-        that.data._id = res._id
-        that.watchOnlinData(res._id, true);
+        console.log("[db.vmatch.add]", res._id)
         wx.hideLoading()
         wx.showToast({
           title: '上传成功!',
           icon: 'success'
         })
+
+        that.data._id = res._id
+        that.watchOnlinData(res._id, true);
       },
       fail: function (res) {
-        console.log(res)
+        console.log("[db.vmatch.add]", res)
         wx.hideLoading()
         wx.showToast({
           title: '上传失败!',
@@ -456,7 +449,7 @@ Page({
       // data 传入需要局部更新的数据
       data: updated_parts,
       success: function (res) {
-        console.log(res.data)
+        console.log("[db.vmatch.update]", id, res)
         if (reset) {
           that.data._id = ""
           that.data._openid = getApp().globalData.openid

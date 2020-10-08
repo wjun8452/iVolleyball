@@ -26,7 +26,7 @@
 
 	<block wx:if="{{isOwner}}">
 		<view style="font-size:large" class="color3">
-			<navigator url="../stat/users" style="text-align:center; text-font:x-large">球队成员</navigator>
+			<navigator url="../user/users" style="text-align:center; text-font:x-large">球队成员</navigator>
 		</view>
 	</block>
 

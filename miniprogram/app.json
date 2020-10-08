@@ -3,18 +3,18 @@
     "pages/index/index",
     "pages/logs/logs",
     "pages/stat/stat",
-    "pages/stat/stat_setting",
-    "pages/stat/report",
-    "pages/stat/users",
+    "pages/stat_setting/stat_setting",
+    "pages/report/report",
     "pages/score_board/score_board",
     "pages/help/help",
     "pages/history/history",
     "pages/release/release",
-    "pages/share/share"
+    "pages/share/share",
+    "pages/user/user"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#FF9900",
     "navigationBarTitleText": "排球记分牌",
     "navigationBarTextStyle": "black"
   },

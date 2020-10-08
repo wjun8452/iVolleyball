@@ -1,4 +1,4 @@
-/* pages/stat/stat_setting.wxss */
+/* pages/stat_setting/stat_setting.wxss */
 
 .triangle{
 width: 10px;

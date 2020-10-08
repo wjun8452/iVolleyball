@@ -1,4 +1,4 @@
-<wxs module="utils" src="./util.wxs"></wxs>
+<wxs module="utils" src="../../utils/util.wxs"></wxs>
 <import src="block.wxml" />
 
 <view style="display: flex; flex-direction: column; height:{{height}}px; width: 100%;" bindtap="onTapBoard" class="color3">

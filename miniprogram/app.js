@@ -29,37 +29,46 @@ App({
       name: 'login',
       data: {},
       success: res => {
-        console.log('[login]', res)
         that.globalData.openid = res.result.openid
+        console.log('[wx.cloud.login] openid:', that.globalData.openid)
       },
       fail: err => {
-        console.error('[login] failed!', err)
+        console.error('[wx.cloud.login] failed!', err)
       }
     })
   },
 
+  //getUserInfo is currently not used, but kept here for further reference
   getUserInfo:function(cb){
     var that = this
     if(this.globalData.userInfo){
       typeof cb == "function" && cb(this.globalData.userInfo)
+      console.log("userInfo", this.globalData.userInfo)
     }else{
       //调用登录接口
       wx.login({
-        success: function () {
+        success: function (res) {
+          console.log("[wx.login] code:", res.code)
           wx.getUserInfo({
             success: function (res) {
               that.globalData.userInfo = res.userInfo
               typeof cb == "function" && cb(that.globalData.userInfo)
-              console.log('userInfo', that.globalData.userInfo)
+              console.log('[wx.getUserInfo]', that.globalData.userInfo)
+            },
+            fail: function(res) {
+              console.error("[wx.getUserInfo]", res)
             }
           })
-        }
+        },
+        fail: function(res) {
+          console.error([wx.login], res)
+        },
       })
     }
   },
 
   initLocation: function () {
-    var demo = new qqMap({
+    var qqmap = new qqMap({
       key: '6MWBZ-XDZL6-FPOSU-MKDSZ-DANKF-EOBRN' // 必填
     });
 
@@ -68,22 +77,21 @@ App({
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
-
         that.globalData.lat = res.latitude
         that.globalData.lon = res.longitude
-
-        demo.reverseGeocoder({
+        console.log("[wx.getLocation]", that.globalData.lat, that.globalData.lon)
+        qqmap.reverseGeocoder({
           location: {
             latitude: res.latitude,
             longitude: res.longitude
           },
           success: function (res) {
-            console.log('[getLocation]', res);
+            console.log('[qqMap.RGC]', res.result.address);
             that.globalData.place = res.result.formatted_addresses.recommend
             that.globalData.city = res.result.address_component.city
           },
           fail: function (res) {
-            console.error('[getLocation] failed!', res);
+            console.error('[qqMap.RGC] failed!', res);
           },
           complete: function (res) {
             //console.log(res);

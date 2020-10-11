@@ -52,6 +52,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function() {
+    console.log("onPullDownRefresh")
     this.fetchData()
   },
 
@@ -92,7 +93,7 @@ Page({
       }).orderBy('create_time', 'desc')
       .get({
         success(res) {
-          //console.log(res)
+          //console.log("[db.vmatch.get] res:", res)
           that.data.matches = res.data
           for (var i in that.data.matches) {
             that.data.matches[i].create_time = that.data.matches[i].create_time.toLocaleString()

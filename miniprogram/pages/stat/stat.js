@@ -25,8 +25,10 @@ Page({
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.data = Object.assign(this.data, court.default_data, saved);
 
+    var from_home_page = true
     if (this._id) {
       this.data._id = this._id;
+      from_home_page = false
     }
 
     if (this._openid) {
@@ -42,9 +44,9 @@ Page({
     if (this.data._id) { //if it has a vmatch id
       const version = wx.getSystemInfoSync().SDKVersion
       if (this.compareVersion(version, '2.8.1') >= 0) {
-        this.watchOnlinData(this.data._id, false)
+        this.watchOnlinData(this.data._id, false, from_home_page)
       } else {
-        this.loadOnlineData(this.data._id)
+        this.loadOnlineData(this.data._id, from_home_page)
         // 如果希望用户在最新版本的客户端上体验您的小程序，可以这样子提示
         wx.showModal({
           title: '提示',
@@ -251,6 +253,7 @@ Page({
   },
 
   resetData: function () {
+    this._openid = getApp().globalData.openid
     this.data.stat_items = []
     this.data.myScore = 0
     this.data.yourScore = 0
@@ -282,7 +285,7 @@ Page({
     })
   },
 
-  watchOnlinData: function (id, toShare) {
+  watchOnlinData: function (id, toShare, from_home_page) {
     wx.showLoading({
       title: '正在加载',
     })
@@ -301,6 +304,11 @@ Page({
           var data = snapshot.docs[0]
           that.data = Object.assign(that.data, data)
           that.data.create_time = that.data.create_time.toLocaleString()
+
+          if (from_home_page && that.data.status==0) {//特殊处理一个偶尔出现的严重bug，从主页点击进来的无参数比赛不可能是结束状态，否则用户再也没办法开始新的比赛了,目前还未查明原因 
+            that.resetData() 
+          } 
+
           that.onDataLoaded()
           if (snapshot.type === 'init') {
             if (toShare) {
@@ -366,6 +374,11 @@ Page({
         var data = res.data[0]
         that.data = Object.assign(that.data, data)
         that.data.create_time = that.data.create_time.toLocaleString()
+
+        if (from_home_page && that.data.status==0) {//特殊处理一个偶尔出现的严重bug，从主页点击进来的无参数比赛不可能是结束状态，否则用户再也没办法开始新的比赛了,目前还未查明原因 
+          that.resetData() 
+        } 
+        
         wx.hideLoading()
         that.onDataLoaded()
       },

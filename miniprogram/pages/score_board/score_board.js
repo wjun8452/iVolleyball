@@ -32,8 +32,10 @@ Page({
     var saved = wx.getStorageSync(getApp().globalData.cacheKey);
     this.data = Object.assign(this.data, court.default_data, saved);
 
+    var from_home_page = true
     if (options._id) {
       this.data._id = options._id
+      from_home_page = false
     }
 
     if (options._openid) {
@@ -49,9 +51,9 @@ Page({
     if (this.data._id) {
       const version = wx.getSystemInfoSync().SDKVersion
       if (this.compareVersion(version, '2.8.1') >= 0) {
-        this.watchOnlinData(this.data._id, false)
+        this.watchOnlinData(this.data._id, false, from_home_page)
       } else {
-        this.loadOnlineData(this.data._id)
+        this.loadOnlineData(this.data._id, from_home_page)
         // 如果希望用户在最新版本的客户端上体验您的小程序，可以这样子提示
         wx.showModal({
           title: '提示',
@@ -262,6 +264,8 @@ Page({
   },
 
   reset: function () {
+    this.data._id = null
+    this.data._openid = getApp().globalData.openid
     this.data.status = 1
     this.data.stat_items = []
     this.data.myScore = 0
@@ -270,7 +274,7 @@ Page({
     this.setData(this.data)
   },
 
-  watchOnlinData: function (id, toShare) {
+  watchOnlinData: function (id, toShare, from_home_page) {
     wx.showLoading({
       title: '正在加载',
     })
@@ -294,6 +298,11 @@ Page({
           if (data) {
             that.data = Object.assign(that.data, data)
             that.data.create_time = that.data.create_time.toLocaleString()
+
+            if (from_home_page && that.data.status==0) {//特殊处理一个偶尔出现的严重bug，从主页点击进来的无参数比赛不可能是结束状态，否则用户再也没办法开始新的比赛了,目前还未查明原因 
+              that.reset() 
+            } 
+
             that.onDataLoaded()
             if (snapshot.type === 'init') {
               if (toShare && that.data.isOwner) {
@@ -324,7 +333,7 @@ Page({
       })
   },
 
-  loadOnlineData: function (id) {
+  loadOnlineData: function (id, from_home_page) {
     const db = wx.cloud.database({
       env: getApp().globalData.env
     })
@@ -339,6 +348,11 @@ Page({
         var data = res.data[0]
         that.data = Object.assign(that.data, data)
         that.data.create_time = that.data.create_time.toLocaleString()
+
+        if (from_home_page && that.data.status==0) {//特殊处理一个偶尔出现的严重bug，从主页点击进来的无参数比赛不可能是结束状态，否则用户再也没办法开始新的比赛了,目前还未查明原因 
+          that.reset() 
+        } 
+
         wx.hideLoading()
         that.onDataLoaded()
       },
@@ -451,12 +465,7 @@ Page({
       success: function (res) {
         console.log("[db.vmatch.update]", id, res)
         if (reset) {
-          that.data._id = ""
-          that.data._openid = getApp().globalData.openid
           that.reset()
-          // wx.redirectTo ({
-          //   url: '../index/index',
-          // })
         } else {
           that.checkMatchOver()
           that.setData(that.data)

@@ -72,8 +72,12 @@ function _initAllowedItems(all_stat_items) {
 var default_data = {
   myScore: 0,
   yourScore: 0,
-  all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"],
-  players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号区域, 1: 2号区域,  value: 姓名
+  all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2", "自由人"], //legacy
+  is_libero_enabled: false,
+  libero: -1, //在all_players中的序号
+  libero_replacement1: -1, //自由人第一替换对象在all_players中的序号
+  libero_replacement2: -1, //自由人第二替换对象在all_players中的序号, 两个序号可以一样
+  players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号位, 1: 2号位,  value: 姓名
   play_items: [
     [],
     [],
@@ -119,7 +123,8 @@ function addScoreRotate(data) {
 
   if (!serve) {
     data.serve = true;
-    rotate(data);
+    _rotate(data);
+    _checkLibero(data);
     updateAvailableItems(data);
   }
 }
@@ -130,11 +135,12 @@ function looseScoreRotate(data) {
   data.stat_items.push(createStatItem("", "无类别", "失误", -1, serve, data.myScore, data.yourScore));
   if (serve) {
     data.serve = false;
+    _checkLibero(data);
     updateAvailableItems(data);
   }
 }
 
-function rotate(data) { //only called when we win the score or for adjust court
+function _rotate(data) { //only called when we win the score or for adjust court
   var serve = data.serve;
   var players = data.players;
   var who_serve = data.who_serve;
@@ -186,6 +192,66 @@ function rotate(data) { //only called when we win the score or for adjust court
   }
 }
 
+//返回球员是否在场上
+function isPlayerOnCourt(name, players) {
+  for (var i = 0; i < players.length; i++) {
+    if (players[i] == name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function _checkLibero(data) {
+  var serve = data.serve;
+  var players = data.players;
+  var who_serve = data.who_serve;
+
+  console.log(serve, who_serve)
+
+  if (data.is_libero_enabled) {
+    //如果自由人转到前排，则必须被换下
+    for (var i = 1; i <= 3; i++) {
+      if (data.all_players[data.libero] == data.players[i]) { //自由人在前排了
+        if (!isPlayerOnCourt(data.all_players[data.libero_replacement1], data.players)) { //第一替换人不在场上
+          data.players[i] = data.all_players[data.libero_replacement1]; //上场
+        } else if (data.libero_replacement2 != -1 && !isPlayerOnCourt(data.all_players[data.libero_replacement2], data.players)) { //第二替换人不在场上
+          data.players[i] = data.all_players[data.libero_replacement2]; //上场
+        }
+        break;
+      }
+    }
+
+    //自由人上场替换后排
+    var done = false;
+    if (isPlayerOnCourt(data.all_players[data.libero], data.players)) {
+      done = true;
+    }
+
+    if (!done) {
+      for (var i = 4; i <= 6; i++) { //先替换第一对象
+        var j = i % 6;
+        if (data.all_players[data.libero_replacement1] == data.players[j] &&
+          (!(serve && who_serve == j))) { //自由人不发球哦
+          data.players[j] = data.all_players[data.libero];
+          done = true;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!done) {
+    for (var i = 4; i <= 6; i++) { //再替换第二对象
+      var j = i % 6;
+      if (data.all_players[data.libero_replacement2] == data.players[j] &&
+        (!(serve && who_serve == j))) { //自由人不发球哦
+        data.players[j] = data.all_players[data.libero];
+        break;
+      }
+    }
+  }
+}
 //categories: output
 //items: output
 function _createItems(categories, items, cat_allowed, category, arr2) {
@@ -209,15 +275,18 @@ function updateAvailableItems(data) {
   var cat_allowed = data.cat_allowed
   var player_allowed = data.player_allowed
   var players = data.players
+  var libero = data.players.indexOf(data.all_players[data.libero]);
 
   for (var i in items) {
+    //console.log(libero, i);
+
     items[i] = [];
     var item = items[i];
 
     cats[i] = [];
     var cat = cats[i];
 
-    if (player_allowed!=null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
+    if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
       continue; //该队员不做统计
     }
 
@@ -245,12 +314,14 @@ function updateAvailableItems(data) {
       [StatName.ErChuanLost, -1]
     ])
 
-    _createItems(cat, item, cat_allowed, StatCat.Attack, [
-      [StatName.AttackWin, 1],
-      [StatName.AttackNormal, 0],
-      [StatName.AttackBlk, -1],
-      [StatName.AttackLost, -1]
-    ])
+    if (i != libero) {
+      _createItems(cat, item, cat_allowed, StatCat.Attack, [
+        [StatName.AttackWin, 1],
+        [StatName.AttackNormal, 0],
+        [StatName.AttackBlk, -1],
+        [StatName.AttackLost, -1]
+      ])
+    }
 
     if (i >= 1 && i <= 3) {
       _createItems(cat, item, cat_allowed, StatCat.Block, [
@@ -285,7 +356,7 @@ function stateRotate(data, position, i) {
   if (item.score == 1) {
     data.myScore = data.myScore + 1;
   }
-  
+
   if (item.score == -1) {
     data.yourScore = data.yourScore + 1;
   }
@@ -297,13 +368,15 @@ function stateRotate(data, position, i) {
     //next position
     if (!serve) {
       data.serve = true;
-      rotate(data);
+      _rotate(data);
+      _checkLibero(data);
       updateAvailableItems(data);
     }
 
   } else if (item.score == -1) {
     if (serve) {
       data.serve = false;
+      _checkLibero(data);
       updateAvailableItems(data);
     }
   }
@@ -411,6 +484,12 @@ function createStatItem(player, item_cat, item_name, item_score, swap, myscore, 
   return obj;
 }
 
+function rotate(data) {
+  _rotate(data);
+  _checkLibero(data);
+}
+
+
 function _swap(p1, p2, array) {
   var obj = array[p1];
   array[p1] = array[p2];
@@ -424,6 +503,7 @@ function _createPlayItem(category, name, score) {
   obj.score = score;
   return obj;
 }
+
 
 module.exports.addScoreRotate = addScoreRotate;
 module.exports.looseScoreRotate = looseScoreRotate;

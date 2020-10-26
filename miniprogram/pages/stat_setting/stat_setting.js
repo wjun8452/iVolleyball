@@ -360,8 +360,28 @@ Page({
     }
   },
 
+  
+
   onCheckAllowedPlayer: function (e) {
-    this.data.player_allowed = e.detail.value;
+    var player_allowed = e.detail.value;
+
+    //循环查看场上球员是否被勾选
+    for (var i = 0 ; i < this.data.players.length; i++) {
+      var player = this.data.players[i];
+      var index = player_allowed.indexOf (player);
+      if (index == -1) { //该球员未被勾选
+          var index2 = this.data.player_allowed.indexOf(player);
+          if (index2 != -1) {
+              this.data.player_allowed.splice(index2);
+          }
+      } else {
+        var index2 = this.data.player_allowed.indexOf(player);
+        if (index2 == -1) {
+          this.data.player_allowed.push(player);
+        }
+      }
+    }
+
     if (this.data._id) {
       var obj = new Object()
       obj["player_allowed"] = this.data.player_allowed;
@@ -436,6 +456,42 @@ Page({
         total_score: this.data.total_score
       })
     }
+  },
+
+  bindLiberoChange: function(e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    this.setData({
+      libero: e.detail.value
+    })
+  },
+
+  liberoEnabled: function(e) {
+    const values = e.detail.value
+    if (values.length > 0) {
+      this.data.is_libero_enabled = true
+      this.setData({
+        is_libero_enabled: true
+      })
+    } else {
+      this.data.is_libero_enabled = false
+      this.setData({
+        is_libero_enabled: false
+      })
+    }
+  }, 
+
+  bindLiberoReplacement1: function(e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    this.setData({
+      libero_replacement1: e.detail.value
+    })
+  },
+
+  bindLiberoReplacement2: function(e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    this.setData({
+      libero_replacement2: e.detail.value
+    })
   },
 
 

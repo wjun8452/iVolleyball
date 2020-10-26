@@ -64,7 +64,7 @@ Page({
     this.data.opCat = null
     this.data.opPosition = -1
     if (this.data.player_allowed == null) {
-      this.data.player_allowed = this.data.players
+      this.data.player_allowed = this.data.all_players
     }
     court.updateAvailableItems(this.data);
     this.setData(this.data)

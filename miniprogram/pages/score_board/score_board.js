@@ -46,7 +46,7 @@ Page({
         this.data._openid = getApp().globalData.openid
     }
 
-    console.log("[onLoad] _id:", this.data._id, "_openid:", this.data._openid)
+    console.log("[onLoad] _id:", this.data._id, "_openid:", this.data._openid, this.data)
 
     if (this.data._id) {
       const version = wx.getSystemInfoSync().SDKVersion

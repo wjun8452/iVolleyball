@@ -8,16 +8,21 @@
 		</view>
 		<view style='flex:1;display:flex; flex-direction: row;'>
 			<text style='flex:1'>对方队名:</text>
-			<input bindconfirm='onEditTeam' data-obj="yourTeam" value='{{yourTeam}}' style='flex:1; text-decoration:underline' />
+			<input bindconfirm='onEditTeam' data-obj="yourTeam" value='{{yourTeam}}'
+				style='flex:1; text-decoration:underline' />
 		</view>
 	</view>
 
 	<view style="margin-bottom: 5px; display: flex; flex-direction: row; height: 100px">
-		<view style="width:50%; border-style: solid; border-width: 1px 0px 1px 1px; text-align:center; font:Arial; font-weight:bold; font-size: 70px; " bindtouchstart="touchStart1" bindtouchend="touchEnd1">
+		<view
+			style="width:50%; border-style: solid; border-width: 1px 0px 1px 1px; text-align:center; font:Arial; font-weight:bold; font-size: 70px; "
+			bindtouchstart="touchStart1" bindtouchend="touchEnd1">
 			{{myScore}}
 		</view>
 
-		<view style="width:50%; border-style: solid; border-width: 1px 1px 1px 1px; text-align:center; text-align:center; font:Arial; font-weight:bold; font-size: 70px;" bindtouchstart="touchStart2" bindtouchend="touchEnd2">
+		<view
+			style="width:50%; border-style: solid; border-width: 1px 1px 1px 1px; text-align:center; text-align:center; font:Arial; font-weight:bold; font-size: 70px;"
+			bindtouchstart="touchStart2" bindtouchend="touchEnd2">
 			{{yourScore}}
 		</view>
 	</view>
@@ -52,6 +57,31 @@
 		</radio-group>
 	</view>
 
+	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:space-between;">
+		<checkbox-group bindchange="liberoEnabled">
+			<checkbox checked="{{is_libero_enabled}}"> 
+				启用自由人
+			</checkbox>
+		</checkbox-group>
+
+		<block wx:if="{{is_libero_enabled}}">			
+			<picker bindchange="bindLiberoChange" value="{{libero}}" range="{{all_players}}">
+				<view>选择自由人: {{all_players[libero]}} </view>
+			</picker>
+		</block>
+
+		<block wx:if="{{is_libero_enabled}}">			
+			<picker bindchange="bindLiberoReplacement1" value="{{libero_replacement[0]}}" range="{{all_players}}">
+				<view>第一替换人: {{all_players[libero_replacement1]}} </view>
+			</picker>
+		</block>
+
+		<block wx:if="{{is_libero_enabled}}">			
+			<picker bindchange="bindLiberoReplacement2" value="{{libero_replacement[1]}}" range="{{all_players}}">
+				<view>第二替换人: {{all_players[libero_replacement2]}} </view>
+			</picker>
+		</block>
+	</view>
 
 	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:space-between;">
 		<block wx:for="{{[3,2,1]}}" wx:for-item="pos" wx:key="*this">
@@ -72,7 +102,8 @@
 						<view style="display: flex; flex-direction: column;">
 							<block wx:for="{{all_players}}" wx:for-item="player" wx:key="*this">
 								<block wx:if="{{item!=players[pos]}}">
-									<view style="flex:1 border:2px solid black;" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'> {{player}} </view>
+									<view style="flex:1 border:2px solid black;" bindtap="onChoosePlayer" data-position='{{pos}}'
+										data-player='{{player}}'> {{player}} </view>
 								</block>
 							</block>
 						</view>
@@ -88,7 +119,8 @@
 
 			<!-- copy to next row -->
 			<view style="margin: 2px; flex:1; display: flex; flex-direction: column;">
-				<view class="bgcolor2" data-position='{{pos}}' bindtap="onClickPlayer" style="text-algin:center"> {{players[pos]}}›
+				<view class="bgcolor2" data-position='{{pos}}' bindtap="onClickPlayer" style="text-algin:center">
+					{{players[pos]}}›
 					<block wx:if='{{edit_pos!=pos && (pos==0||(front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
 						<checkbox-group style="flex:1; " bindchange="onCheckWhoServe" data-position='{{pos}}'>
 							<checkbox checked='{{pos==who_serve}}' disabled='{{!serve}}'>发球</checkbox>
@@ -102,7 +134,8 @@
 						<view style="display: flex; flex-direction: column;">
 							<block wx:for="{{all_players}}" wx:for-item="player" wx:key="*this">
 								<block wx:if="{{item!=players[pos]}}">
-									<view style="flex:1 border:2px solid #336699;" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'> {{player}} </view>
+									<view style="flex:1 border:2px solid #336699;" bindtap="onChoosePlayer" data-position='{{pos}}'
+										data-player='{{player}}'> {{player}} </view>
 								</block>
 							</block>
 						</view>

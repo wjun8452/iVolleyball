@@ -459,39 +459,63 @@ Page({
   },
 
   bindLiberoChange: function(e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value)
-    this.setData({
-      libero: e.detail.value
-    })
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+    this.data.libero = e.detail.value;
+
+    if (this.data._id) {
+      var obj = new Object();
+      obj["libero"] = this.data.libero;
+      this.updateMatch(this.data._id, obj);
+    } else {
+      this.setData({
+        libero: e.detail.value
+      })
+  }
   },
 
   liberoEnabled: function(e) {
-    const values = e.detail.value
-    if (values.length > 0) {
-      this.data.is_libero_enabled = true
-      this.setData({
-        is_libero_enabled: true
-      })
+    const values = e.detail.value;
+    this.data.is_libero_enabled  = values.length > 0;
+    if (this.data._id) {
+      var obj = new Object();
+      obj["is_libero_enabled"] = this.data.is_libero_enabled;
+      this.updateMatch(this.data._id, obj);
     } else {
-      this.data.is_libero_enabled = false
       this.setData({
-        is_libero_enabled: false
+        is_libero_enabled: this.data.is_libero_enabled
       })
     }
   }, 
 
   bindLiberoReplacement1: function(e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value)
-    this.setData({
-      libero_replacement1: e.detail.value
-    })
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+
+    this.data.libero_replacement1 = e.detail.value;
+
+    if (this.data._id) {
+      var obj = new Object();
+      obj["libero_replacement1"] = this.data.libero_replacement1;
+      this.updateMatch(this.data._id, obj);
+    } else {
+      this.setData({
+        libero_replacement1: e.detail.value
+      })
+    }
   },
 
   bindLiberoReplacement2: function(e) {
     console.log('picker发送选择改变，携带值为', e.detail.value)
-    this.setData({
-      libero_replacement2: e.detail.value
-    })
+    this.data.libero_replacement2 = e.detail.value;
+
+    if (this.data._id) {
+      var obj = new Object();
+      obj["libero_replacement2"] = this.data.libero_replacement2;
+      this.updateMatch(this.data._id, obj);
+    } else {
+      this.setData({
+        libero_replacement2: e.detail.value
+      })
+    }
   },
 
 

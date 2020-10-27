@@ -24,11 +24,13 @@ var StatName = {
   AttackWin: "进攻得分",
   AttackLost: "进攻失误",
   BlockWin: "拦网得分",
+  BlockPlus: "有效撑起",
+  BlockMinus: "拦回",
+  BlockHalf: "破坏性拦网",
   BlockLost: "拦网失误",
   DefendLost: "防守失误",
-  DefendGood: "防守到位",
-  DefendNormal: "防守一般",
-
+  DefendGood: "有效防起",
+  DefendNormal: "防守无攻",
 };
 
 var all_items = [{
@@ -49,7 +51,7 @@ var all_items = [{
   },
   {
     cat: StatCat.Block,
-    stats: [StatName.BlockWin, StatName.BlockLost]
+    stats: [StatName.BlockWin, StatName.BlockPlus, StatName.BlockMinus, StatName.BlockHalf, StatName.BlockLost]
   },
   {
     cat: StatCat.Defend,
@@ -326,6 +328,9 @@ function updateAvailableItems(data) {
     if (i >= 1 && i <= 3) {
       _createItems(cat, item, cat_allowed, StatCat.Block, [
         [StatName.BlockWin, 1],
+        [StatName.BlockPlus, 0],
+        [StatName.BlockMinus, 0],
+        [StatName.BlockHalf, -1],
         [StatName.BlockLost, -1]
       ])
     }

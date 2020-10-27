@@ -30,13 +30,18 @@ Page({
       this.data = Object.assign(this.data, court.default_data, saved);
 
       //create summary
-      var statistics = this.createStatistics(this.data.stat_items)
-      this.data.summary["标题"] = this.createSummaryForPlayer(null)
-      this.createSummary(this.data.summary, this.data.players, statistics);
-
+      this.createStaticAndSummary(this.data);
       wx.hideLoading();
       this.setData(this.data);
     }
+  },
+
+  createStaticAndSummary: function(data) {
+      //create summary
+      var statistics = this.createStatistics(data.stat_items)
+      this.data.summary["标题"] = this.createSummaryForPlayer(null)
+      var players = this.getAllPlayers(data)
+      this.createSummary(data.summary, players, statistics);
   },
 
   /**
@@ -159,13 +164,18 @@ Page({
         "成功效率": 0
       },
       "拦网": {
+        "总数": 0,
         "得分": 0,
+        "有效撑起": 0,
+        "拦回": 0,
+        "破坏性拦网": 0,
         "失误": 0
       },
       "防反起球": {
         "总数": 0,
         "失误": 0,
-        "到位": 0,
+        "有效防起": 0,
+        "防起无攻": 0, 
         "到位率": 0,
         "到位效率": 0
       },
@@ -307,6 +317,9 @@ Page({
     total = 0
     lost = 0
     win = 0
+    var plus = 0
+    var minus = 0
+    var half = 0
 
     if (statistic.hasOwnProperty(court.StatName.BlockLost)) {
       lost += statistic[court.StatName.BlockLost]
@@ -316,9 +329,25 @@ Page({
       win += statistic[court.StatName.BlockWin]
       total += statistic[court.StatName.BlockWin]
     }
+    if (statistic.hasOwnProperty(court.StatName.BlockPlus)) {
+      plus += statistic[court.StatName.BlockPlus]
+      total += statistic[court.StatName.BlockPlus]
+    }
+    if (statistic.hasOwnProperty(court.StatName.BlockMinus)) {
+      minus += statistic[court.StatName.BlockMinus]
+      total += statistic[court.StatName.BlockMinus]
+    }
+    if (statistic.hasOwnProperty(court.StatName.BlockHalf)) {
+      half += statistic[court.StatName.BlockHalf]
+      total += statistic[court.StatName.BlockHalf]
+    }
 
+    summary["拦网"]["总数"] = total
     summary["拦网"]["失误"] = lost
     summary["拦网"]["得分"] = win
+    summary["拦网"]["有效撑起"] = plus
+    summary["拦网"]["拦回"] = minus 
+    summary["拦网"]["破坏性拦网"] = half
 
     //   DefendLost: "防守失误",
     //     DefendGood: "防守到位",
@@ -345,7 +374,7 @@ Page({
 
     summary["防反起球"]["总数"] = total
     summary["防反起球"]["失误"] = lost
-    summary["防反起球"]["到位"] = win
+    summary["防反起球"]["有效防起"] = win
     summary["防反起球"]["到位率"] = total == 0 ? "0" : ((win / total).toFixed(2) * 100).toString() + "%"
     summary["防反起球"]["到位效率"] = total == 0 ? "0" : (((win - lost) / total).toFixed(2) * 100).toString() + "%"
 
@@ -506,19 +535,22 @@ Page({
         myScore: true,
         yourScore: true,
         players: true,
+        all_players: true,
         myTeam: true,
         yourTeam: true,
         create_time: true,
         place: true,
+        is_libero_enabled: true,
+        libero: true,
+        libero_replacement1: true,
+        libero_replacement2: true
       }).get({
         success(res) {
           console.log(id,res)
           var data = res.data[0]
           that.data = Object.assign(that.data, data)
           that.data.create_time = that.data.create_time.toLocaleString()
-          var statistics = that.createStatistics(that.data.stat_items)
-          that.data.summary["标题"] = that.createSummaryForPlayer(null)
-          that.createSummary(that.data.summary, that.data.players, statistics);
+          that.createStaticAndSummary(that.data);
           wx.hideLoading()
           that.setData(that.data)
         },
@@ -536,5 +568,30 @@ Page({
     wx.navigateTo({
       url: '../index/index',
     })
+  },
+
+  getAllPlayers: function(data) {
+    //data.all_players, this.data.players, this.data.libero, this.data.libero_replacement1, this.data.libero_replacement2
+    if (data.is_libero_enabled) {
+      var players = new Array();
+      players = players.concat(data.players);
+
+      if (players.indexOf(data.all_players[data.libero]) == -1) {
+        players.push(data.all_players[data.libero]);
+      }
+
+      if (players.indexOf(data.all_players[data.libero_replacement1]) == -1) {
+        players.push(data.all_players[data.libero_replacement1])
+      }
+
+      if (players.indexOf(data.all_players[data.libero_replacement2]) == -1) {
+        players.push(data.all_players[data.libero_replacement2])
+      }
+
+      return players;
+      
+    } else {
+      return data.players;
+    }
   },
 })

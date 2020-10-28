@@ -458,6 +458,37 @@ Page({
     }
   },
 
+
+  setterEnabled: function(e) {
+    const values = e.detail.value;
+    this.data.is_setter_enabled  = values.length > 0;
+    if (this.data._id) {
+      var obj = new Object();
+      obj["is_setter_enabled"] = this.data.is_setter_enabled;
+      this.updateMatch(this.data._id, obj);
+    } else {
+      this.setData({
+        is_setter_enabled: this.data.is_setter_enabled
+      })
+    }
+  }, 
+
+  bindSetterChange: function(e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+    this.data.setter = e.detail.value;
+
+    if (this.data._id) {
+      var obj = new Object();
+      obj["setter"] = this.data.setter;
+      this.updateMatch(this.data._id, obj);
+    } else {
+      this.setData({
+        setter: e.detail.value
+      })
+  }
+  },
+
+
   bindLiberoChange: function(e) {
     console.log('picker发送选择改变，携带值为', e.detail.value);
     this.data.libero = e.detail.value;

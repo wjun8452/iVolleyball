@@ -10,13 +10,12 @@
 	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 		<text style="flex; margin-left: 5px;">2, 技术统计：</text>
 		<text style="flex; margin-left: 15px;">  点击分数可以跳转到记分牌；</text>
-		<text style="flex; margin-left: 15px;">  可以通过统计报表菜单查看统计结果；</text>
 		<text style="flex; margin-left: 15px;">  结束计分之后可以选择上传，分享给好友</text>
 	</view>
 
 	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 		<text style="flex; margin-left: 5px;">3, 技术统计-设置：</text>
-		<text style="flex; margin-left: 15px;">  点击分数方框内上半部分加分，点击下半部分减分；</text>
+		<text style="flex; margin-left: 15px;">  技术统计的报告需要先上传才能查看；</text>
 		<text style="flex; margin-left: 15px;">  减少统计项目或者只针对某个队员，可以大大简化统计工作；</text>
 	</view>
 	<view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">

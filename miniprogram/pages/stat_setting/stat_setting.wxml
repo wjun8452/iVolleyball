@@ -58,6 +58,21 @@
 	</view>
 
 	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:space-between;">
+		<checkbox-group bindchange="setterEnabled">
+			<checkbox checked="{{is_setter_enabled}}"> 
+				固定二传
+			</checkbox>
+		</checkbox-group>
+
+		<block wx:if="{{is_setter_enabled}}">			
+			<picker bindchange="bindSetterChange" value="{{setter}}" range="{{all_players}}">
+				<view>选择二传: {{all_players[setter]}} </view>
+			</picker>
+		</block>
+		
+	</view>
+
+	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:space-between;">
 		<checkbox-group bindchange="liberoEnabled">
 			<checkbox checked="{{is_libero_enabled}}"> 
 				启用自由人

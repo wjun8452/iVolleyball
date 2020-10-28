@@ -11,10 +11,15 @@ var util = {
   matchOver: function(s1, s2, total_score) {
     return (s1 >= total_score || s2 >= total_score) && (s1 - s2 >= 2 || s2 - s1 >= 2);
   },
+
+  isLibero: function(player, libero,  all_players) {
+    return player==all_players[parseInt(libero)];
+  }
 }
 // 导出对外暴露的属性
 module.exports = {
   contains: util.contains,
   sort: util.sort,
   matchOver: util.matchOver,
+  isLibero: util.isLibero,
 }

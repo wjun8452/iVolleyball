@@ -75,10 +75,12 @@ var default_data = {
   myScore: 0,
   yourScore: 0,
   all_players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2", "自由人"], //legacy
-  is_libero_enabled: false,
-  libero: -1, //在all_players中的序号
+  is_libero_enabled: false, //启用自由人
+  libero: -1, //自由人在all_players中的序号
   libero_replacement1: -1, //自由人第一替换对象在all_players中的序号
   libero_replacement2: -1, //自由人第二替换对象在all_players中的序号, 两个序号可以一样
+  is_setter_enabld: false, //二传固定
+  setter: -1, //二传在all_players中的序号
   players: ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"], //index: 显示位置, 0: 后排最右即1号位, 1: 2号位,  value: 姓名
   play_items: [
     [],
@@ -310,11 +312,13 @@ function updateAvailableItems(data) {
       ])
     }
 
-    _createItems(cat, item, cat_allowed, StatCat.ErChuan, [
-      [StatName.ErChuanGood, 0],
-      [StatName.ErChuanBad, 0],
-      [StatName.ErChuanLost, -1]
-    ])
+    if (!data.is_setter_enabled || (data.is_setter_enabled && data.all_players[data.setter] == players[i])) {
+      _createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+        [StatName.ErChuanGood, 0],
+        [StatName.ErChuanBad, 0],
+        [StatName.ErChuanLost, -1]
+      ])
+    }
 
     if (i != libero) {
       _createItems(cat, item, cat_allowed, StatCat.Attack, [

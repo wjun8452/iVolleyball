@@ -181,6 +181,8 @@ Page({
       },
       "传球": {
         "总数": 0,
+        "到位": 0,
+        "不到位": 0,
         "失误": 0,
         "到位率": 0,
         "到位效率": 0
@@ -386,6 +388,7 @@ Page({
     win = 0
     normal = 0
 
+
     if (statistic.hasOwnProperty(court.StatName.ErChuanLost)) {
       lost += statistic[court.StatName.ErChuanLost]
       total += statistic[court.StatName.ErChuanLost]
@@ -403,6 +406,8 @@ Page({
 
     summary["传球"]["总数"] = total
     summary["传球"]["失误"] = lost
+    summary["传球"]["到位"] = win
+    summary["传球"]["不到位"] = normal
     summary["传球"]["到位率"] = total == 0 ? "0" : ((win / total).toFixed(2) * 100).toString() + "%"
     summary["传球"]["到位效率"] = total == 0 ? "0" : (((win - lost) / total).toFixed(2) * 100).toString() + "%"
 

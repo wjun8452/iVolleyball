@@ -238,7 +238,7 @@ Page({
           icon: 'success'
         })
         wx.navigateTo({
-          url: 'report?_id=' + res._id,
+          url: '../report/report?_id=' + res._id,
         })
       },
       fail: function (res) {
@@ -449,7 +449,7 @@ Page({
         if (reset) {
           that.resetData()
           wx.navigateTo({
-            url: 'report?_id=' + id,
+            url: '../report/report?_id=' + id,
           })
         } else {
           that.setData(that.data)

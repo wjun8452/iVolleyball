@@ -284,42 +284,22 @@ Page({
     }
   },
 
-  touchStart1: function (e) {
-    this.start_x_1 = e.changedTouches[0].pageX;
-    this.start_y_1 = e.changedTouches[0].pageY;
-    // console.log("touchstart: ");
-    // console.log(e);
+  onAddMyScore: function() {
+    this.changeMyScore(1);
   },
 
-  touchEnd1: function (e) {
-    var end_x = e.changedTouches[0].pageX;
-    var end_y = e.changedTouches[0].pageY;
-    this.touch_end(true, this.start_x_1, this.start_y_1, end_x, end_y);
-    //console.log("touchend: ");
-    //console.log(e);
+  onReduceMyScore: function() {
+    this.changeMyScore(-1);
   },
 
-  touchStart2: function (e) {
-    this.start_x_2 = e.changedTouches[0].pageX;
-    this.start_y_2 = e.changedTouches[0].pageY;
-    console.log("touchstart: ");
-    console.log(e);
+  onAddYourScore: function() {
+    this.changeYourScore(1);
   },
 
-  touchEnd2: function (e) {
-    var end_x = e.changedTouches[0].pageX;
-    var end_y = e.changedTouches[0].pageY;
-
-    this.touch_end(false, this.start_x_2, this.start_y_2, end_x, end_y);
+  onReduceYourScore: function() {
+    this.changeYourScore(-1);
   },
 
-  touch_end: function (mine, start_x, start_y, end_x, end_y) {
-    if (end_y < 50) {
-      mine ? this.changeMyScore(1) : this.changeYourScore(1);
-    } else {
-      mine ? this.changeMyScore(-1) : this.changeYourScore(-1);
-    }
-  },
 
   changeMyScore: function (delta) {
     var s = this.data.myScore + delta;

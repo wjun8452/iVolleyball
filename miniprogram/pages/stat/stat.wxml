@@ -13,14 +13,14 @@
 		<view style="flex:1;" class="player_row">
 			<block wx:for="{{[3,2,1]}}" wx:key="*this">
 				<view style="flex:1;" class="player">
-					<template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item], isOwner, status, libero}}" />
+					<template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item], isOwner, status, libero, is_libero_enabled}}" />
 				</view>
 			</block>
 		</view>
 		<view style="flex:1;" class="player_row">
 			<block wx:for="{{[4,5,0]}}" wx:key="*this">
 				<view style="flex:1;" class="player">
-					<template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item], isOwner, status, libero}}" />
+					<template is="block" data="{{players, all_players, position: item, play_items:play_items[item], serve:serve, who_serve:who_serve, opPosition, opCat, play_item_cats:play_item_cats[item], isOwner, status, libero, is_libero_enabled}}" />
 				</view>
 			</block>
 		</view>

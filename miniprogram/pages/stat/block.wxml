@@ -26,7 +26,7 @@
 			</block>
 		</view>
 
-		<view style='flex:1; text-align:center; color: {{ (serve && who_serve==position) ? "#FF9900": utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; font-weight: bold; '>
+		<view style='flex:1; text-align:center; color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; font-weight: bold; '>
 			{{players[position]}}
 		</view>
 

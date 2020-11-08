@@ -1,9 +1,13 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+
+	<view class="block1">
+		<text style="margin-left: 5px;">v3.9.1 (2020/11/8) 修复一些偶尔发生的问题 </text>
+	</view>
+
 	<view class="block1">
 		<text style="margin-left: 5px;">v3.9.0 (2020/10/28) 技术统计中可指定自由人，增加了一些统计项目 </text>
 	</view>
-
 
 	<view class="block1">
 		<text style="margin-left: 5px;">v3.8.9 (2020/10/19) 修复设置中阵容调整界面无法响应用户点击的问题 </text>

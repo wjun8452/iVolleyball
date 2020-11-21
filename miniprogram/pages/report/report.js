@@ -124,7 +124,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function(res) {
-    var path = '/pages/stat/report?_id=' + this.data._id
+    var path = '/pages/report/report?_id=' + this.data._id
     console.log("share path=" + path)
     return {
       title: '分享赛况',

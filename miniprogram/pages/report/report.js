@@ -1,5 +1,6 @@
 var court = require("../../utils/court.js")
-
+// 在页面中定义激励视频广告
+let videoAd = null
 
 Page({
 
@@ -34,6 +35,31 @@ Page({
       wx.hideLoading();
       this.setData(this.data);
     }
+
+    // 在页面onLoad回调事件中创建激励视频广告实例
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-9739e065af4592d2'
+      })
+      videoAd.onLoad(() => {
+        console.log("jstj ad loaded.")
+      })
+      videoAd.onError((err) => {
+        console.log("jstj ad load error.")
+      })
+      videoAd.onClose((res) => {
+        // 用户点击了【关闭广告】按钮
+        if (res && res.isEnded) {
+          // 正常播放结束，可以下发游戏奖励
+        } else {
+          // 播放中途退出，回退到之前的页面
+          wx.navigateBack({
+            delta: 0,
+          })
+        }
+        console.log("jstj ad closed.")
+      })
+    }
   },
 
   createStaticAndSummary: function(data) {
@@ -54,7 +80,19 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {},
+  onShow: function() {
+    // 用户触发广告后，显示激励视频广告
+    if (videoAd) {
+      videoAd.show().catch(() => {
+        // 失败重试
+        videoAd.load()
+          .then(() => videoAd.show())
+          .catch(err => {
+            console.log('激励视频 广告显示失败')
+          })
+      })
+}
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

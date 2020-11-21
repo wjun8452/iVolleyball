@@ -233,12 +233,18 @@ Page({
         console.log(res)
         that.resetData()
         wx.hideLoading()
-        wx.showToast({
-          title: '上传成功!',
-          icon: 'success'
-        })
-        wx.navigateTo({
-          url: '../report/report?_id=' + res._id,
+        wx.showModal({
+          title: '提示',
+          content: '上传成功! 进入主页历史记录可查看统计数据！现在就去查看？',
+          success (res2) {
+            if (res2.confirm) {
+              wx.navigateTo({ 
+                url: '../report/report?_id=' + res._id, 
+              }) 
+            } else if (res2.cancel) {
+              console.log('用户点击取消')
+            }
+          }
         })
       },
       fail: function (res) {
@@ -448,8 +454,18 @@ Page({
         console.log("[db.vmatch.update] id:", id, "res", res)
         if (reset) {
           that.resetData()
-          wx.navigateTo({
-            url: '../report/report?_id=' + id,
+          wx.showModal({
+            title: '提示',
+            content: '上传成功! 进入主页历史记录可查看统计数据！现在就去查看？',
+            success (res2) {
+              if (res2.confirm) {
+                wx.navigateTo({ 
+                  url: '../report/report?_id=' + res._id, 
+                }) 
+              } else if (res2.cancel) {
+                console.log('用户点击取消')
+              }
+            }
           })
         } else {
           that.setData(that.data)

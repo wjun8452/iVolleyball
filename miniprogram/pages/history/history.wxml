@@ -33,7 +33,7 @@
 
 				<navigator class="color1"  url='../stat/stat?_id={{item._id}}&_openid={{item._openid}}'> 技术统计 </navigator>
 
-				<navigator class="color1"  url='../report/report?_id={{item._id}}&_openid={{item._openid}}'> 统计报告 </navigator>
+				<navigator class="color1"  url='../report/report?_id={{item._id}}&_openid={{item._openid}}'> 统计报告　</navigator>
 			</view>
 		</view>
 	</view>

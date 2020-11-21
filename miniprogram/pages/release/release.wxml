@@ -1,5 +1,8 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+	<view class="block1">
+		<text style="margin-left: 5px;">v3.10.0 (2020/11/21) 查看统计报告需要观看完激励广告视频 </text>
+	</view>
 
 	<view class="block1">
 		<text style="margin-left: 5px;">v3.9.1 (2020/11/8) 修复一些偶尔发生的问题 </text>

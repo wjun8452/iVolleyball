@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 	<view class="block1">
+		<text style="margin-left: 5px;">v3.10.1 (2021/5/18) 去掉报告页的广告视频 </text>
+	</view>
+
+	<view class="block1">
 		<text style="margin-left: 5px;">v3.10.0 (2020/11/21) 查看统计报告需要观看完激励广告视频 </text>
 	</view>
 

@@ -16,7 +16,7 @@
 
 	<navigator style="width:100%" class="iconbangzhu" url="../help/help">使用帮助</navigator>
 
-	<navigator url="../release/release" style="width:100%; font-size: small"> v3.10.0 </navigator>
+	<navigator url="../release/release" style="width:100%; font-size: small"> v3.10.1 </navigator>
 
 	<view style="font-style:italic; font-size:small; margin-bottom: 5px" class="color1">
 		<text style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ">{{iciba}}</text>

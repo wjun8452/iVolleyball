@@ -238,6 +238,8 @@ Page({
           content: '上传成功! 进入主页历史记录可查看统计数据！现在就去查看？',
           success (res2) {
             if (res2.confirm) {
+                wx.reportAnalytics('stat_goto_report', {
+              })
               wx.navigateTo({ 
                 url: '../report/report?_id=' + res._id, 
               }) 
@@ -284,6 +286,9 @@ Page({
           } else {
             that.uploadData()
           }
+          wx.reportAnalytics('stat_end', {
+            online: that.data._id ? "true": "false",
+          })
         } else if (res.cancel) {
 
         }

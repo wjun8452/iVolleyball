@@ -35,7 +35,7 @@
     </view>
   </block>
 
- <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3" open-type="share">  分享 </button>
+ <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3 share_button" open-type="share">  分享 </button>
 
   <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3" bindtap='gotoHome'>  返回首页 </button>
 </view>

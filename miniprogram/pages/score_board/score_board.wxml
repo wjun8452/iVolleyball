@@ -45,7 +45,7 @@
 	</view>
 
 	<view class="" style="display:flex;flex-direction:row;align-items:stretch">
-		<text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{ leftMode ? myScore : yourScore }} </text>
-		<text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font:Arial; font-weight:bold; font-size: {{height*0.4}}px; text-align:center;padding:0"> {{leftMode ?  yourScore : myScore}} </text>
+		<text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font:Arial; font-weight:bold; font-size: {{width*0.65}}px; text-align:center;padding:0"> {{ leftMode ? myScore : yourScore }} </text>
+		<text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font:Arial; font-weight:bold; font-size: {{width*0.65}}px; text-align:center;padding:0"> {{leftMode ?  yourScore : myScore}} </text>
 	</view>
 </view>

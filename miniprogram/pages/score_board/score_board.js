@@ -8,10 +8,6 @@ Page({
   data: {
     height: 0,
     width: 0,
-    score_height: 0,
-    score_width: 0,
-    colon_height: 0,
-    colon_width: 0,
     leftMode: false, //true：team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量 
     team_name: ["对方", "我方"], //team_name[0]将始终显示在左边，显示用
   },
@@ -68,13 +64,9 @@ Page({
   onDataLoaded: function () {
     // console.log(this.data)
     var res = wx.getSystemInfoSync()
-    //can not use this.data.height to set score_height
+    console.log("[wx.getSystemInfoSync]", res)
     this.data.height = res.windowHeight
     this.data.width = res.windowWidth
-    this.data.score_height = res.windowHeight / 80 * 39
-    this.data.score_width = res.windowWidth
-    this.data.colon_height = res.windowHeight / 80 * 2
-    this.data.colon_width = res.windowWidth
     this.data.team_name[0] = this.data.leftMode ? this.data.myTeam : this.data.yourTeam
     this.data.team_name[1] = this.data.leftMode ? this.data.yourTeam : this.data.myTeam
     this.data.isOwner = getApp().globalData.openid == this.data._openid;

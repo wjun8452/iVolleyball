@@ -1,7 +1,6 @@
 // pages/score_board/score_board.js
 var court = require("../../utils/court.js")
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -78,13 +77,32 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    if (!this.data.firstTimeUse) return;
 
+    this.animate("#score_board", [
+      { opacity: 0.2 },
+      { opacity: 1}
+    ], 4000, function() {
+      this.clearAnimation("#score_board", function () {
+        console.log("清除了#score_board")
+      })
+    }.bind(this))
+
+    this.animate("#fresh_guide", [ 
+      { opacity: 1 },
+      { opacity: 0, ease: 'ease', translateY: -this.data.width/5*2} ],  
+    4000, function() {
+      this.clearAnimation("#fresh_guide", {opacity: 0}, function () {
+        console.log("清除了#fresh_guide")
+      })
+    }.bind(this))
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {},
+  onShow: function () {
+  },
 
   /**
    * 生命周期函数--监听页面隐藏
@@ -134,6 +152,7 @@ Page({
     this.touch_end(this.data.leftMode, this.start_x_1, this.start_y_1, end_x, end_y);
     //console.log("touchend: ");
     //console.log(e);
+    this.data.firstTimeUse = false;
   },
 
   touchStart2: function (e) {
@@ -146,6 +165,7 @@ Page({
     var end_y = e.changedTouches[0].pageY;
 
     this.touch_end(!this.data.leftMode, this.start_x_2, this.start_y_2, end_x, end_y);
+    this.data.firstTimeUse = false;
   },
 
   touch_end: function (mine, start_x, start_y, end_x, end_y) {

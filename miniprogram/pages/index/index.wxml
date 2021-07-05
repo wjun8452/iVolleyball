@@ -1,28 +1,42 @@
 <!--index.wxml-->
 
-<view style="height:{{windowHeight}}px; width: {{windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; " class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
+<view style="box-sizing:border-box; height:{{windowHeight}}px; width: {{windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; "  class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
 
-	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 30px; margin-bottom: 30px;">
-		<image style="width:128rpx; height:128rpx;" src="../../images/volleyball.png" background-size="cover"></image>
+	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 30px; margin-bottom:30px; border:0px solid red;">
+		<image style="width:64px; height:64px;" src="../../images/volleyball.png" background-size="cover"></image>
 	</view>
 
-	<navigator style="width:100%" class="iconjifenpai" url='../score_board/score_board?_id={{_id}}&_openid={{_openid}}'>大记分牌</navigator>
+	<view style="width:100%; height:45%; display:flex;  flex-direction:column; border:0px solid blue">
+		<navigator class="menu" url='../score_board/score_board?_id={{_id}}&_openid={{_openid}}'>
+				<view class="iconjifenpai navigator_big"> 大记分牌 </view>
+		</navigator>
 
-	<navigator style="width:100%" class="icontongji" url='../stat/stat?_id={{_id}}&_openid={{_openid}}'>技术统计</navigator>
+		<navigator class="menu" url='../stat/stat?_id={{_id}}&_openid={{_openid}}'>
+			<view class="icontongji navigator_big" >技术统计 </view>
+		</navigator>
 
-	<navigator style="width:100%" class="iconlishijilu" url="../history/history">历史记录</navigator>
+		<navigator class="menu" url="../history/history">
+			<view class="iconlishijilu navigator_big" >历史记录 </view>
+		</navigator>
 
-	<navigator style="width:100%" class="iconyonghuguanli" url="../user/users"> 球队成员</navigator>
+		<navigator class="menu" url="../user/users"> 
+			<view class="iconyonghuguanli navigator_big" >球队成员 </view>
+		</navigator>
 
-	<navigator style="width:100%" class="iconbangzhu" url="../help/help">使用帮助</navigator>
+		<navigator class="menu" url="../help/help">
+			<view class="iconbangzhu navigator_big" >使用帮助 </view>
+		</navigator>
 
-	<navigator url="../release/release" style="width:100%; font-size: small"> v3.10.4 </navigator>
+		<navigator url="../release/release" class="navigator_version">
+			<view>v3.11.0 </view>
+		</navigator>
+</view>
 
 	<view style="font-style:italic; font-size:small; margin-bottom: 5px" class="color1">
 		<text style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ">{{iciba}}</text>
 	</view>
 
-	<view style="width:100%">
+	<view style="width:100%;">
 		<ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>
 	</view>
 </view>

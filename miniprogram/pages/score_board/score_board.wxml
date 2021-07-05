@@ -1,8 +1,14 @@
 <!--pages/score_board/score_board.wxml-->
 <view style="box-sizing:border-box; overflow: hidden;width:{{height}}px; height:{{width}}px; position: absolute; left: {{(width-height)/2}}px; top: {{(height-width)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
 
-	<view style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;" class="color3">
+	<!-- 新手指引　-->
+	<view style="opacity:0; border:0px solid green; position:fixed; left: {{height/3}}px; top: {{width*2/3}}px; z-index: 1; display:flex;flex-direction:row;" id="fresh_guide">
+			<view class="single_touch" style="width:100px; height:100px; border:0px solid red">
+			</view>
+			<text style="text-align:center; color:#FF9900">滑动改变分数</text>
+	</view>
 
+	<view style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;" class="color3">
 		<view style="display: flex; flex-direction: row; margin-left:5px; height: 60px">
 			<view style="display: flex; flex-direction: column;">
 				<view class='score_current_top'> {{team_name[0]}} </view>
@@ -40,10 +46,9 @@
 				</view>
 			</view>
 		</block>
-
 	</view>
 
-	<view class="" style="display:flex;flex-direction:row;align-items:stretch; border:0px solid; height:{{width-60-5}}px; line-height:{{width-60-5}}px">
+	<view style=display:flex;flex-direction:row;align-items:stretch; border:0px solid; height:{{width-60-5}}px; line-height:{{width-60-5}}px" id="score_board">
 		<block wx:if="{{(width-60-5)/1.6*4>height}}"> <!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况 !-->
 			<text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font-weight:bold; font-size: {{height/4*1.6}}px; text-align:center; border:0px solid blue;padding:0; "> {{ leftMode ? myScore : yourScore }} </text>
 			<text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font-weight:bold; font-size: {{height/4*1.6}}px; text-align:center;border:0px solid blue;padding:0;"> {{leftMode ?  yourScore : myScore}} </text>
@@ -53,4 +58,5 @@
 			<text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font-weight:bold; font-size: {{width-60-5}}px; text-align:center;border:0px solid;padding:0;"> {{leftMode ?  yourScore : myScore}} </text>
 		</block>
 	</view>
+
 </view>

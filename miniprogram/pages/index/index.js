@@ -57,5 +57,12 @@ Page({
   },
 
   onUnload: function() {
+  },
+
+  onMenu: function(res) {
+    console.log("[onMenu]", res);
+    wx.navigateTo({
+      url: res.target.dataset.url,
+    })
   }
 })

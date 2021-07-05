@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 	<view class="block1">
+		<text style="margin-left: 5px;">v3.11.0 (2021/7/5) 增加主页菜单点击范围，大记分牌页面增加新手引导动画 </text>
+	</view>
+
+	<view class="block1">
 		<text style="margin-left: 5px;">v3.10.4 (2021/7/3) 改进分数在某些屏幕上的显示效果x2, hehe </text>
 	</view>
 

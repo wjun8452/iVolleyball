@@ -80,7 +80,7 @@ Page({
     if (!this.data.firstTimeUse) return;
 
     this.animate("#score_board", [
-      { opacity: 0.2 },
+      { opacity: 0.1 },
       { opacity: 1}
     ], 4000, function() {
       this.clearAnimation("#score_board", function () {
@@ -90,9 +90,9 @@ Page({
 
     this.animate("#fresh_guide", [ 
       { opacity: 1 },
-      { opacity: 0, ease: 'ease', translateY: -this.data.width/5*2} ],  
+      { opacity: 1, ease: 'ease', translateY: -this.data.width/5*2} ],  
     4000, function() {
-      this.clearAnimation("#fresh_guide", {opacity: 0}, function () {
+      this.clearAnimation("#fresh_guide", function () {
         console.log("清除了#fresh_guide")
       })
     }.bind(this))

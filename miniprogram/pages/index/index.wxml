@@ -28,7 +28,7 @@
 		</navigator>
 
 		<navigator url="../release/release" class="navigator_version">
-			<view>v3.11.0 </view>
+			<view> v3.11.1 </view>
 		</navigator>
 </view>
 

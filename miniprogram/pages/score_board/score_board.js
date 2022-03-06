@@ -208,7 +208,7 @@ Page({
           court.popStatItem(this.data);
         } else if (item != null && (!mine) && item.score < 0) {
           court.popStatItem(this.data);
-        } else {
+        } else { //revert score and remove stat item
           court.revertScore(this.data, mine)
         }
 

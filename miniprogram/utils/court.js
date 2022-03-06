@@ -405,8 +405,7 @@ function popStatItem(data) {
 
 //mine: true: revert my score, false: revert your score
 function revertScore(data, mine) {
-  for (var j in data.stat_items) {
-    var i = data.stat_items.length - j - 1
+  for (var i = data.stat_items.length - 1; i >= 0; i--) {
     if (mine && data.stat_items[i].score > 0) {
       data.stat_items.splice(i, 1)
       data.myScore = data.myScore - 1

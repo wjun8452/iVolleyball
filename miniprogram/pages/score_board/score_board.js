@@ -64,6 +64,7 @@ Page({
     // console.log(this.data)
     var res = wx.getSystemInfoSync()
     console.log("[wx.getSystemInfoSync]", res)
+    console.log(this.data)
     this.data.height = res.windowHeight
     this.data.width = res.windowWidth
     this.data.team_name[0] = this.data.leftMode ? this.data.myTeam : this.data.yourTeam

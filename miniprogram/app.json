@@ -10,7 +10,7 @@
     "pages/history/history",
     "pages/release/release",
     "pages/share/share",
-    "pages/user/user"
+    "pages/users/users"
   ],
   "window": {
     "backgroundTextStyle": "light",

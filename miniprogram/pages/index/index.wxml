@@ -19,7 +19,7 @@
 			<view class="iconlishijilu navigator_big" >历史记录 </view>
 		</navigator>
 
-		<navigator class="menu" url="../user/users"> 
+		<navigator class="menu" url="../users/users"> 
 			<view class="iconyonghuguanli navigator_big" >球队成员 </view>
 		</navigator>
 

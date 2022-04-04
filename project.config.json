@@ -4,7 +4,7 @@
   "setting": {
     "urlCheck": true,
     "es6": true,
-    "enhance": false,
+    "enhance": true,
     "postcss": true,
     "preloadBackgroundData": false,
     "minified": true,
@@ -19,10 +19,9 @@
     "checkSiteMap": false,
     "uploadWithSourceMap": true,
     "compileHotReLoad": false,
-    "lazyloadPlaceholderEnable": false,
-    "useMultiFrameRuntime": false,
-    "useApiHook": false,
-    "useApiHostProcess": false,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -36,14 +35,18 @@
     "disableUseStrict": false,
     "minifyWXML": true,
     "showES6CompileOption": false,
-    "useCompilerPlugins": false,
+    "useCompilerPlugins": [
+      "typescript",
+      "less"
+    ],
     "ignoreUploadUnusedFiles": true
   },
   "appid": "wx573d66c4ffa25272",
   "projectname": "iVolleyball",
-  "libVersion": "2.10.3",
+  "libVersion": "2.23.1",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
+  "compileType": "miniprogram",
   "condition": {
     "search": {
       "list": []

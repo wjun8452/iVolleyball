@@ -1,69 +1,37 @@
 // miniprogram/pages/history.js
-Page({
 
-  /**
-   * 页面的初始数据
-   */
-  data: {
-    matches: [], //以前上传过的比赛
-    isLoading: false
+import { BasePage } from "../../BasePage";
+import { VolleyCourt } from "../../VolleyCourt";
 
-  },
+class HistoryPageData {
+  matches: VolleyCourt[] = []; //以前上传过的比赛
+  isLoading : boolean  = false
+}
+
+class HistoryPage extends BasePage {
+  data: HistoryPageData = new HistoryPageData();
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad = function (this: HistoryPage) {
     wx.setNavigationBarTitle({
       title: '历史记录',
     })
     this.fetchData()
-  },
+  }
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
-
-  },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh = function (this: HistoryPage) {
     console.log("onPullDownRefresh")
     this.fetchData()
-  },
+  }
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {
 
-  },
-
-  fetchData: function() {
+  fetchData = function (this: HistoryPage) {
     var app = getApp()
     var openid = app.globalData.openid
 
@@ -79,18 +47,18 @@ Page({
     var that = this
 
     db.collection('vmatch').where({
-        _openid: openid,
-      }).field({
-        _id: true,
-        myScore: true,
-        yourScore: true,
-        create_time: true,
-        myTeam: true,
-        yourTeam: true,
-        place: true,
-        _openid: true,
-        status: true,
-      }).orderBy('create_time', 'desc')
+      _openid: openid,
+    }).field({
+      _id: true,
+      myScore: true,
+      yourScore: true,
+      create_time: true,
+      myTeam: true,
+      yourTeam: true,
+      place: true,
+      _openid: true,
+      status: true,
+    }).orderBy('create_time', 'desc')
       .get({
         success(res) {
           //console.log("[db.vmatch.get] res:", res)
@@ -112,12 +80,7 @@ Page({
         }
       })
 
-  },
-  tapMatch: function(e) {
-    // var _id = e.currentTarget.dataset.matchid;
-    // wx.navigateTo({
-    //   url: '../match/match?_id=' + _id,
-    // })
   }
+}
 
-})
+Page(new HistoryPage())

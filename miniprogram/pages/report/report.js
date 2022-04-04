@@ -1,6 +1,7 @@
 var court = require("../../utils/court.js")
 // 在页面中定义激励视频广告
 let videoAd = null
+console.log("report.js line4")
 
 Page({
 

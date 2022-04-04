@@ -34,29 +34,29 @@ var StatName = {
 };
 
 var all_items = [{
-    cat: StatCat.Serve,
-    stats: [StatName.ServeNormal, StatName.ServeWin, StatName.ServeLost]
-  },
-  {
-    cat: StatCat.ErChuan,
-    stats: [StatName.ErChuanGood, StatName.ErChuanBad, StatName.ErChuanLost]
-  },
-  {
-    cat: StatCat.Reception,
-    stats: [StatName.ReceptionBad, StatName.ReceptionGood, StatName.ReceptionPerfect, StatName.ReceptionLost]
-  },
-  {
-    cat: StatCat.Attack,
-    stats: [StatName.AttackNormal, StatName.AttackBlk, StatName.AttackWin, StatName.AttackLost]
-  },
-  {
-    cat: StatCat.Block,
-    stats: [StatName.BlockWin, StatName.BlockPlus, StatName.BlockMinus, StatName.BlockHalf, StatName.BlockLost]
-  },
-  {
-    cat: StatCat.Defend,
-    stats: [StatName.DefendLost, StatName.DefendGood, StatName.DefendNormal]
-  }
+  cat: StatCat.Serve,
+  stats: [StatName.ServeNormal, StatName.ServeWin, StatName.ServeLost]
+},
+{
+  cat: StatCat.ErChuan,
+  stats: [StatName.ErChuanGood, StatName.ErChuanBad, StatName.ErChuanLost]
+},
+{
+  cat: StatCat.Reception,
+  stats: [StatName.ReceptionBad, StatName.ReceptionGood, StatName.ReceptionPerfect, StatName.ReceptionLost]
+},
+{
+  cat: StatCat.Attack,
+  stats: [StatName.AttackNormal, StatName.AttackBlk, StatName.AttackWin, StatName.AttackLost]
+},
+{
+  cat: StatCat.Block,
+  stats: [StatName.BlockWin, StatName.BlockPlus, StatName.BlockMinus, StatName.BlockHalf, StatName.BlockLost]
+},
+{
+  cat: StatCat.Defend,
+  stats: [StatName.DefendLost, StatName.DefendGood, StatName.DefendNormal]
+}
 ]
 
 
@@ -244,15 +244,16 @@ function _checkLibero(data) {
         }
       }
     }
-  }
 
-  if (!done) {
-    for (var i = 4; i <= 6; i++) { //再替换第二对象
-      var j = i % 6;
-      if (data.all_players[data.libero_replacement2] == data.players[j] &&
-        (!(serve && who_serve == j))) { //自由人不发球哦
-        data.players[j] = data.all_players[data.libero];
-        break;
+
+    if (!done) {
+      for (var i = 4; i <= 6; i++) { //再替换第二对象
+        var j = i % 6;
+        if (data.all_players[data.libero_replacement2] == data.players[j] &&
+          (!(serve && who_serve == j))) { //自由人不发球哦
+          data.players[j] = data.all_players[data.libero];
+          break;
+        }
       }
     }
   }

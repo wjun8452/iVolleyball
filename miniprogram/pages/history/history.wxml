@@ -1,7 +1,7 @@
 <wxs module="utils" src="../../utils/util.wxs"></wxs>
 
 <block wx:if="{{matches.length==0 && !isLoading}}">
-	<view class="color3" style="diaplay:flex;flex-direction:row;padding:20px;justify-content:space-around">
+	<view class="color3" style="display:flex;flex-direction:row;padding:20px;justify-content:space-around">
 		<image class="" src="../../images/smile.png" style="width:50px; height:50px"></image>
 		<view> 你还没有上传任何记录哦~</view>
 	</view>

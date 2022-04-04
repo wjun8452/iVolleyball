@@ -1,17 +1,17 @@
 <!--index.wxml-->
 
-<view style="box-sizing:border-box; height:{{windowHeight}}px; width: {{windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; "  class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
+<view style="box-sizing:border-box; height:{{globalData.sysInfo.windowHeight}}px; width: {{globalData.sysInfo.windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; "  class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
 
 	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 30px; margin-bottom:30px; border:0px solid red;">
 		<image style="width:64px; height:64px;" src="../../images/volleyball.png" background-size="cover"></image>
 	</view>
 
 	<view style="width:100%; height:45%; display:flex;  flex-direction:column; border:0px solid blue">
-		<navigator class="menu" url='../score_board/score_board?_id={{_id}}&_openid={{_openid}}'>
+		<navigator class="menu" url='../score_board/score_board'>
 				<view class="iconjifenpai navigator_big"> 大记分牌 </view>
 		</navigator>
 
-		<navigator class="menu" url='../stat/stat?_id={{_id}}&_openid={{_openid}}'>
+		<navigator class="menu" url='../stat/stat'>
 			<view class="icontongji navigator_big" >技术统计 </view>
 		</navigator>
 

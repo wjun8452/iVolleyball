@@ -14,13 +14,13 @@
 				<view class='score_current_top'> {{team_name[0]}} </view>
 				<view class='score_current_bottom'> {{team_name[1]}} </view>
 			</view>
-			<view wx:for="{{court.stat_items}}" wx:key="idx" wx:for-index="idx" wx:for-item="itemName" style="display: flex; flex-direction: column;">
-				<view class='{{leftMode ? (itemName.score>0?"score_history_top color1 bgcolor3":"score_history_hidden") : (itemName.score<0 ? "score_history_top color1 bgcolor3" : "score_history_hidden")}}' wx:if="{{itemName.score!=0 && (court.stat_items.length-idx) < 16}}">
-					{{leftMode ? (itemName.score>0 ? itemName.myscore : "-") : (itemName.score<0 ? itemName.yourscore : "-")}}
+			<view wx:for="{{court.stat_items}}" wx:key="idx" wx:for-index="idx" wx:for-item="statItem" style="display: flex; flex-direction: column;">
+				<view class='{{leftMode ? (statItem.score>0?"score_history_top color1 bgcolor3":"score_history_hidden") : (statItem.score<0 ? "score_history_top color1 bgcolor3" : "score_history_hidden")}}' wx:if="{{statItem.score!=0 && (court.stat_items.length-idx) < 16}}">
+					{{leftMode ? (statItem.score>0 ? statItem.myscore : "-") : (statItem.score<0 ? statItem.yourscore : "-")}}
 				</view>
 
-				<view class='{{leftMode ? (itemName.score<0?"score_history_bottom  color1 bgcolor3":"score_history_hidden") : (itemName.score>0?"score_history_bottom  color1 bgcolor3":"score_history_hidden")}}' wx:if="{{itemName.score!=0 && (court.stat_items.length-idx) < 16}}">
-					{{leftMode ? (itemName.score<0 ? itemName.yourscore : " -") : (itemName.score>0 ? itemName.myscore : "-")}}
+				<view class='{{leftMode ? (statItem.score<0?"score_history_bottom  color1 bgcolor3":"score_history_hidden") : (statItem.score>0?"score_history_bottom  color1 bgcolor3":"score_history_hidden")}}' wx:if="{{statItem.score!=0 && (court.stat_items.length-idx) < 16}}">
+					{{leftMode ? (statItem.score<0 ? statItem.yourscore : " -") : (statItem.score>0 ? statItem.myscore : "-")}}
 				</view>
 			</view>
 

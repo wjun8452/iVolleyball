@@ -1,5 +1,5 @@
 <wxs module="utils" src="../../utils/util.wxs"></wxs>
-<import src="volleyblock.wxml" />
+<import src="block.wxml" />
 
 <view style="display: flex; flex-direction: column; height:{{globalData.sysInfo.windowHeight}}px; width: 100%;" bindtap="onTapBoard" class="color3">
 
@@ -27,14 +27,13 @@
 	</view>
 
 	<view style="flex:1;display: flex; flex-direction: row;">
-		<button disabled="{{!isOwner || status==0}}" bindtap='onTapAddScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">得分</button>
-		<button disabled="{{!isOwner || status==0}}" bindtap='onTapLooseScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color1"> 失分 </button>
+		<button disabled="{{!isOwner || court.status==0}}" bindtap='onTapAddScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">得分</button>
+		<button disabled="{{!isOwner || court.status==0}}" bindtap='onTapLooseScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color1"> 失分 </button>
 		<block>
-			<button bindtap='onTapRevert' disabled='{{stat_items.length==0 || !isOwner || status==0}}' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">撤销</button>
+			<button bindtap='onTapRevert' disabled='{{court.stat_items.length==0 || !isOwner || court.status==0}}' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">撤销</button>
 		</block>
 
-		<button disabled="{{!isOwner || status==0}}" bindtap='onTapSetting' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">设置</button>
-		<button bindtap='onTapMatchOver' style="flex:1; margin:2px; border: 1px solid #336699;" disabled='{{ !isOwner || status==0 || !utils.matchOver(myScore, yourScore, total_score) }}' class="bgcolor2 color3">结束</button>
+		<button disabled="{{!isOwner || court.status==0}}" bindtap='onTapSetting' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">设置</button>
 	</view>
 
 </view>

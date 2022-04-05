@@ -1,11 +1,16 @@
 import { PlaceInfo } from "./PlaceInfo";
-import { VolleyCourt } from "./VolleyCourt";
+import { GameStatus, VolleyCourt } from "./VolleyCourt";
 
 export enum Reason {
+  /** caused by VoleyRepository.constructor() */
   Init,
+  /** caused by updateMatch() */
   Update,
+  /** caused by uploadMatch() */
   LocalToCloud,
-  /** Reset = Update + Init */
+  /**  cased by endAndUploadMatch() */
+  Ended,
+  /**  caused by reset() */
   Reset,
 }
 
@@ -48,14 +53,14 @@ export class VolleyRepository {
   /** todo: 这个地方要改 */
   private watchMatch() {
     if (this.matchID) {
-      this.watchOnlineMatch(false);
+      this.watchOnlineMatch(false, false);
     } else {
       let court = this.loadFromLocal();
       //如果本地缓存的是一个云端的他人的比赛，则强制从头来
-      if (court._id && court._openid === this.userID) {
+      if (court._id && court._openid === this.userID && court.status == GameStatus.OnGoing) {
         this.matchID = court._id;
-        this.watchOnlineMatch(false);
-      } else if (court._id && this.userID != court._id) {
+        this.watchOnlineMatch(false, false);
+      }  if (court._id && this.userID != court._id) {
         this.watchLocalMatch(this.newLocalCourt());
       } else {
         this.watchLocalMatch(court);
@@ -63,7 +68,7 @@ export class VolleyRepository {
     }
   }
 
-  private watchOnlineMatch(localToCloud:boolean) {
+  private watchOnlineMatch(localToCloud:boolean, endMatch:boolean) {
     const that = this
     const db = wx.cloud.database({
       env: this.env
@@ -78,13 +83,18 @@ export class VolleyRepository {
           console.log('[db.vmatch.onChange]', that.matchID, snapshot.type, snapshot)
           let data = snapshot.docs[0]
           if (data) {
-            let court: VolleyCourt = new VolleyCourt()
-            Object.assign(court, data)
+            let court: VolleyCourt = new VolleyCourt();
+            Object.assign(court, data);
             court.create_time = data.create_time.toLocaleString()
+            wx.setStorageSync(that.cacheKey, court);
             if (snapshot.type === 'init') {
-              that.callback(court, localToCloud ? Reason.LocalToCloud : Reason.Init, Status.Cloud)
+              if (endMatch) {
+                that.callback(court, endMatch ? Reason.Ended : Reason.Init, Status.Cloud)
+              } else {
+                that.callback(court, localToCloud ? Reason.LocalToCloud : Reason.Init, Status.Cloud)
+              }
             } else {
-              that.callback(court, Reason.Update, Status.Cloud)
+              that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud)
             }
           }
         },
@@ -106,6 +116,11 @@ export class VolleyRepository {
   }
 
   updateMatch(court: VolleyCourt) {
+    this._updateMatch(court, false);
+  }
+
+
+  private _updateMatch(court: VolleyCourt, endMatch:boolean) {
     if (this.matchID && this.matchID != court._id) {
       console.error("[volleyball] try to update a different court which I am not wathing ?")
     } else if (this.matchID && this.matchID == court._id) {
@@ -114,10 +129,7 @@ export class VolleyRepository {
         env: this.env
       })
 
-      let tempData: any = {};
-      Object.assign(tempData, court);
-      delete tempData._openid;
-      delete tempData._id;
+      let tempData: any = this.newTempCourt(court, db.serverDate());
 
       db.collection('vmatch').doc(this.matchID).update({
         data: tempData,
@@ -131,7 +143,7 @@ export class VolleyRepository {
       })
     } else {
       wx.setStorageSync(this.cacheKey, court);
-      this.callback(court, Reason.Update, Status.Local);
+      this.callback(court, endMatch?Reason.Ended:Reason.Update, Status.Local);
     }
   }
 
@@ -196,8 +208,12 @@ export class VolleyRepository {
     }
   }
 
-  /** 将本地的比赛数据上传到网络，上传成功之后会通知调用者新的id，切换的网络模式 */
-  uploadMatch(court: VolleyCourt) {
+  private _uploadMatch(court: VolleyCourt, endMatch:boolean) {
+    if (this.isOnlineMode()) {
+      console.error("记录已存在，不能克隆！");
+      return;
+    }
+
     const db = wx.cloud.database({
       env: this.env
     })
@@ -212,10 +228,11 @@ export class VolleyRepository {
         console.log("[db.vmatch.create]", res)
         that.matchID = res._id;
         court._id = res._id;
-        court._openid = res._openid;
+        //假设云端采取同样的策略
+        court._openid = that.userID;
         //同时要存储到本
         wx.setStorageSync(that.cacheKey, court);
-        that.watchOnlineMatch(true);
+        that.watchOnlineMatch(true, endMatch);
       },
       fail: function (res) {
         console.error("[db.vmatch.create]", res);
@@ -223,7 +240,21 @@ export class VolleyRepository {
     })
   }
 
+  /** 将本地的比赛数据上传到网络，上传成功之后会通知调用者新的id，切换的网络模式 */
+  uploadMatch(court: VolleyCourt) {
+    this._uploadMatch(court, false);
+  }
+
   isOnlineMode(): boolean {
     return this.matchID != null;
+  }
+
+  uploadAndEndMatch(court:VolleyCourt) {
+    court.status = GameStatus.Ended
+    if (this.isOnlineMode()) {
+      this.updateMatch(court);
+    } else {
+      this._uploadMatch(court, true);
+    }
   }
 }

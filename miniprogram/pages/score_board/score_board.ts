@@ -45,7 +45,7 @@ class ScoreBoardPage extends BasePage {
     /** 更新其他连带属性 */
     this.data.team_name[0] = this.data.leftMode ? this.data.court.myTeam : this.data.court.yourTeam
     this.data.team_name[1] = this.data.leftMode ? this.data.court.yourTeam : this.data.court.myTeam
-    this.data.isOwner = this.data.court._id ? this.data.globalData.openid == this.data.court._openid : true;
+    this.data.isOwner = this.data.court._id ? this.data.globalData.openid === this.data.court._openid : true;
 
     //更新界面
     this.setData(this.data)
@@ -72,8 +72,15 @@ class ScoreBoardPage extends BasePage {
   onLoad = function (this: ScoreBoardPage, options: any) {
     console.log("[score board] onload, options:", options, "this:", this)
 
+    //注意要再次获取新的对象
+    this.data.globalData = getApp().globalData;
+
     wx.setNavigationBarTitle({
       title: '大记分牌'
+    })
+
+    wx.showLoading({
+      title: "正在加载"
     })
 
     try {
@@ -89,6 +96,7 @@ class ScoreBoardPage extends BasePage {
     if (options && options._id) {
       matchID = options._id;
     }
+
     this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData.openid, matchID, this.data.globalData.placeInfo)
   }
 

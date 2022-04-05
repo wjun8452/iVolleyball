@@ -18,6 +18,7 @@ class HistoryPage extends BasePage {
     wx.setNavigationBarTitle({
       title: '历史记录',
     })
+
     this.fetchData()
   }
 
@@ -48,6 +49,7 @@ class HistoryPage extends BasePage {
 
     db.collection('vmatch').where({
       _openid: openid,
+      status: 1,
     }).field({
       _id: true,
       myScore: true,
@@ -64,7 +66,7 @@ class HistoryPage extends BasePage {
           //console.log("[db.vmatch.get] res:", res)
           that.data.matches = res.data
           for (var i in that.data.matches) {
-            that.data.matches[i].create_time = that.data.matches[i].create_time.toLocaleString()
+              that.data.matches[i].create_time = that.data.matches[i].create_time.toLocaleString()
           }
           that.data.isLoading = false
           wx.hideLoading()

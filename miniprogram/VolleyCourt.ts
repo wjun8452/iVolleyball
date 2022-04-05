@@ -53,14 +53,14 @@ export interface StatItem {
   /** 该技术统计所属分类 */
   category: StatCat,
   /** 该技术统计的名称 */
-  name: StatName,
+  item: StatName,
   /** 该技术统计涉及的分数 */
   score: number,
   /** 该统计是否会导致换发球？ */
-  swap: boolean,
-  /** 我方分数 */
+  swapServe: boolean,
+  /** 统计时的比分情况 */
   myscore: number,
-  /** 对方分数 */
+  /** 统计时的比分情况 */
   yourscore: number
 }
 
@@ -156,15 +156,15 @@ export class VolleyCourt {
     }
   }
 
-  createStatItem(player: string, item_cat: StatCat, item_name: StatName, item_score: number, swap: boolean, myscore: number, yourscore: number): StatItem {
-    var obj: StatItem = {
+  createStatItem(player: string, item_cat: StatCat, item_name: StatName, item_score: number, swap: boolean, myScore:number, yourScore:number): StatItem {
+    let obj:StatItem = {
       player: player,
       category: item_cat,
-      name: item_name,
+      item: item_name,
       score: item_score,
-      swap: swap,
-      myscore: myscore,
-      yourscore: yourscore
+      swapServe: swap,
+      myscore: myScore,
+      yourscore: yourScore,
     }
     return obj;
   }
@@ -459,7 +459,7 @@ export class VolleyCourt {
     var who_serve = this.who_serve;
 
     //现在谁发球，说明刚刚从前排换到后排
-    if (stat.swap && stat.score > 0) {
+    if (stat.swapServe && stat.score > 0) {
       if (this.front_back_mode) {
         if (who_serve == 0) {
           this._swap(0, 1, players);
@@ -483,7 +483,7 @@ export class VolleyCourt {
       }
     }
 
-    if (stat.swap && stat.score > 0) { //刚刚得分获得发球权
+    if (stat.swapServe && stat.score > 0) { //刚刚得分获得发球权
       this.serve = false;
 
       if (this.front_back_mode) {
@@ -501,7 +501,7 @@ export class VolleyCourt {
       }
     }
 
-    if (stat.swap && stat.score < 0) { //刚刚失分失去发球权
+    if (stat.swapServe && stat.score < 0) { //刚刚失分失去发球权
       this.serve = true;
     }
   }

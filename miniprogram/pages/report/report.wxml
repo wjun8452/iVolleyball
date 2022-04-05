@@ -2,10 +2,10 @@
   <!-- 得分信息 -->
   <view style="margin:1px 1px 8px 1px" class="block1">
     <view style="text-align: center;"> 比赛结果 </view>
-    <view style='text-align:left;'> 队伍：{{myTeam}} vs {{yourTeam}}</view>
-    <view style='text-align:left;'> 比分：{{myScore}} : {{yourScore}} </view>
-    <view style='text-align:left;'> 地点：{{place}} </view>
-    <view style='text-align:left;'> 时间：{{create_time}} </view>
+    <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
+    <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
+    <view style='text-align:left;'> 地点：{{court.place}} </view>
+    <view style='text-align:left;'> 时间：{{court.create_time}} </view>
   </view>
 
   <!--按统计大类循环，每个大类是一个表格 -->

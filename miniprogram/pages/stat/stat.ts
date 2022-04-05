@@ -1,6 +1,6 @@
 import { BasePage } from "../../BasePage";
 import { GlobalData } from "../../GlobalData";
-import { StatCat, VolleyCourt } from "../../VolleyCourt";
+import { VolleyCourt } from "../../VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../VolleyRepository";
 
 let globalData: GlobalData = getApp().globalData
@@ -14,10 +14,6 @@ class StatPageData {
   opPosition: number = -1;
   /** 选中的操作大项目是什么？为null则没有选中, UI相关，后续要移除 */
   opCat: object | null = null;
-  /** 用户设置的，允许被统计的目标球员 */
-  player_allowed: string [] = [];
-  /** 用户设置的，允许被统计项目 */
-  cat_allowed: [StatCat, StatCat, StatCat, StatCat, StatCat, StatCat] = [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception];
 }
 
 class StatPage extends BasePage {
@@ -37,18 +33,19 @@ class StatPage extends BasePage {
     this.setData(this.data)
 
     if (reason != Reason.Init) {
-      this.data.player_allowed = this.data.court.all_players
       wx.vibrateShort({ type: 'medium' });
     }
+
+    wx.hideLoading();
 
     //判断并提示比赛是否结束，并可能走到重置流程
     if (reason == Reason.Update && this.data.court!.isMatchOver()) {
       this.onReset();
     }
 
-    if (reason == Reason.LocalToCloud) {
+    if (reason == Reason.Ended) {
       wx.navigateTo({
-        url: '../share/share',
+        url: '../report/report?_id=' + court._id
       })
     }
 
@@ -63,9 +60,14 @@ class StatPage extends BasePage {
     if (options._id && options._openid) {
       this._id = options._id;
     }
+
+    this.data.globalData = getApp().globalData;
   }
 
   onShow = function (this: StatPage) {
+    wx.showLoading({
+      title: "加载中"
+    })
     this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData.openid, this._id, globalData.placeInfo);
   }
 
@@ -81,12 +83,12 @@ class StatPage extends BasePage {
 
   onTapAddScore = function (this: StatPage) {
     this.data.court!.addScoreRotate()
-    this.repo?.updateMatch(this.data.court!)
+    this.updateMatch()
   }
 
   onTapLooseScore = function (this: StatPage) {
     this.data.court!.looseScoreRotate()
-    this.repo?.updateMatch(this.data.court!)
+    this.updateMatch()
   }
 
   onTapSetting = function (this: StatPage) {
@@ -101,12 +103,12 @@ class StatPage extends BasePage {
     let position = e.target.dataset.position;
     let item_index = e.target.dataset.play_item_index;
     this.data.court!.stateRotate(position, item_index);
-    this.repo?.updateMatch(this.data.court!)
+    this.updateMatch()
   }
 
   onTapRevert = function (this: StatPage) {
     this.data.court!.popStatItem();
-    this.repo?.updateMatch(this.data.court!);
+    this.updateMatch();
   }
 
   onTapScore = function (this: StatPage) {
@@ -146,16 +148,25 @@ class StatPage extends BasePage {
  */
   onReset = function (this: StatPage) {
     var that = this
-    wx.showModal({
-      title: '比赛结束?',
-      content: '分数将清零',
-      showCancel: true,
-      success: function (res) {
-        if (res.confirm) {
-          that.repo?.reset(that.data.court!);
-        } else if (res.cancel) { }
-      }
-    })
+      wx.showModal({
+        title: '比赛结束?',
+        content: '将上传技术统计数据，并跳转到统计报告',
+        showCancel: true,
+        success: function (res) {
+          if (res.confirm) {
+            that.repo?.uploadAndEndMatch(that.data.court!);
+          } else if (res.cancel) { }
+        }
+      })
+  }
+
+  updateMatch = function (this: StatPage) {
+    if (this.repo?.isOnlineMode()) {
+      wx.showLoading({
+        title: '正在加载',
+      })
+    }
+    this.repo!.updateMatch(this.data.court!)
   }
 
 }

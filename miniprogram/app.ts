@@ -95,6 +95,8 @@ App ({
         title: '云初始化失败，可能您的微信基础库版本太低哦',
       })
     }
+    this.globalData = globalData;
+
     console.log("globalData:", globalData)
 
   }

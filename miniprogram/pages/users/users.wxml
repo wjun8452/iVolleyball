@@ -1,45 +1,30 @@
 <view style="padding: 10px" class="color3">
-	<view class="block1">
-		<form bindsubmit="onAddPlayer">
-			<view style="display:flex; flex-direction: row; magin:5px">
-				<view style="flex:1">
-					<input name="player" placeholder="输入球员名称" value="{{temp_player_name}}"> </input>
-				</view>
-				<view style="flex:1">
-					<button size="mini" form-type="submit" class="bgcolor3"> 添加 </button>
-				</view>
-			</view>
-		</form>
+  <view class="block1">
+    <form bindsubmit="onAddPlayer">
+      <view style="display:flex; flex-direction: row; margin:5px">
+        <view style="flex:1">
+          <input name="player" placeholder="输入球员名称" value="{{temp_player_name}}"> </input>
+        </view>
+        <view style="flex:1">
+          <button size="mini" form-type="submit" class="bgcolor3" style="color: white;"> 添加 </button>
+        </view>
+      </view>
+    </form>
+  </view>
 
-		<block wx:for="{{all_players}}" wx:key="*this">
-			<view style="display:flex; flex-direction: row; margin:5px">
-				<view style="flex:1">
-					<text> {{item}} </text>
-				</view>
+  <view class="block1">
+    <block wx:for="{{all_players}}" wx:key="*this">
+      <view style="display:flex; flex-direction: row; margin:5px">
+        <view style="flex:1">
+          <text> {{item}} </text>
+        </view>
 
-				<view style="flex:1">
-					<button class="bgcolor1" size="mini" bindtap="onDeletePlayer" data-player_index="{{index}}"> 删除 </button>
-				</view>
+        <view style="flex:1">
+          <button class="bgcolor1" size="mini" bindtap="onDeletePlayer" data-player_index="{{index}}"> 删除 </button>
+        </view>
 
-			</view>
-		</block>
-	</view>
+      </view>
+    </block>
 
-	<view class="block1">
-		<form bindsubmit="onTeamName">
-			<view style="display:flex; flex-direction: row; margin:5px; margin-top:20px">
-				<view style="flex:1">
-					<input name="team" placeholder="输入球队名称" value="{{temp_team_name}}"> </input>
-				</view>
-				<view style="flex:1">
-					<button class="bgcolor3" size="mini" form-type="submit"> 修改 </button>
-				</view>
-			</view>
-		</form>
-
-		<text> 球队名称: </text>
-		<text style="margin:5px; text-decoration:underline"> {{myTeam}} </text>
-		<text> 队 </text>
-	</view>
-
+  </view>
 </view>

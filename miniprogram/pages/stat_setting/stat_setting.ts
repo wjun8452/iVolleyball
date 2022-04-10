@@ -1,9 +1,9 @@
 // pages/stat_setting/stat_setting.js
 
-import { BasePage } from "../../BasePage";
-import { GlobalData } from "../../GlobalData";
-import { VolleyCourt } from "../../VolleyCourt";
-import { Reason, Status, VolleyRepository } from "../../VolleyRepository";
+import { BasePage } from "../../bl/BasePage";
+import { GlobalData } from "../../bl/GlobalData";
+import { VolleyCourt } from "../../bl/VolleyCourt";
+import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
 class SettingPageData {
   _id: string | null = null;
@@ -66,18 +66,27 @@ class SettingPage extends BasePage {
   }
 
   onChoosePlayer = function (this: SettingPage, e: any) {
-    var players = this.data.court!.players;
-    var player = e.target.dataset.player;
-    var pos = e.target.dataset.position;
+    let players = this.data.court!.players;
+    let player = e.target.dataset.player;
+    let pos = e.target.dataset.position;
+    let newPlayer:boolean = true;
 
-    //swap
-    for (var i in players) {
-      if (players[i] == player) {
-        players[i] = this.data.court!.players[pos];
+    //如果是交换位置，譬如选择了一位已经在场上的队员
+    for (let i in players) {
+      if (players[i] == player) { //选择的是场上的另一位队员
+        players[i] = this.data.court!.players[pos]; //另一位队员就换成目标位置原来所在的人
+        newPlayer = false; //只是交换而已，不是添加新队员
       }
     }
+    
+    //如果添加了新人到场上，默认是允许统计
+    if (newPlayer && this.data.court?.player_allowed.indexOf(player) == -1) {
+      this.data.court.player_allowed.push(player)
+    }
 
-    this.data.court!.players[pos] = player;
+    // console.log(newPlayer, this.data.court?.player_allowed, player)
+
+    this.data.court!.players[pos] = player; //被操作的位置换成新的人
 
     this.data.edit_pos = -1;
 
@@ -85,8 +94,8 @@ class SettingPage extends BasePage {
   }
 
   onCheckWhoServe = function (this: SettingPage, e: any) {
-    var position = e.target.dataset.position;
-    var checked = e.detail.value.length == 1;
+    let position = e.target.dataset.position;
+    let checked = e.detail.value.length == 1;
 
     if (checked) {
       this.data.court!.who_serve = position;
@@ -98,7 +107,7 @@ class SettingPage extends BasePage {
   }
 
   onTapMode = function (this: SettingPage, e: any) {
-    var mode = e.detail.value; //0: front_back, 1: normal
+    let mode = e.detail.value; //0: front_back, 1: normal
     if (mode == "0") {
       this.data.court!.front_back_mode = true;
     } else {
@@ -109,7 +118,7 @@ class SettingPage extends BasePage {
   }
 
   onTapServe = function (this: SettingPage, e: any) {
-    var serve = e.detail.value; //0: 我方发球, 1: 对方发球
+    let serve = e.detail.value; //0: 我方发球, 1: 对方发球
     if (serve == 0) {
       this.data.court!.serve = true;
       if (this.data.court!.who_serve == -1) {
@@ -124,7 +133,7 @@ class SettingPage extends BasePage {
   }
 
   onClickPlayer = function (this: SettingPage, e: any) {
-    var position = e.target.dataset.position;
+    let position = e.target.dataset.position;
     if (position == this.data.edit_pos) {
       this.data.edit_pos = -1
     } else {
@@ -135,8 +144,8 @@ class SettingPage extends BasePage {
   }
 
   onAddPlayer = function (this: SettingPage, e: any) {
-    var position = e.target.dataset.position;
-    var player = e.detail.value;
+    let position = e.target.dataset.position;
+    let player = e.detail.value;
     if (player != null) {
       player = player.replace(/^\s*|\s*$/g, "");
       if (player.length > 4) {
@@ -163,8 +172,8 @@ class SettingPage extends BasePage {
   }
 
   onDeletePlayer = function (this: SettingPage, e: any) {
-    var position = e.target.dataset.position;
-    var player = this.data.court!.players[position];
+    let position = e.target.dataset.position;
+    let player = this.data.court!.players[position];
 
     this.data.edit_pos = -1
 
@@ -172,7 +181,7 @@ class SettingPage extends BasePage {
       this.data.court!.players[position] = "??"
     }
 
-    var index_all = this.data.court!.all_players.indexOf(player)
+    let index_all = this.data.court!.all_players.indexOf(player)
     if (index_all != -1) {
       this.data.court!.all_players.splice(index_all, 1);
       wx.showToast({
@@ -205,7 +214,7 @@ class SettingPage extends BasePage {
   }
 
   changeMyScore = function (this: SettingPage, delta: number) {
-    var s = this.data.court!.myScore + delta;
+    let s = this.data.court!.myScore + delta;
     if (s >= 0) {
       this.data.court!.myScore = s;
       this.updateMatch();
@@ -213,7 +222,7 @@ class SettingPage extends BasePage {
   }
 
   changeYourScore = function (this: SettingPage, delta: number) {
-    var s = this.data.court!.yourScore + delta;
+    let s = this.data.court!.yourScore + delta;
     if (s >= 0) {
       this.data.court!.yourScore = s;
       this.updateMatch();
@@ -227,19 +236,19 @@ class SettingPage extends BasePage {
   }
 
   onCheckAllowedPlayer = function (this: SettingPage, e: any) {
-    var player_allowed = e.detail.value;
+    let player_allowed = e.detail.value;
 
     //循环查看场上球员是否被勾选
-    for (var i = 0; i < this.data.court!.players.length; i++) {
-      var player = this.data.court!.players[i];
-      var index = player_allowed.indexOf(player);
+    for (let i = 0; i < this.data.court!.players.length; i++) {
+      let player = this.data.court!.players[i];
+      let index = player_allowed.indexOf(player);
       if (index == -1) { //该球员未被勾选
-        var index2 = this.data.court!.player_allowed.indexOf(player);
+        let index2 = this.data.court!.player_allowed.indexOf(player);
         if (index2 != -1) {
           this.data.court!.player_allowed.splice(index2);
         }
       } else {
-        var index2 = this.data.court!.player_allowed.indexOf(player);
+        let index2 = this.data.court!.player_allowed.indexOf(player);
         if (index2 == -1) {
           this.data.court!.player_allowed.push(player);
         }
@@ -260,12 +269,12 @@ class SettingPage extends BasePage {
         icon: 'none'
       })
     } else if (name.length > 0) {
-        if (dataset.obj === "myTeam") {
-            this.data.court!.myTeam = name;
-        } else {
-            this.data.court!.yourTeam = name;
-        }
-        this.updateMatch();
+      if (dataset.obj === "myTeam") {
+        this.data.court!.myTeam = name;
+      } else {
+        this.data.court!.yourTeam = name;
+      }
+      this.updateMatch();
     } else {
       wx.showToast({
         title: '名称不能为空！',

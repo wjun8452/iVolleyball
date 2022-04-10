@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/logs/logs",
     "pages/stat/stat",
     "pages/stat_setting/stat_setting",
     "pages/report/report",
@@ -23,5 +22,6 @@
     "scope.userLocation": {
       "desc": "你的位置信息将用于显示比赛场地"
     }
-  }
+  },
+  "lazyCodeLoading": "requiredComponents" 
 }

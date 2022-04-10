@@ -1,12 +1,17 @@
-// miniprogram/pages/share/share.js
-var court = require("../../utils/court.js")
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+      myTeam: "",
+      yourTeam: "",
+      place: "",
+      myScore: "",
+      yourScore: "",
+      create_time: "",
+      _id : ""
   },
 
   /**
@@ -17,8 +22,14 @@ Page({
       title: '分享比赛'
     })
  
-    var saved = wx.getStorageSync(getApp().globalData.cacheKey);
-    this.data = Object.assign(this.data, court.default_data, saved);
+    this.data._id = options._id
+    this.data.myTeam = options.myTeam
+    this.data.yourTeam = options.yourTeam
+    this.data.myScore = options.myScore
+    this.data.yourScore = options.yourScore
+    this.data.place = options.place
+    this.data.create_time = options.create_time
+    
     this.setData(this.data)
   },
 
@@ -67,7 +78,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    var path = '/pages/score_board/score_board?_id=' + this.data._id + '&_openid=' + this.data._openid
+    var path = '/pages/score_board/score_board?_id=' + this.data._id
     console.log("share path=" + path)
     return {
       title: '实时查看比赛分数',

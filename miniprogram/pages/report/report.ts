@@ -1,7 +1,7 @@
-import { BasePage } from "../../BasePage";
-import { GlobalData } from "../../GlobalData";
-import { StatItem, StatName, VolleyCourt } from "../../VolleyCourt";
-import { Reason, Status, VolleyRepository } from "../../VolleyRepository";
+import { BasePage } from "../../bl/BasePage";
+import { GlobalData } from "../../bl/GlobalData";
+import { StatItem, StatName, VolleyCourt } from "../../bl/VolleyCourt";
+import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
 let videoAd:any = null;
 

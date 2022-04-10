@@ -1,41 +1,41 @@
+@color_main_orange: #FF9900;
+@color_main_blue: #336699;
+@color_main_yellow: #FFFFCC;
+@color_main_grey: #E5E5E5;
+
 .iconmedium {
   text-align: center;
   font-size: 20px;
 }
 
-.iconbig {
-  text-align: center;
-  font-size: 36px;
-}
-
 .color1 {
-  color: #FF9900
+  color: @color_main_orange;
 }
 
 .color2 {
-  color: #FFFFCC
+  color: @color_main_yellow;
 }
 
 .color3 {
-  color: #336699
+  color: @color_main_blue;
 }
 
 .bgcolor1 {
-  background-color: #FF9900
+  background-color: @color_main_orange;
 }
 
 .bgcolor2 {
-  background-color: #FFFFCC
+  background-color: @color_main_yellow;
 }
 
 .bgcolor3 {
-  background-color: #336699
+  background-color: @color_main_blue;
 }
 
 .block1 {
-  color: #336699;
-  background-color: #FFFFCC;
-  border: 1px solid #336699;
+  color: @color_main_blue;
+  background-color: @color_main_yellow;
+  border: 1px solid @color_main_blue;
   border-top-style: none;
   border-right-style: none;
   border-bottom-style: 1px solid grey;
@@ -47,8 +47,8 @@
 
 
 .container {
-  color: #336699;
-  background-color: #FFFFCC;
+  color: @color_main_blue;
+  background-color: @color_main_yellow;
   border-radius: 8px;
   border-top-style: 1px solid grey;
   border-right-style: none;
@@ -60,10 +60,10 @@
 }
 
 .normal_item {
-  border: 1px solid #E5E5E5;
+  border: 1px solid @color_main_grey;
   border-top-style: none;
   border-right-style: none;
-  border-bottom-style: 1px solid grey;
+  border-bottom-style: 1px solid @color_main_grey;
   border-left-style: none;
   padding: 5px;
   margin: 5px;

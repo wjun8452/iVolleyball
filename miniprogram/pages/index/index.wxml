@@ -6,29 +6,29 @@
 		<image style="width:64px; height:64px;" src="../../images/volleyball.png" background-size="cover"></image>
 	</view>
 
-	<view style="width:100%; height:45%; display:flex;  flex-direction:column; border:0px solid blue">
-		<navigator class="menu" url='../score_board/score_board'>
-				<view class="iconjifenpai navigator_big"> 大记分牌 </view>
+	<view style="width:100%; height:45%; display:flex; flex-direction:column; justify-content: space-around;">
+		<navigator class="navigator_container" url='../score_board/score_board'>
+			<image class="navigator_image_big" src="../../images/board.svg"></image>
+				<view class="navigator_text"> 比赛记分 </view>
 		</navigator>
 
-		<navigator class="menu" url='../stat/stat'>
-			<view class="icontongji navigator_big" >技术统计 </view>
+		<navigator class="navigator_container" url="../history/history">
+			<image class="navigator_image" src="../../images/history.svg"></image>
+			<view class="navigator_text">历史记录 </view>
 		</navigator>
 
-		<navigator class="menu" url="../history/history">
-			<view class="iconlishijilu navigator_big" >历史记录 </view>
+		<navigator class="navigator_container" url="../users/users"> 
+			<image class="navigator_image" src="../../images/team.svg"></image>
+			<view class="navigator_text">球队成员 </view>
 		</navigator>
 
-		<navigator class="menu" url="../users/users"> 
-			<view class="iconyonghuguanli navigator_big" >球队成员 </view>
+		<navigator class="navigator_container" url="../help/help"> 
+			<image class="navigator_image" src="../../images/help.svg"></image>
+			<view class="navigator_text">使用帮助 </view>
 		</navigator>
 
-		<navigator class="menu" url="../help/help">
-			<view class="iconbangzhu navigator_big" >使用帮助 </view>
-		</navigator>
-
-		<navigator url="../release/release" class="navigator_version">
-			<view> v3.11.1 </view>
+		<navigator class="navigator_container" url="../release/release">
+			<view class="navigator_version"> v3.12 </view>
 		</navigator>
 </view>
 

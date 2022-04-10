@@ -1,7 +1,10 @@
+<wxs module="utils" src="../../utils/util.wxs"></wxs>
+
 <view style="display: flex; flex-direction: column; margin: 5px">
   <!-- 得分信息 -->
   <view style="margin:1px 1px 8px 1px" class="block1">
     <view style="text-align: center;"> 比赛结果 </view>
+    <view style='text-align:left;'> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
     <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
     <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
     <view style='text-align:left;'> 地点：{{court.place}} </view>
@@ -24,7 +27,8 @@
       <!--数据行-->
       <block wx:for="{{summary}}" wx:for-index="player" wx:key='index'>
         <block wx:if='{{player!="标题"}}'>
-          <view style='display: flex; flex-direction: row;'> <!-- {{index%2?"#E8E8E8":"#FFFFFF"}} -->
+          <view style='display: flex; flex-direction: row;'>
+            <!-- {{index%2?"#E8E8E8":"#FFFFFF"}} -->
             <view style="flex:1; margin: 2px;"> {{player}} </view>
             <block wx:for='{{summary[player][category]}}' wx:for-item="count" wx:key='*this'>
               <view style="flex:1; margin: 2px; "> {{count}} </view>
@@ -35,7 +39,7 @@
     </view>
   </block>
 
- <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3 share_button" open-type="share">  分享 </button>
+  <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3 share_button" open-type="share"> 分享 </button>
 
-  <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3" bindtap='gotoHome'>  返回首页 </button>
+  <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3" bindtap='gotoHome'> 返回首页 </button>
 </view>

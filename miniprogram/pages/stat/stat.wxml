@@ -34,6 +34,7 @@
 		</block>
 
 		<button disabled="{{!isOwner || court.status==0}}" bindtap='onTapSetting' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">设置</button>
+		<button bindtap='onTapReport' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">报告</button>
 	</view>
 
 </view>

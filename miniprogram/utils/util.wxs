@@ -1,19 +1,121 @@
 // 支持es4语法
 var util = {
   contains: function (arr, item) {
-    return (arr.indexOf(item)!=-1)
+    return (arr.indexOf(item) != -1)
   },
 
-  sort: function(arr) {
-      return arr.sort()
+  sort: function (arr) {
+    return arr.sort()
   },
 
-  matchOver: function(s1, s2, total_score) {
+  matchOver: function (s1, s2, total_score) {
     return (s1 >= total_score || s2 >= total_score) && (s1 - s2 >= 2 || s2 - s1 >= 2);
   },
 
-  isLibero: function(player, libero,  all_players) {
-    return player==all_players[parseInt(libero)];
+  isLibero: function (player, libero, all_players) {
+    return player == all_players[parseInt(libero)];
+  },
+  formatNumber: function (n) {
+    n = n.toString()
+    return n[1] ? n : '0' + n
+  },
+
+  parseTime: function (time, type) {
+    if (time == null || time == '') {
+      return ''
+    }
+    if (arguments.length === 0) {
+      return null
+    }
+    var date;
+    if (typeof time === 'object') {
+      date = time
+    } else {
+      if (('' + time).length === 10) {
+        time = parseInt(time) * 1000
+      } else {
+        time = time.replace("Z", " ").replace(getRegExp('-', 'g'), "/")//去除Z，兼容苹果手机
+        var ts = time.split('T')
+        var t1 = ts[0]
+        var t2 = ts[1].split('.')[0]
+        time = t1 + " " + t2
+        time = getDate(time).getTime() + 8 * 3600000;//utc时间与北京时间相差8小时
+      }
+      date = getDate(time)//不能使用new Date()
+    }
+    var y = date.getFullYear();
+    var m = util.formatNumber(date.getMonth() + 1);
+    var d = util.formatNumber(date.getDate());
+    var h = util.formatNumber(date.getHours());
+    var i = util.formatNumber(date.getMinutes());
+    var s = util.formatNumber(date.getSeconds());
+    var a = util.formatNumber(date.getDay());
+    var time_str = "";
+    if (type == 'month') {
+      time_str = y + '-' + m;
+    } else if (type == 'date') {
+      time_str = y + '-' + m + '-' + d;
+    } else if (type == 'datetime') {
+      time_str = y + '-' + m + '-' + d + ' ' + h + ':' + i + ':' + s;
+    } else if (type == 'onlyMonth') {
+      time_str = m;
+    } else if (type == 'onlyYear') {
+      time_str = y;
+    } else {
+      time_str = y + '-' + m + '-' + d;
+    }
+    return time_str
+  },
+
+  friendlyDate: function (date) {
+    var timestamp = date.getTime();
+    var formats = {
+      year: '%n% 年前',
+      month: '%n% 月前',
+      day: '%n% 天前',
+      hour: '%n% 小时前',
+      minute: '%n% 分钟前',
+      second: '%n% 秒前',
+    }
+
+    var now = Date.now();
+    var seconds = Math.floor((now - timestamp) / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+    var months = Math.floor(days / 30);
+    var years = Math.floor(months / 12);
+
+    var diffType = '';
+    var diffValue = 0;
+    if (years > 0) {
+      diffType = 'year';
+      diffValue = years;
+    } else {
+      if (months > 0) {
+        diffType = 'month';
+        diffValue = months;
+      } else {
+        if (days > 0) {
+          diffType = 'day';
+          diffValue = days;
+        } else {
+          if (hours > 0) {
+            diffType = 'hour';
+            diffValue = hours;
+          } else {
+            if (minutes > 0) {
+              diffType = 'minute';
+              diffValue = minutes;
+            } else {
+              diffType = 'second';
+              diffValue = seconds === 0 ? (seconds = 1) : seconds;
+            }
+          }
+        }
+      }
+    }
+    return formats[diffType].replace('%n%', diffValue);
   }
 }
 // 导出对外暴露的属性
@@ -22,4 +124,6 @@ module.exports = {
   sort: util.sort,
   matchOver: util.matchOver,
   isLibero: util.isLibero,
+  friendlyDate: util.friendlyDate,
+  parseTime: util.parseTime,
 }

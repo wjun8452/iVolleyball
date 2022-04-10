@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 	<view class="block1">
+		<text style="margin-left: 5px;">v3.12.0 (2022/4/10) 调整部分页面跳转和设计 </text>
+	</view>
+
+	<view class="block1">
 		<text style="margin-left: 5px;">v3.11.1 (2022/3/6) bug fix</text>
 	</view>
 

@@ -1,4 +1,5 @@
-import { PlaceInfo } from "./PlaceInfo";
+import { PlaceInfo } from "../bl/PlaceInfo";
+import { parseTime } from "../utils/Util";
 
 export enum StatCat {
   Serve = "发球",
@@ -128,11 +129,17 @@ export class VolleyCourt {
   latlon: any = { latitude: 0, longitude: 0 };
   /** 比赛发生的地点名称 */
   place: string = "";
+  update_time: string = "";
 
-  constructor(placeInfo?: PlaceInfo) {
+  constructor(userID: string, placeInfo?: PlaceInfo) {
+    this._openid = userID
+
     if (placeInfo) {
       Object.assign(this, placeInfo);
     }
+
+    this.create_time = parseTime(new Date())
+    this.update_time = parseTime(new Date())
     this.updateAvailableItems();
   }
 
@@ -197,6 +204,8 @@ export class VolleyCourt {
     var who_serve = this.who_serve;
 
     if (!this.is_libero_enabled) return;
+    if (this.libero==-1) return;
+    if (this.libero_replacement1==-1 && this.libero_replacement2==-1) return;
 
     //如果自由人转到前排，则必须被换下
     for (var i = 1; i <= 3; i++) {

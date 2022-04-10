@@ -38,7 +38,7 @@ Page({
   onUnload: function() {
   },
 
-  onMenu: function(res) {
+  onMenu: function(res:any) {
     console.log("[onMenu]", res);
     wx.navigateTo({
       url: res.target.dataset.url,

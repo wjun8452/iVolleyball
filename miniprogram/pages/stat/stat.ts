@@ -1,7 +1,7 @@
-import { BasePage } from "../../BasePage";
-import { GlobalData } from "../../GlobalData";
-import { VolleyCourt } from "../../VolleyCourt";
-import { Reason, Status, VolleyRepository } from "../../VolleyRepository";
+import { BasePage } from "../../bl/BasePage";
+import { GlobalData } from "../../bl/GlobalData";
+import { VolleyCourt } from "../../bl/VolleyCourt";
+import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
 let globalData: GlobalData = getApp().globalData
 
@@ -57,7 +57,7 @@ class StatPage extends BasePage {
       title: '技术统计'
     })
 
-    if (options._id && options._openid) {
+    if (options._id) {
       this._id = options._id;
     }
 
@@ -148,16 +148,16 @@ class StatPage extends BasePage {
  */
   onReset = function (this: StatPage) {
     var that = this
-      wx.showModal({
-        title: '比赛结束?',
-        content: '将上传技术统计数据，并跳转到统计报告',
-        showCancel: true,
-        success: function (res) {
-          if (res.confirm) {
-            that.repo?.uploadAndEndMatch(that.data.court!);
-          } else if (res.cancel) { }
-        }
-      })
+    wx.showModal({
+      title: '比赛结束?',
+      content: '将上传技术统计数据，并跳转到统计报告',
+      showCancel: true,
+      success: function (res) {
+        if (res.confirm) {
+          that.repo?.uploadAndEndMatch(that.data.court!);
+        } else if (res.cancel) { }
+      }
+    })
   }
 
   updateMatch = function (this: StatPage) {
@@ -167,6 +167,18 @@ class StatPage extends BasePage {
       })
     }
     this.repo!.updateMatch(this.data.court!)
+  }
+
+  onTapReport = function (this: StatPage) {
+    if (this.data.court!._id) {
+      wx.navigateTo({
+        url: "../report/report?_id=" + this.data.court!._id
+      })
+    } else {
+      wx.navigateTo({
+        url: "../report/report"
+      })
+    }
   }
 
 }

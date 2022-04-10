@@ -69,7 +69,7 @@
 		</radio-group>
 	</view>
 
-	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:space-between;">
+	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:flex-start; align-items: center;">
 		<checkbox-group bindchange="setterEnabled">
 			<checkbox checked="{{court.is_setter_enabled}}"> 
 				固定二传
@@ -77,14 +77,14 @@
 		</checkbox-group>
 
 		<block wx:if="{{court.is_setter_enabled}}">			
-			<picker bindchange="bindSetterChange" value="{{court.setter}}" range="{{court.all_players}}">
+			<picker style="margin-left: 10px;" bindchange="bindSetterChange" value="{{court.setter}}" range="{{court.all_players}}">
 				<view>选择二传: {{court.all_players[court.setter]}} </view>
 			</picker>
 		</block>
 		
 	</view>
 
-	<view style="margin-bottom: 5px; display: flex; flex-direction: row; justify-content:space-between;">
+	<view style="margin-bottom: 5px; display: flex; flex-direction: column; justify-content:space-between;">
 		<checkbox-group bindchange="liberoEnabled">
 			<checkbox checked="{{court.is_libero_enabled}}"> 
 				启用自由人
@@ -93,19 +93,19 @@
 
 		<block wx:if="{{court.is_libero_enabled}}">			
 			<picker bindchange="bindLiberoChange" value="{{court.libero}}" range="{{court.all_players}}">
-				<view>选择自由人: {{court.all_players[court.libero]}} </view>
+				<view>自由人: {{court.all_players[court.libero]}} </view>
 			</picker>
 		</block>
 
 		<block wx:if="{{court.is_libero_enabled}}">			
 			<picker bindchange="bindLiberoReplacement1" value="{{court.libero_replacement[0]}}" range="{{court.all_players}}">
-				<view>第一替换人: {{court.all_players[court.libero_replacement1]}} </view>
+				<view>第一替换: {{court.all_players[court.libero_replacement1]}} </view>
 			</picker>
 		</block>
 
 		<block wx:if="{{court.is_libero_enabled}}">			
 			<picker bindchange="bindLiberoReplacement2" value="{{court.libero_replacement[1]}}" range="{{court.all_players}}">
-				<view>第二替换人: {{court.all_players[court.libero_replacement2]}} </view>
+				<view>第二替换: {{court.all_players[court.libero_replacement2]}} </view>
 			</picker>
 		</block>
 	</view>
@@ -114,7 +114,7 @@
 		<block wx:for="{{[3,2,1]}}" wx:for-item="pos" wx:key="*this">
 			<!-- copy to next row -->
 			<view style="flex:1; margin: 2px; display: flex; flex-direction: column;">
-				<view class="bgcolor2" data-position='{{pos}}' bindtap="onClickPlayer" style="text-algin:center">
+				<view class="bgcolor2" data-position='{{pos}}' bindtap="onClickPlayer">
 					{{court.players[pos]}}›
 					<block wx:if='{{edit_pos!=pos && (pos==0||(court.front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
 						<checkbox-group style="flex:1; margin: 2px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
@@ -146,7 +146,7 @@
 
 			<!-- copy to next row -->
 			<view style="margin: 2px; flex:1; display: flex; flex-direction: column;">
-				<view class="bgcolor2" data-position='{{pos}}' bindtap="onClickPlayer" style="text-algin:center">
+				<view class="bgcolor2" data-position='{{pos}}' bindtap="onClickPlayer">
 					{{court.players[pos]}}›
 					<block wx:if='{{edit_pos!=pos && (pos==0||(court.front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
 						<checkbox-group style="flex:1; " bindchange="onCheckWhoServe" data-position='{{pos}}'>

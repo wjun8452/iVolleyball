@@ -1,19 +1,9 @@
 {
   "setting": {},
   "condition": {
-    "plugin": {
-      "list": []
-    },
-    "game": {
-      "list": []
-    },
-    "gamePlugin": {
-      "list": []
-    },
     "miniprogram": {
       "list": [
         {
-          "id": -1,
           "name": "db guide",
           "pathName": "pages/databaseGuide/databaseGuide",
           "query": ""
@@ -22,14 +12,14 @@
           "name": "pages/index/index",
           "pathName": "pages/index/index",
           "query": "_id=42d70ff05e80c3ee00204af22ae0d7d0&_openid=oHxEZ0TgTN5RyaQvq1UYUAy-6rXM",
-          "scene": 1008,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": 1008
         },
         {
-          "id": -1,
           "name": "pages/score_board/score_board",
           "pathName": "pages/score_board/score_board",
-          "query": "_id=42d70ff05e80c3ee00204af22ae0d7d0&_openid=oHxEZ0TgTN5RyaQvq1UYUAy-6rXM",
+          "query": "",
+          "launchMode": "default",
           "scene": null
         },
         {
@@ -38,8 +28,51 @@
           "query": "_id=82afc00a624ad77b0324f08142aefc98",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index2/index2",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/stat/stat",
+          "query": "_id=d4107ab162519d15061c70c86dca72d0",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/users/users",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/stat_setting/stat_setting",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/help/help",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/history/history",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
-  }
+  },
+  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html"
 }

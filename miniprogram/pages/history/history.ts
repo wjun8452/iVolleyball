@@ -1,86 +1,92 @@
 // miniprogram/pages/history.js
 
-import { BasePage } from "../../BasePage";
-import { VolleyCourt } from "../../VolleyCourt";
+import { BasePage } from "../../bl/BasePage";
+import { GlobalData } from "../../bl/GlobalData";
+import { GameStatus, VolleyCourt } from "../../bl/VolleyCourt";
+import { FriendsCourtRepo, onMatchesFeched, VolleyRepository2 } from "../../bl/VolleyRepository";
 
 class HistoryPageData {
   matches: VolleyCourt[] = []; //以前上传过的比赛
-  isLoading : boolean  = false
+  matches2: VolleyCourt[] = []; //已经结束的比赛
+  matches3: VolleyCourt[] = []; //来自他人分享的比赛
+  court: VolleyCourt | null = null;
+  globalData: GlobalData | null = null;
 }
 
 class HistoryPage extends BasePage {
   data: HistoryPageData = new HistoryPageData();
+  repo: VolleyRepository2 = new VolleyRepository2();
+
+  loginInfoCallback = function (this: HistoryPage, openid: string) {
+    this.fetchData(openid);
+  };
+
+  onDataFetched: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
+    console.log("courts:", courts)
+    wx.hideLoading();
+    this.data.matches = courts;
+    this.setData(this.data);
+  }
+
+  onDataFetched2: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
+    console.log("courts:", courts)
+    wx.hideLoading();
+    this.data.matches2 = courts;
+    this.setData(this.data);
+  }
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad = function (this: HistoryPage) {
-    wx.setNavigationBarTitle({
-      title: '历史记录',
-    })
+  }
 
-    this.fetchData()
+  onShow = function (this:HistoryPage) {
+    let openid = getApp().globalData.openid;
+    if (openid === '') {
+      getApp().loginInfoCallback = this.loginInfoCallback;
+    } else {
+      this.fetchData(openid);
+    }
+
+    this.data.court = this.repo.loadFromLocal();
+
+    let friendsRepo = new FriendsCourtRepo();
+    this.data.matches3 = friendsRepo.getCourts();
+
+    this.setData(this.data);
   }
 
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh = function (this: HistoryPage) {
-    console.log("onPullDownRefresh")
-    this.fetchData()
-  }
-
-
-  fetchData = function (this: HistoryPage) {
-    var app = getApp()
-    var openid = app.globalData.openid
-
-    this.data.isLoading = true
+  fetchData = function (this: HistoryPage, openid: string) {
     wx.showLoading({
       title: '正在加载...',
     })
+    this.repo.fetchMatches(openid, 5, GameStatus.OnGoing, this.onDataFetched)
+    this.repo.fetchMatches(openid, 5, GameStatus.Ended, this.onDataFetched2)
+  }
 
-    const db = wx.cloud.database({
-      env: getApp().globalData.env
-    })
+  newMatch = function () {
+    wx.navigateTo({
+      url: "../score_board/score_board"
+    }
+    );
+  }
 
-    var that = this
-
-    db.collection('vmatch').where({
-      _openid: openid,
-      status: 1,
-    }).field({
-      _id: true,
-      myScore: true,
-      yourScore: true,
-      create_time: true,
-      myTeam: true,
-      yourTeam: true,
-      place: true,
-      _openid: true,
-      status: true,
-    }).orderBy('create_time', 'desc')
-      .get({
-        success(res) {
-          //console.log("[db.vmatch.get] res:", res)
-          that.data.matches = res.data
-          for (var i in that.data.matches) {
-              that.data.matches[i].create_time = that.data.matches[i].create_time.toLocaleString()
-          }
-          that.data.isLoading = false
-          wx.hideLoading()
-          that.setData(that.data)
-        },
-        fail(res) {
-          console.log(res)
-          that.data.isLoading = false
-          wx.hideLoading()
-          wx.showToast({
-            title: '加载失败',
-          })
-        }
+  onTapMatch = function (e: any) {
+    let _id: string = e.currentTarget.dataset.matchid;
+    if (_id) {
+      wx.navigateTo({
+        url: "../score_board/score_board?_id=" + _id,
       })
+    } else {
+      wx.navigateTo({
+        url: "../score_board/score_board"
+      })
+    }
+  }
+
+  stopPageScroll = function () {
 
   }
 }

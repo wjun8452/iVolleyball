@@ -2,8 +2,9 @@
 
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
+import { PlayerRepo } from "../../bl/PlayerRepo";
 import { VolleyCourt } from "../../bl/VolleyCourt";
-import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
+import { FriendsCourtRepo, Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
 class SettingPageData {
   _id: string | null = null;
@@ -159,10 +160,15 @@ class SettingPage extends BasePage {
           icon: 'none'
         })
       } else if (this.data.court!.all_players.indexOf(player) == -1) {
-        this.data.court!.all_players.unshift(player);
+        this.data.court!.all_players.push(player);
         this.data.court!.players[position] = player;
+        this.data.court!.player_allowed.push(player);
         this.data.edit_pos = -1
         this.updateMatch();
+
+        let playerRepo = new PlayerRepo();
+        playerRepo.setPlayers(this.data.court!.all_players);
+        playerRepo.savePlayers();
       } else {
         wx.showToast({
           title: '球员已存在',

@@ -4,7 +4,7 @@ import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
 import { PlayerRepo } from "../../bl/PlayerRepo";
 import { VolleyCourt } from "../../bl/VolleyCourt";
-import { FriendsCourtRepo, Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
+import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
 class SettingPageData {
   _id: string | null = null;
@@ -123,7 +123,7 @@ class SettingPage extends BasePage {
     if (serve == 0) {
       this.data.court!.serve = true;
       if (this.data.court!.who_serve == -1) {
-        this.data.court!.who_serve = 0;
+        this.data.court!.who_serve = 0; //默认1号位发球
       }
     } else {
       this.data.court!.serve = false;

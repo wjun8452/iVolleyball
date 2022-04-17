@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
-	<view class="block1">
+  <view class="block1">
+		<text style="margin-left: 5px;">v3.12.1 (2022/4/17) bug fix </text>
+	</view>
+
+  <view class="block1">
 		<text style="margin-left: 5px;">v3.12.0 (2022/4/10) 优化了主页、记分牌、历史记录、技术统计等页面的设计，将技术统计入口挪到了记分牌页面 </text>
 	</view>
 

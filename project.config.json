@@ -40,7 +40,8 @@
       "less"
     ],
     "ignoreUploadUnusedFiles": true,
-    "useStaticServer": true
+    "useStaticServer": true,
+    "lazyloadPlaceholderEnable": false
   },
   "appid": "wx573d66c4ffa25272",
   "projectname": "iVolleyball",

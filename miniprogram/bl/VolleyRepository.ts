@@ -147,6 +147,7 @@ export class VolleyRepository {
   }
 
   updateMatch(court: VolleyCourt) {
+    court.updateStatSettings();
     this._updateMatch(court, false);
   }
 

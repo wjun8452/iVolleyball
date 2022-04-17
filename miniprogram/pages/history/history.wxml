@@ -28,7 +28,6 @@
             <block wx:if="{{court._id}}">
               <image src="../../images/cloud.svg" class="status_icon"> </image>
             </block>
-
             <block wx:if="{{!court._id}}">
               <image src="../../images/nocloud.svg" class="status_icon"> </image>
             </block>
@@ -70,6 +69,15 @@
 
           <view class='{{index==matches3.length-1 ? "last_item": "normal_item"}}' style="font-size: 15px; width: 100%;">
             <view> 队伍：{{item.myTeam}} vs {{item.yourTeam}}</view>
+            <view style="display: flex; flex-direction: row; align-items: center;">
+              <view> 状态：{{item.status == 0 ? "已结束" : "进行中"}} </view>
+              <block wx:if="{{item._id}}">
+                <image src="../../images/cloud.svg" class="status_icon"> </image>
+              </block>
+              <block wx:if="{{!item._id}}">
+                <image src="../../images/nocloud.svg" class="status_icon"> </image>
+              </block>
+            </view>
             <view>地点：{{item.place}}</view>
             <view>时间：{{item.create_time}}</view>
           </view>
@@ -108,6 +116,15 @@
 
           <view class='{{index==matches.length-1 ? "last_item": "normal_item"}}' style="font-size: 15px; width: 100%;">
             <view> 队伍：{{item.myTeam}} vs {{item.yourTeam}}</view>
+            <view style="display: flex; flex-direction: row; align-items: center;">
+              <view> 状态：{{item.status == 0 ? "已结束" : "进行中"}} </view>
+              <block wx:if="{{item._id}}">
+                <image src="../../images/cloud.svg" class="status_icon"> </image>
+              </block>
+              <block wx:if="{{!item._id}}">
+                <image src="../../images/nocloud.svg" class="status_icon"> </image>
+              </block>
+            </view>
             <view>地点：{{item.place}}</view>
             <view>时间：{{item.create_time}}</view>
           </view>
@@ -146,6 +163,15 @@
 
           <view class='{{index==matches.length-1 ? "last_item": "normal_item"}}' style="font-size: 15px; width: 100%;">
             <view> 队伍：{{item.myTeam}} vs {{item.yourTeam}}</view>
+            <view style="display: flex; flex-direction: row; align-items: center;">
+              <view> 状态：{{item.status == 0 ? "已结束" : "进行中"}} </view>
+              <block wx:if="{{item._id}}">
+                <image src="../../images/cloud.svg" class="status_icon"> </image>
+              </block>
+              <block wx:if="{{!item._id}}">
+                <image src="../../images/nocloud.svg" class="status_icon"> </image>
+              </block>
+            </view>
             <view>地点：{{item.place}}</view>
             <view>时间：{{item.create_time}}</view>
           </view>

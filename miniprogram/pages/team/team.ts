@@ -13,7 +13,6 @@ class UsersPageData {
 
 class UsersPage extends BasePage {
   data: UsersPageData = new UsersPageData();
-  teamRepo: TeamRepo = new TeamRepo();
   invitedTeamId: string | null = null;
 
   onLoad = function (this: UsersPage, options: any) {
@@ -46,11 +45,10 @@ class UsersPage extends BasePage {
   }
 
   loadTeamById = function (this: UsersPage, teamId: string) {
-    let teamRepo = new TeamRepo();
     wx.showLoading({
       title: "正在加载"
     })
-    teamRepo.loadTeamByID(teamId, (team: VTeam | null) => {
+    new TeamRepo().loadTeamByID(teamId, (team: VTeam | null) => {
       this.data.loading = false;
       this.setData({ loading: false })
       wx.hideLoading();
@@ -69,7 +67,7 @@ class UsersPage extends BasePage {
 
     getApp().getOpenId((openid: string) => {
       this.data.user.openid = openid;
-      this.teamRepo.fetchByOwner(openid, (errorCode: number, team: VTeam | null) => {
+      new TeamRepo().fetchByOwner(openid, (errorCode: number, team: VTeam | null) => {
         this.data.loading = false;
         this.setData({ loading: false })
 
@@ -97,7 +95,7 @@ class UsersPage extends BasePage {
 
       let newPlayer = new VPlayer(player);
 
-      this.teamRepo.joinTeam(this.data.team._id, newPlayer, (errorCode: number) => {
+      new TeamRepo().joinTeam(this.data.team._id, newPlayer, (errorCode: number) => {
         wx.hideLoading()
         if (errorCode == 0) {
           if (this.data.team) {
@@ -136,7 +134,7 @@ class UsersPage extends BasePage {
 
     if (this.data.team) {
       this.data.team.players.splice(playerIndex, 1);
-      this.teamRepo.updateTeam(this.data.team, (success: boolean) => {
+      new TeamRepo().updateTeam(this.data.team, (success: boolean) => {
         wx.hideLoading();
         if (success) {
           this.setData({ team: this.data.team });
@@ -228,7 +226,7 @@ class UsersPage extends BasePage {
 
       if(this.data.team) {
         this.data.team.name = teamName;
-        this.teamRepo.updateTeam(this.data.team, (success: boolean) => {
+        new TeamRepo().updateTeam(this.data.team, (success: boolean) => {
           wx.hideLoading();
           if (success) {
             this.setData({ team: this.data.team });
@@ -265,7 +263,7 @@ class UsersPage extends BasePage {
     newPlayer.user = this.data.user;
 
     if (this.data.team) {
-      this.teamRepo.joinTeam(this.data.team._id, newPlayer, (errorCode: number) => {
+      new TeamRepo().joinTeam(this.data.team._id, newPlayer, (errorCode: number) => {
         wx.hideLoading()
         if (errorCode == 0) {
           this.data.team!.players.push(newPlayer);
@@ -303,7 +301,7 @@ class UsersPage extends BasePage {
 
     let team = new VTeam();
     team.owner = this.data.user;
-    this.teamRepo.createTeam(team, (team: VTeam | null) => {
+    new TeamRepo().createTeam(team, (team: VTeam | null) => {
       wx.hideLoading();
       if (team) {
         this.data.team = team;

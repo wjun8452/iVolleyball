@@ -2,8 +2,8 @@
   <view class="teamblock">
     <view class='teamblock_row'>
       <view> 我的信息: </view>
-      <view class="avartar_container">
-        <image class="avartar" src='{{hasUserInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover" bindtap="getUserProfile"></image>
+      <view class="avartar_container" bindtap="getUserProfile">
+        <image class="avartar" src='{{hasUserInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
         <text class="nickName">{{user.userInfo.nickName}}</text>
       </view>
       <block wx:if="{{!hasUserInfo}}">

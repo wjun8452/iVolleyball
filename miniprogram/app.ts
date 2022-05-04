@@ -5,7 +5,6 @@ import { GlobalData } from './bl/GlobalData'
 
 let globalData: GlobalData = {
   openid: '',
-  userInfo: null,
   cacheKey: "stats17",
   placeInfo: {
     place: "",
@@ -19,14 +18,35 @@ let globalData: GlobalData = {
 App({
   globalData: globalData,
 
-  loginInfoCallback: function(openid:string) {},
+  getOpenId: function (callback: (openid: string) => void) {
+    if (globalData.openid) {
+      callback(globalData.openid)
+    }
+    else {
+      wx.cloud.callFunction({
+        name: 'login',
+        data: {},
+        success: res => {
+          //console.log(res)
+          if (res.result) {
+            globalData.openid = (res.result as LoginInfo).openid;
+            callback(globalData.openid)
+            console.log('[wx.cloud.login] openid:', globalData.openid)
+          }
+        },
+        fail: err => {
+          console.error('[wx.cloud.login] failed!', err)
+        }
+      })
+    }
+  },
 
   /**
  * 云端获取当前登录用户的openid,并赋值给 @globalData
  * @param globalData 包含openid的全局数据
  * @return
  */
-  fetchOpenId: function(globalData: GlobalData) {
+  _fetchOpenId: function (globalData: GlobalData) {
     wx.cloud.callFunction({
       name: 'login',
       data: {},
@@ -34,9 +54,6 @@ App({
         //console.log(res)
         if (res.result) {
           globalData.openid = (res.result as LoginInfo).openid;
-          if (this.loginInfoCallback) {
-            this.loginInfoCallback(globalData.openid)
-          }
           console.log('[wx.cloud.login] openid:', globalData.openid)
         }
       },
@@ -46,14 +63,14 @@ App({
     })
   },
 
-  onLaunch: function() {
+  onLaunch: function () {
     if (wx.cloud) {
       wx.cloud.init({
         env: globalData.env,
         traceUser: true
       })
 
-      this.fetchOpenId(globalData)
+      this._fetchOpenId(globalData)
 
       this.initLocation(globalData)
 
@@ -74,7 +91,7 @@ App({
    * 调用wx.getLocation获取用户位置并使用QQMap做RGC，并将经纬度和地址更新到全局数据
    * @param globalData 包含位置信息的全局数据
    */
-  initLocation: function(globalData: GlobalData) {
+  initLocation: function (globalData: GlobalData) {
     let qqmap = new qqMap({
       key: '6MWBZ-XDZL6-FPOSU-MKDSZ-DANKF-EOBRN' // 必填
     });
@@ -105,34 +122,4 @@ App({
       }
     })
   }
-
-
-  // //getUserInfo is currently not used, but kept here for further reference
-  // getUserInfo:function(cb){
-  //   let that = this
-  //   if(globalData.userInfo){
-  //     typeof cb == "function" && cb(globalData.userInfo)
-  //     console.log("userInfo", globalData.userInfo)
-  //   }else{
-  //     //调用登录接口
-  //     wx.login({
-  //       success: function (res) {
-  //         console.log("[wx.login] code:", res.code)
-  //         wx.getUserInfo({
-  //           success: function (res) {
-  //             that.globalData.userInfo = res.userInfo
-  //             typeof cb == "function" && cb(that.globalData.userInfo)
-  //             console.log('[wx.getUserInfo]', that.globalData.userInfo)
-  //           },
-  //           fail: function(res) {
-  //             console.error("[wx.getUserInfo]", res)
-  //           }
-  //         })
-  //       },
-  //       fail: function(res) {
-  //         console.error([wx.login], res)
-  //       },
-  //     })
-  //   }
-  // },
 })

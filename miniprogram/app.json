@@ -9,7 +9,8 @@
     "pages/history/history",
     "pages/release/release",
     "pages/share/share",
-    "pages/users/users"
+    "pages/team/team",
+    "pages/teams/teams"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,23 +1,26 @@
 <wxs module="utils" src="../../utils/util.wxs"></wxs>
 <template name="volleyblock">
-	<!-- represents an area the player stands -->
-	<view style='display:flex; flex-direction:column; height:100%;'>
-		<view style="flex:9; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px">
-			<block wx:for="{{play_item_cats}}" wx:for-item='category' wx:key="*this">
-				<button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; background-color: #FFFFCC; color: #336699; border: 1px solid #336699; text-align: center;" hidden='{{opCat!=null && opPosition==position}}' disabled="{{!isOwner || status==0}}"  size="mini"> {{category}} </button>
-			</block>
-			
-			<block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="index">
-				<block wx:if='{{play_item.category==opCat && opPosition==position}}'>
-					<button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='default' style='flex:1; text-align: center; margin:2px; color: {{play_item.score!=0? "#ffffff" : "#336699" }}; background-color: {{play_item.score==1? "#FF9900" : (play_item.score==-1?"green":"#FFFFCC")}}; border: 1px solid #336699;' disabled="{{!isOwner || status==0}}" size="mini"> {{play_item.name}} </button>
-				</block>
-			</block>
-		
-		</view>
+  <!-- represents an area the player stands -->
+  <view style='display:flex; flex-direction:column; height:100%; align-items: center;'>
+    <view style="flex:9; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px; width: 100%;">
+      <block wx:for="{{play_item_cats}}" wx:for-item='category' wx:key="*this">
+        <button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' type='default' style="flex:1; margin:2px; background-color: #FFFFCC; color: #336699; border: 1px solid #336699; text-align: center;" hidden='{{opCat!=null && opPosition==position}}' disabled="{{!isOwner || status==0}}" size="mini"> {{category}} </button>
+      </block>
 
-		<view style='flex:1; text-align:center; color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; font-weight: bold; '>
-			{{players[position]}}
-		</view>
+      <block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="index">
+        <block wx:if='{{play_item.category==opCat && opPosition==position}}'>
+          <button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' type='default' style='flex:1; text-align: center; margin:2px; color: {{play_item.score!=0? "#ffffff" : "#336699" }}; background-color: {{play_item.score==1? "#FF9900" : (play_item.score==-1?"green":"#FFFFCC")}}; border: 1px solid #336699;' disabled="{{!isOwner || status==0}}" size="mini"> {{play_item.name}} </button>
+        </block>
+      </block>
 
-	</view>
+    </view>
+
+    <view style='flex:1; font-weight: bold;'>
+      <view class="avartar_container">
+        <image class="avartar" src='{{players_map[players[position]].user.userInfo.avatarUrl? players_map[players[position]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+        <text class="nickName" style='color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; '>{{players[position]}}</text>
+      </view>
+    </view>
+
+  </view>
 </template>

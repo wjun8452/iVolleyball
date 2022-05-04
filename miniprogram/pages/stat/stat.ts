@@ -68,7 +68,10 @@ class StatPage extends BasePage {
     wx.showLoading({
       title: "加载中"
     })
-    this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData.openid, this._id, globalData.placeInfo);
+    getApp().getOpenId((openid: string) => {
+      this.data.globalData = getApp().globalData;
+      this.repo = new VolleyRepository(this.onCourtChange, openid, this._id, globalData.placeInfo);
+    });
   }
 
   onHide = function (this: StatPage) {

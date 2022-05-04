@@ -1,5 +1,6 @@
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
+import { VPlayer } from "../../bl/TeamRepo";
 import { StatItem, StatName, VolleyCourt } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 

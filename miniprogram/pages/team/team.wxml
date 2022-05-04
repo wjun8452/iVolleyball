@@ -1,0 +1,82 @@
+<view class="color3" style="display: flex; flex-direction: column;">
+  <view class="teamblock">
+    <view class='teamblock_row'>
+      <view> 我的信息: </view>
+      <view class="avartar_container">
+        <image class="avartar" src='{{hasUserInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover" bindtap="getUserProfile"></image>
+        <text class="nickName">{{user.userInfo.nickName}}</text>
+      </view>
+      <block wx:if="{{!hasUserInfo}}">
+        <view>
+          <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" size="mini"> 登录（获取头像昵称） </button>
+          <button wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini"> 登录（获取头像昵称） </button>
+        </view>
+      </block>
+    </view>
+
+    <view wx:if="{{(!team) && (!loading)}}" class="teamblock_row">
+      <view>
+        <button size="mini" bindtap="onCreateTeam"> 创建球队 </button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{team}}" class="teamblock">
+    <view class="teamblock_row">
+      <view> 球队名称: </view>
+      <view wx:if="{{isMyTeam}}">
+        <input name="teamName" bindconfirm="onEditTeamName" placeholder="{{team.name}}"> </input>
+      </view>
+      <view wx:else>
+        {{team.name}}
+      </view>
+    </view>
+
+
+    <view class="teamblock_row">
+      <view> 管理员： </view>
+      <view class="avartar_container">
+        <image class="avartar" wx:if="{{team.owner.userInfo.avatarUrl}}" src="{{team.owner.userInfo.avatarUrl}}" mode="cover"></image>
+        <text class="nickName"> {{team.owner.userInfo.nickName}} </text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{team}}" class="teamblock">
+    <view class="teamblock_row "> 球队成员 </view>
+
+    <block wx:for="{{team.players}}" wx:key="*this">
+      <view class="teamblock_row">
+        <view class="avartar_container">
+          <image class="avartar" src='{{item.user.userInfo.avatarUrl ? item.user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+          <text class="nickName"> {{item.name}} </text>
+        </view>
+        <view wx:if="{{isMyTeam}}">
+          <button size="mini" bindtap="onDeletePlayer" data-player_index="{{index}}"> 删除 </button>
+        </view>
+      </view>
+    </block>
+
+    <view style="margin-top: 10px;">
+      <view wx:if="{{isMyTeam}}" class='teamblock_row'>
+        <form bindsubmit="onAddPlayer" style="width:100%">
+          <view style="display: flex; flex-direction: row; justify-content: space-between;">
+            <view>
+              <input name="player" placeholder="输入球员名称"> </input>
+            </view>
+            <view>
+              <button size="mini" form-type="submit"> 添加 </button>
+            </view>
+          </view>
+        </form>
+      </view>
+      <view wx:if="{{isMyTeam}}" class="teamblock_row" style="margin-bottom: 5px;">
+        <button open-type="share" size="default" style="width: 100%;"> 邀请好友加入 </button>
+      </view>
+      <view class="teamblock_row">
+        <button bindtap="onAddMySelf" size="default" style="width: 100%;"> 我加入 </button>
+      </view>
+    </view>
+  </view>
+
+</view>

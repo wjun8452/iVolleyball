@@ -1,35 +1,25 @@
 <wxs module="utils" src="../../utils/util.wxs"></wxs>
 
-<view class="color3" style="margin:5px; display: flex; flex-direction: column;">
+<view wx:if="{{court}}" class="color3" style="display: flex; flex-direction: column;">
 
-  <view class="settingblock">
-    <view class='settingblock_row'>
-      <view style="display: flex; flex-direction: row;">
-        <view style="flex:1">我方:</view>
-        <view style="flex:3"><input bindconfirm='onEditTeam' data-obj="myTeam" placeholder='{{court.myTeam}}' /></view>
-        <view style="flex:1"> 对方:</view>
-        <view style="flex:3"><input bindconfirm='onEditTeam' data-obj="yourTeam" placeholder='{{court.yourTeam}}' /></view>
-      </view>
+  <view class="teamblock">
+    <view class='teamblock_row'>
+      <view>我方队伍:</view>
+      <view> <input bindconfirm='onEditTeam' data-obj="myTeam" placeholder='{{court.myTeam}}' /></view>
+      <view> <button size="mini" bindtap="onClickLoadMyTeam">导入球队</button></view>
     </view>
 
-    <view class="settingblock_row">
-      <view style="flex:1; border-style: solid; border-width: 1px 0px 1px 1px;text-align:center; font-weight:bold; font-size: 35px; ">
-        {{court.myScore}}
-      </view>
-      <view style="flex:1; border-style: solid; border-width: 1px 1px 1px 1px;text-align:center; font-weight:bold; font-size: 35px; ">
-        {{court.yourScore}}
-      </view>
+    <view class='teamblock_row'>
+      <view style=""> 对方队伍:</view>
+      <view><input bindconfirm='onEditTeam' data-obj="yourTeam" placeholder='{{court.yourTeam}}' /></view>
     </view>
 
-    <view class="settingblock_row">
-      <button bindtap='onAddMyScore' style="margin-right: 5px; flex:1; border:1px solid #336699;" class="color3">+</button>
-      <button bindtap='onReduceMyScore' style="margin-right: 5px; flex:1; border:1px solid #336699;" class="color3">-</button>
-      <button bindtap='onAddYourScore' style="margin-right: 5px; flex:1; border:1px solid #336699;" class="color3">+</button>
-      <button bindtap='onReduceYourScore' style="flex:1; border:1px solid #336699;" class="color3">-</button>
+    <view class="teamblock_row">
+      <view> 比分：{{court.myScore}} : {{court.yourScore}} </view>
+      <view><button size="mini" bindtap="onReset">重置分数</button></view>
     </view>
 
-
-    <view class="settingblock_row">
+    <view class="teamblock_row">
       <view> 设置局分： </view>
       <picker bindchange="bindTotalScoreChange" value="{{court.total_score-total_scores[0]}}" range="{{total_scores}}">
         {{court.total_score}} ›
@@ -39,8 +29,8 @@
 
 
 
-  <view class="settingblock">
-    <view class="settingblock_row">
+  <view class="teamblock">
+    <view class="teamblock_row">
       <checkbox-group bindchange="setterEnabled">
         <checkbox checked="{{court.is_setter_enabled}}">
           固定二传
@@ -49,7 +39,7 @@
     </view>
 
     <block wx:if="{{court.is_setter_enabled}}">
-      <view class="settingblock_row">
+      <view class="teamblock_row">
         <view style="margin-left: 10px;">二传: </view>
         <picker bindchange="bindSetterChange" value="{{court.setter}}" range="{{court.all_players}}">
           <view> {{court.setter==-1 ? "请选择›" : court.all_players[court.setter] + "›"}} </view>
@@ -57,7 +47,7 @@
       </view>
     </block>
 
-    <view class="settingblock_row">
+    <view class="teamblock_row">
       <checkbox-group bindchange="liberoEnabled">
         <checkbox checked="{{court.is_libero_enabled}}">
           启用自由人
@@ -66,7 +56,7 @@
     </view>
 
     <block wx:if="{{court.is_libero_enabled}}">
-      <view class="settingblock_row">
+      <view class="teamblock_row">
         <view style="margin-left: 10px;">自由人:</view>
         <picker bindchange="bindLiberoChange" value="{{court.libero}}" range="{{court.all_players}}">
           <view> {{ court.libero == -1 ? "请选择›" : court.all_players[court.libero] + "›"}} </view>
@@ -75,7 +65,7 @@
     </block>
 
     <block wx:if="{{court.is_libero_enabled}}">
-      <view class="settingblock_row">
+      <view class="teamblock_row">
         <view style="margin-left: 10px;">第一替换对象: </view>
         <picker bindchange="bindLiberoReplacement1" value="{{court.libero_replacement[0]}}" range="{{court.all_players}}">
           <view> {{ court.libero_replacement1==-1 ? "请选择›" : court.all_players[court.libero_replacement1] + "›"}} </view>
@@ -84,7 +74,7 @@
     </block>
 
     <block wx:if="{{court.is_libero_enabled}}">
-      <view class="settingblock_row">
+      <view class="teamblock_row">
         <view style="margin-left: 10px;">第二替换对象</view>
         <picker bindchange="bindLiberoReplacement2" value="{{court.libero_replacement[1]}}" range="{{court.all_players}}">
           <view> {{ court.libero_replacement2==-1 ? "请选择›" : court.all_players[court.libero_replacement2] + "›"}} </view>
@@ -92,36 +82,46 @@
       </view>
     </block>
 
-    <view class="settingblock_row">
+    <view class="teamblock_row">
       <radio-group class="radio-group" bindchange="onTapMode">
         <radio value="0" checked="{{court.front_back_mode}}" />前后排换位
         <radio value="1" checked="{{!court.front_back_mode}}" />正常换位
       </radio-group>
     </view>
 
-    <view class="settingblock_row">
+    <view class="teamblock_row">
       <radio-group class="radio-group" bindchange="onTapServe">
         <radio value="0" checked="{{court.serve}}" />我方发球
         <radio value="1" checked="{{!court.serve}}" />对方发球
       </radio-group>
     </view>
 
-    <view class="settingblock_row">布置场上位置：</view>
-    <view style="border: 1px solid grey;">
-      <view class="settingblock_row">
+    <view class="teamblock_row">
+      <view>布置场上位置：</view>
+      <view> <button size="mini" bindtap="onClickLoadMyTeam">导入球队</button></view>
+    </view>
+
+    <view style="border: 1px solid grey; margin-bottom: 5px;">
+      <view class="teamblock_row">
         <block wx:for="{{[3,2,1]}}" wx:for-item="pos" wx:key="*this">
           <view style="flex:1; display: flex; flex-direction: column; margin: 5px;">
             <view data-position='{{pos}}' bindtap="onClickPlayer">
-              {{(pos+1) + "号位:" + court.players[pos] + " ›"}}
+              <view> {{(pos+1) + "号位:"}} </view>
+              <view class="avartar_container">
+                <image class="avartar" src='{{court.players_map[court.players[pos]].user.userInfo.avatarUrl? court.players_map[court.players[pos]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                <text class="nickName">{{court.players[pos]}}</text>
+              </view>
             </view>
 
             <block wx:if="{{edit_pos==pos}}">
               <view style="border:1px dashed #336699;">
-                <input name="player" placeholder="新增球员" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
                 <view style="display: flex; flex-direction: column;">
                   <block wx:for="{{court.all_players}}" wx:for-item="player" wx:key="*this">
-                    <block wx:if="{{item!=court.players[pos]}}">
-                      <view bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'> {{player}} </view>
+                    <block wx:if="{{player!=court.players[pos]}}">
+                      <view class="avartar_container" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'>
+                        <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                        <text class="nickName">{{player}}</text>
+                      </view>
                     </block>
                   </block>
                 </view>
@@ -131,25 +131,31 @@
         </block>
       </view>
 
-      <view class="settingblock_row">
+      <view class="teamblock_row">
         <block wx:for="{{[4,5,0]}}" wx:for-item="pos" wx:key="*this">
           <view style="flex:1; display: flex; flex-direction: column;margin: 5px;">
             <view data-position='{{pos}}' bindtap="onClickPlayer">
-              {{(pos+1) + "号位:" + court.players[pos] + " ›"}}
-              <block wx:if='{{edit_pos!=pos && (pos==0||(court.front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
-                <checkbox-group style="margin-top: 5px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
-                  <checkbox checked='{{pos==court.who_serve}}' disabled='{{!court.serve}}'>发球</checkbox>
-                </checkbox-group>
-              </block>
+              <view> {{(pos+1) + "号位:"}} </view>
+              <view class="avartar_container">
+                <image class="avartar" src='{{court.players_map[court.players[pos]].user.userInfo.avatarUrl? court.players_map[court.players[pos]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                <text class="nickName">{{court.players[pos]}}</text>
+              </view>
             </view>
+            <block wx:if='{{edit_pos!=pos && (pos==0||(court.front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
+              <checkbox-group style="margin-top: 5px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
+                <checkbox checked='{{pos==court.who_serve}}' disabled='{{!court.serve}}'>发球</checkbox>
+              </checkbox-group>
+            </block>
 
             <block wx:if="{{edit_pos==pos}}">
               <view style="border:1px dashed #336699;">
-                <input name="player" placeholder="新增球员" bindconfirm="onAddPlayer" data-position='{{pos}}'> </input>
                 <view style="display: flex; flex-direction: column;">
                   <block wx:for="{{court.all_players}}" wx:for-item="player" wx:key="*this">
-                    <block wx:if="{{item!=court.players[pos]}}">
-                      <view bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'> {{player}} </view>
+                    <block wx:if="{{player!=court.players[pos]}}">
+                      <view class="avartar_container" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'>
+                        <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player.user].userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                        <text class="nickName">{{player}}</text>
+                      </view>
                     </block>
                   </block>
                 </view>
@@ -158,15 +164,15 @@
           </view>
         </block>
       </view>
-
     </view>
-    <view class="settingblock_row">
-      <button bindtap='rotate' style="flex:1; border:1px solid #336699;" class="color3">转位</button>
+
+    <view class="teamblock_row">
+      <button bindtap='rotate' style="width: 100%;">转位</button>
     </view>
 
   </view>
 
-  <view class="settingblock">
+  <view class="teamblock">
     <view style="margin-bottom: 10px; ">选择被统计的项目：</view>
     <checkbox-group bindchange="onCheckAllowedStatItem">
       <view style='display:flex; flex-direction:row;flex-wrap: wrap;'>
@@ -180,13 +186,16 @@
     </checkbox-group>
   </view>
 
-  <view class="settingblock">
+  <view class="teamblock">
     <view style="margin-bottom: 10px; ">选择被统计的球员：</view>
     <checkbox-group bindchange="onCheckAllowedPlayer">
       <view style='display:flex; flex-direction:row; flex-wrap: wrap;'>
         <block wx:for="{{ court.all_players }}" wx:key="*this">
           <view style='margin-right:10px; display:flex; flex-direction:row'>
-            <view> {{item}} </view>
+            <view class="avartar_container">
+              <image class="avartar" src='{{court.players_map[item].user.userInfo.avatarUrl? court.players_map[item].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+              <text class="nickName">{{item}}</text>
+            </view>
             <checkbox value="{{item}}" checked="{{utils.contains(court.player_allowed, item)}}" />
           </view>
         </block>

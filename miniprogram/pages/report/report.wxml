@@ -1,6 +1,8 @@
 <wxs module="utils" src="../../utils/util.wxs"></wxs>
 
-<view style="display: flex; flex-direction: column; margin: 5px">
+<view wx:if="{{court}}" style="display: flex; flex-direction: column; margin: 5px">
+<!-- <view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;border:0px solid;align-items:stretch;"> -->
+
   <!-- 得分信息 -->
   <view style="margin:1px 1px 8px 1px" class="block1">
     <view style="text-align: center;"> 比赛结果 </view>
@@ -13,25 +15,27 @@
 
   <!--按统计大类循环，每个大类是一个表格 -->
   <block wx:for='{{summary["标题"]}}' wx:for-index="category" wx:key='index'>
-    <view style="margin:1px 1px 8px 1px" class="block1">
+    <view style="margin:1px 1px 8px 1px; font-size: small; " class="block1">
       <!-- 表格名称 -->
-      <view style="text-align: center;"> {{category}} </view>
+      <view style="text-align: center; font-size: medium; padding: 5px;"> {{category}} </view>
       <!--标题行-->
-      <view style="display: flex; flex-direction: row;">
-        <view style="flex:1; margin: 2px;"> </view>
+      <view style="display: flex; flex-direction: row; align-items: center; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;">
+        <view style="flex:1;"> </view>
         <block wx:for='{{summary["标题"][category]}}' wx:for-index="stat_name" wx:key='index'>
-          <view style="flex:1; margin: 2px;"> {{ stat_name }} </view>
+          <view style="flex:1;"> {{ stat_name }} </view>
         </block>
       </view>
 
       <!--数据行-->
       <block wx:for="{{summary}}" wx:for-index="player" wx:key='index'>
         <block wx:if='{{player!="标题"}}'>
-          <view style='display: flex; flex-direction: row;'>
-            <!-- {{index%2?"#E8E8E8":"#FFFFFF"}} -->
-            <view style="flex:1; margin: 2px;"> {{player}} </view>
+          <view style='display: flex; flex-direction: row;  align-items: center; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;'>
+            <view style="flex:1;" class="avartar_container_vertical">
+              <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+              <text class="nickName" style='color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; '>{{player}}</text>
+            </view>
             <block wx:for='{{summary[player][category]}}' wx:for-item="count" wx:key='*this'>
-              <view style="flex:1; margin: 2px; "> {{count}} </view>
+              <view style="flex:1;"> {{count}} </view>
             </block>
           </view>
         </block>

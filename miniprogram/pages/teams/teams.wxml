@@ -1,0 +1,15 @@
+<view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column;">
+
+  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
+      <view> 我创建的队伍 </view>
+    </view>
+  </view>
+
+
+  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
+      <view> 我加入的队伍 </view>
+    </view>
+  </view>
+</view>

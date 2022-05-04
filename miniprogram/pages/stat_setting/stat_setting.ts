@@ -2,7 +2,7 @@
 
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
-import { PlayerRepo } from "../../bl/PlayerRepo";
+import { TeamRepo, VTeam } from "../../bl/TeamRepo";
 import { VolleyCourt } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
@@ -12,16 +12,23 @@ class SettingPageData {
   edit_pos: number = -1;
   court: VolleyCourt | null = null;
   globalData: GlobalData | null = null;
+  team: VTeam | null = null;
 }
 
 class SettingPage extends BasePage {
   data: SettingPageData = new SettingPageData();
   repo: VolleyRepository | null = null;
 
+
   onDataChanged = function (this: SettingPage, court: VolleyCourt, reason: Reason, status: Status) {
     console.log("[Setting] onCourtChange Begins, reason:", reason, "status:", status, "court id:", court._id, "court:", court)
     this.data.court = court;
     this.setData(this.data);
+
+    if (reason == Reason.Init && status == Status.Local) {
+      this.loadMyTeam(false);
+    }
+
     wx.hideLoading();
   }
 
@@ -38,7 +45,9 @@ class SettingPage extends BasePage {
       title: '加载中',
     })
 
-    this.repo = new VolleyRepository(this.onDataChanged, getApp().globalData.openid, options._id, getApp().globalData.placeInfo);
+    getApp().getOpenId((openid: string) => {
+      this.repo = new VolleyRepository(this.onDataChanged, openid, options._id, getApp().globalData.placeInfo);
+    })
 
     console.log("[onLoad] data:", this.data)
   }
@@ -68,9 +77,9 @@ class SettingPage extends BasePage {
 
   onChoosePlayer = function (this: SettingPage, e: any) {
     let players = this.data.court!.players;
-    let player = e.target.dataset.player;
-    let pos = e.target.dataset.position;
-    let newPlayer:boolean = true;
+    let player = e.currentTarget.dataset.player; //被选球员, VPlayer
+    let pos = e.currentTarget.dataset.position;  //被编辑的位置
+    let newPlayer: boolean = true;
 
     //如果是交换位置，譬如选择了一位已经在场上的队员
     for (let i in players) {
@@ -79,10 +88,10 @@ class SettingPage extends BasePage {
         newPlayer = false; //只是交换而已，不是添加新队员
       }
     }
-    
+
     //如果添加了新人到场上，默认是允许统计
-    if (newPlayer && this.data.court?.player_allowed.indexOf(player) == -1) {
-      this.data.court.player_allowed.push(player)
+    if (newPlayer && this.data.court!.player_allowed.indexOf(player) == -1) {
+      this.data.court!.player_allowed.push(player)
     }
 
     // console.log(newPlayer, this.data.court?.player_allowed, player)
@@ -134,68 +143,15 @@ class SettingPage extends BasePage {
   }
 
   onClickPlayer = function (this: SettingPage, e: any) {
-    let position = e.target.dataset.position;
+    let position = e.currentTarget.dataset.position;
+    console.log("click ", position)
     if (position == this.data.edit_pos) {
       this.data.edit_pos = -1
     } else {
       this.data.edit_pos = position;
     }
-
+    //加载
     this.setData(this.data);
-  }
-
-  onAddPlayer = function (this: SettingPage, e: any) {
-    let position = e.target.dataset.position;
-    let player = e.detail.value;
-    if (player != null) {
-      player = player.replace(/^\s*|\s*$/g, "");
-      if (player.length > 4) {
-        wx.showToast({
-          title: '名称不能超过4个字符或汉字!',
-          icon: 'none'
-        })
-      } else if (player.length == 0) {
-        wx.showToast({
-          title: '名称不能为空',
-          icon: 'none'
-        })
-      } else if (this.data.court!.all_players.indexOf(player) == -1) {
-        this.data.court!.all_players.push(player);
-        this.data.court!.players[position] = player;
-        this.data.court!.player_allowed.push(player);
-        this.data.edit_pos = -1
-        this.updateMatch();
-
-        let playerRepo = new PlayerRepo();
-        playerRepo.setPlayers(this.data.court!.all_players);
-        playerRepo.savePlayers();
-      } else {
-        wx.showToast({
-          title: '球员已存在',
-        })
-      }
-    }
-  }
-
-  onDeletePlayer = function (this: SettingPage, e: any) {
-    let position = e.target.dataset.position;
-    let player = this.data.court!.players[position];
-
-    this.data.edit_pos = -1
-
-    if (player != "??") {
-      this.data.court!.players[position] = "??"
-    }
-
-    let index_all = this.data.court!.all_players.indexOf(player)
-    if (index_all != -1) {
-      this.data.court!.all_players.splice(index_all, 1);
-      wx.showToast({
-        title: '成功删除',
-      })
-    }
-
-    this.updateMatch();
   }
 
   rotate = function (this: SettingPage) {
@@ -269,12 +225,7 @@ class SettingPage extends BasePage {
     let name = e.detail.value
 
     name = name.replace(/^\s*|\s*$/g, "");
-    if (name.length > 4) {
-      wx.showToast({
-        title: '名称不能超过4个字符或汉字!',
-        icon: 'none'
-      })
-    } else if (name.length > 0) {
+    if (name.length > 0) {
       if (dataset.obj === "myTeam") {
         this.data.court!.myTeam = name;
       } else {
@@ -284,10 +235,9 @@ class SettingPage extends BasePage {
     } else {
       wx.showToast({
         title: '名称不能为空！',
-        icon: 'none'
+        icon: "error"
       })
     }
-
   }
 
   bindTotalScoreChange = function (this: SettingPage, e: any) {
@@ -341,6 +291,77 @@ class SettingPage extends BasePage {
       })
     }
     this.repo!.updateMatch(this.data.court!)
+  }
+
+  onClickLoadMyTeam = function (this: SettingPage) {
+    this.loadMyTeam(true)
+  }
+
+  loadMyTeam = function (this: SettingPage, showError: boolean) {
+
+    wx.showLoading({
+      title: '正在加载',
+    });
+
+    getApp().getOpenId((openid: string) => {
+      let teamRepo = new TeamRepo();
+      teamRepo.fetchByOwner(openid, (errorCode: number, team: VTeam | null) => {
+        wx.hideLoading();
+        if (errorCode == 2) {
+          if (showError) {
+            wx.showToast({
+              icon: "error",
+              title: "加载失败！"
+            })
+          }
+        } else if (errorCode == 1) {
+          wx.showModal({
+            title: "没有球队",
+            content: "现在创建一个球队?",
+            success(res) {
+              if (res.confirm) {
+                wx.navigateTo({
+                  url: "../team/team"
+                })
+              } else if (res.cancel) {
+              }
+            }
+          })
+        } else if (team != null) {
+          this.data.court!.all_players = new Array();
+          for (let index = 0; index < team.players.length; index++) {
+            this.data.court!.all_players.push(team.players[index].name);
+            this.data.court!.players_map[team.players[index].name] = team.players[index];
+          }
+          this.data.court!.setter = -1;
+          this.data.court!.libero = -1;
+          this.data.court!.libero_replacement1 = -1;
+          this.data.court!.libero_replacement2 = -1;
+          this.data.court!.myTeam = team.name;
+          this.updateMatch();
+        } else {
+          if (showError) {
+            wx.showToast({
+              icon: "error",
+              title: "加载失败！"
+            })
+          }
+        }
+      })
+    });
+  }
+
+
+  onShow = function (this: SettingPage) {
+    // if (this.data.court && this.data.court._id) {
+    //   this.onLoadMyTeam();
+    // }  
+  }
+
+  onGotoMyTeam = function (this: SettingPage) {
+    wx.navigateTo({
+      url: "../team/team"
+    })
   }
 }
 

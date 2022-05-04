@@ -1,6 +1,5 @@
 import { PlaceInfo } from "../bl/PlaceInfo";
 import { parseTime } from "../utils/Util";
-import { PlayerRepo } from "./PlayerRepo";
 import { GameStatus, VolleyCourt } from "./VolleyCourt";
 
 export enum Reason {
@@ -140,8 +139,6 @@ export class VolleyRepository {
   }
 
   private watchLocalMatch(court: VolleyCourt) {
-    let playerRepo = new PlayerRepo();
-    court.all_players = playerRepo.getPlayers()
     wx.setStorageSync(this.cacheKey, court);
     this.callback(court, Reason.Init, Status.Local);
   }

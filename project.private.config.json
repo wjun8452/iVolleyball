@@ -37,7 +37,7 @@
           "scene": null
         },
         {
-          "name": "",
+          "name": "stat_from_share",
           "pathName": "pages/stat/stat",
           "query": "_id=d4107ab162519d15061c70c86dca72d0",
           "launchMode": "default",
@@ -45,7 +45,7 @@
         },
         {
           "name": "",
-          "pathName": "pages/users/users",
+          "pathName": "pages/team/team",
           "query": "",
           "launchMode": "default",
           "scene": null
@@ -68,6 +68,34 @@
           "name": "",
           "pathName": "pages/history/history",
           "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "team_invite",
+          "pathName": "pages/team/team",
+          "query": "teamId=16db756f6271f079010169b02abea461&action=invite",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/teams/teams",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/stat/stat",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/report/report",
+          "query": "_id=636050766252a40b05128af43bbd690c",
           "launchMode": "default",
           "scene": null
         }

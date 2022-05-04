@@ -1,5 +1,6 @@
 import { PlaceInfo } from "../bl/PlaceInfo";
 import { parseTime } from "../utils/Util";
+import { VPlayer } from "./TeamRepo";
 
 export enum StatCat {
   Serve = "发球",
@@ -70,6 +71,9 @@ export enum GameStatus {
   Ended = 0
 }
 
+
+type PlayerRecord = Record<string, VPlayer>; //队员姓名 --> 头像等信息
+
 export class VolleyCourt {
   /** 我方得分 */
   myScore: number = 0;
@@ -77,6 +81,7 @@ export class VolleyCourt {
   yourScore: number = 0;
   /** 所有队员，包括不在场上的 */
   all_players: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2", "自由人"];
+  players_map: PlayerRecord = { "接应" : new VPlayer("接应"), "二传" : new VPlayer("二传"), "副攻1": new VPlayer("副攻1"), "主攻1": new VPlayer("主攻1"), "主攻2": new VPlayer("主攻2"), "副攻2": new VPlayer("副攻2"), "自由人": new VPlayer("自由人")};
   /** 是否启用自由人 */
   is_libero_enabled: boolean = false;
   /** 自由人在all_players中的序号 */

@@ -13,14 +13,14 @@
 		<view style="flex:1;" class="player_row">
 			<block wx:for="{{[3,2,1]}}" wx:key="*this">
 				<view style="flex:1;" class="player">
-					<template is="volleyblock" data="{{players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
+					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
 				</view>
 			</block>
 		</view>
 		<view style="flex:1;" class="player_row">
 			<block wx:for="{{[4,5,0]}}" wx:key="*this">
 				<view style="flex:1;" class="player">
-					<template is="volleyblock" data="{{players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
+					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
 				</view>
 			</block>
 		</view>

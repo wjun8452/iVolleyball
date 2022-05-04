@@ -3,8 +3,6 @@ import { PlaceInfo } from "./PlaceInfo";
 export interface GlobalData {
   /** 当前用户openid */
   openid:string,
-  /** 当前用户的信息 */
-  userInfo: WechatMiniprogram.UserInfo | null,
   /** 程序数据缓存的key或者版本号 */
   cacheKey: string,
   /** 用户所在位置信息 */

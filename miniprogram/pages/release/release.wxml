@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v3.13.0 (2022/5/4) 支持邀请微信好友加入球队 </text>
+  </view>
+  
+  <view class="block1">
 		<text style="margin-left: 5px;">v3.12.1 (2022/4/17) bug fix </text>
 	</view>
 

@@ -1,9 +1,40 @@
 <view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column;">
 
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> 我创建的队伍 </view>
+  <view class='container' style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+    <view class='first_item' style="font-size: 20px; text-align: left; "> 我的信息 </view>
+    <view style="display: flex; flex-direction: row; justify-content: space-between;">
+      <view class="avartar_container" bindtap="getUserProfile">
+        <image class="avartar" src='{{hasUserInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+        <text class="nickName">{{user.userInfo.nickName}}</text>
+      </view>
+      <block wx:if="{{!hasUserInfo}}">
+        <view>
+          <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" size="mini"> 登录（获取头像昵称） </button>
+          <button wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini"> 登录（获取头像昵称） </button>
+        </view>
+      </block>
     </view>
+  </view>
+
+  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+      <view> 我创建的队伍 </view>
+      <view><button size="mini" bindtap="onClickCreateNewTeam">创建</button></view>
+    </view>
+
+    <block wx:for="{{myteams}}" wx:key="*this" wx:for-item="team" wx:for-index="index">
+      <view class='{{index==0 ? "first_item" : "normal_item"}}' style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+        <view class="avartar_container">
+          <image class="avartar" wx:if="{{team.owner.userInfo.avatarUrl}}" src="{{team.owner.userInfo.avatarUrl}}" mode="cover"></image>
+          <text class="nickName"> {{team.owner.userInfo.nickName}} </text>
+        </view>
+        <view bindtap="onClickEditTeam" data-teamid="{{team._id}}"> {{team.name}} </view>
+        <view bindtap="onClickEditTeam" data-teamid="{{team._id}}"> {{team.players.length }}个成员 </view>
+        <view>
+          <button size="mini" bindtap="onDeleteTeam" data-teamid='{{team._id}}'>删除</button>
+        </view>
+      </view>
+    </block>
   </view>
 
 
@@ -11,5 +42,16 @@
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
       <view> 我加入的队伍 </view>
     </view>
+
+    <block wx:for="{{jointTeams}}" wx:key="*this" wx:for-item="team" wx:for-index="index">
+      <view class='{{index==0 ? "first_item" : "normal_item"}}' style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+        <view class="avartar_container">
+          <image class="avartar" wx:if="{{team.owner.userInfo.avatarUrl}}" src="{{team.owner.userInfo.avatarUrl}}" mode="cover"></image>
+          <text class="nickName"> {{team.owner.userInfo.nickName}} </text>
+        </view>
+        <view bindtap="onClickEditTeam" data-teamid="{{team._id}}"> {{team.name}} </view>
+        <view bindtap="onClickEditTeam" data-teamid="{{team._id}}"> {{team.players.length }}个成员 </view>
+      </view>
+    </block>
   </view>
 </view>

@@ -12,7 +12,8 @@ class SettingPageData {
   edit_pos: number = -1;
   court: VolleyCourt | null = null;
   globalData: GlobalData | null = null;
-  team: VTeam | null = null;
+  myteams: VTeam[] = [];
+  pikerTeamIndex: number = -1;
 }
 
 class SettingPage extends BasePage {
@@ -25,7 +26,7 @@ class SettingPage extends BasePage {
     this.data.court = court;
     this.setData(this.data);
 
-    if (reason == Reason.Init && status == Status.Local) {
+    if (reason == Reason.Init) {
       this.loadMyTeam(false);
     }
 
@@ -40,16 +41,18 @@ class SettingPage extends BasePage {
     if (options._id) { //from url
       this.data._id = options._id
     }
+  }
 
+  onShow = function(this:SettingPage) {
     wx.showLoading({
       title: '加载中',
     })
 
     getApp().getOpenId((openid: string) => {
-      this.repo = new VolleyRepository(this.onDataChanged, openid, options._id, getApp().globalData.placeInfo);
+      this.repo = new VolleyRepository(this.onDataChanged, openid, this.data._id, getApp().globalData.placeInfo);
     })
 
-    console.log("[onLoad] data:", this.data)
+    console.log("[onShow] data:", this.data)
   }
 
 
@@ -293,10 +296,6 @@ class SettingPage extends BasePage {
     this.repo!.updateMatch(this.data.court!)
   }
 
-  onClickLoadMyTeam = function (this: SettingPage) {
-    this.loadMyTeam(true)
-  }
-
   loadMyTeam = function (this: SettingPage, showError: boolean) {
 
     wx.showLoading({
@@ -304,8 +303,9 @@ class SettingPage extends BasePage {
     });
 
     getApp().getOpenId((openid: string) => {
+      let that = this
       let teamRepo = new TeamRepo();
-      teamRepo.fetchByOwner(openid, (errorCode: number, team: VTeam | null) => {
+      teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam[] | null) => {
         wx.hideLoading();
         if (errorCode == 2) {
           if (showError) {
@@ -327,18 +327,10 @@ class SettingPage extends BasePage {
               }
             }
           })
-        } else if (team != null) {
-          this.data.court!.all_players = new Array();
-          for (let index = 0; index < team.players.length; index++) {
-            this.data.court!.all_players.push(team.players[index].name);
-            this.data.court!.players_map[team.players[index].name] = team.players[index];
-          }
-          this.data.court!.setter = -1;
-          this.data.court!.libero = -1;
-          this.data.court!.libero_replacement1 = -1;
-          this.data.court!.libero_replacement2 = -1;
-          this.data.court!.myTeam = team.name;
-          this.updateMatch();
+        } else if (teams != null) {
+          console.log("load teams:", teams)
+          that.data.myteams = teams;
+          that.setData({ myteams: teams })
         } else {
           if (showError) {
             wx.showToast({
@@ -351,16 +343,36 @@ class SettingPage extends BasePage {
     });
   }
 
+  onImportTeam = function (this: SettingPage, e: any) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    this.data.pikerTeamIndex = e.detail.value;
+    this.setData({pikerTeamIndex: this.data.pikerTeamIndex});
+    if (this.data.pikerTeamIndex < 0) return;
 
-  onShow = function (this: SettingPage) {
-    // if (this.data.court && this.data.court._id) {
-    //   this.onLoadMyTeam();
-    // }  
+    let index = this.data.pikerTeamIndex;
+    let team = this.data.myteams[index];
+    this.data.court!.all_players = new Array();
+    this.data.court!.players = ["", "", "", "", "", ""];
+    for (let index = 0; index < team.players.length; index++) {
+      this.data.court!.all_players.push(team.players[index].name);
+      this.data.court!.players_map[team.players[index].name] = team.players[index];
+      if (team.players[index].user.openid != "") {
+        this.data.court!.players_id.push(team.players[index].user.openid);
+      }
+    }
+    console.log(this.data.court!.players_map)
+    this.data.court!.setter = -1;
+    this.data.court!.libero = -1;
+    this.data.court!.libero_replacement1 = -1;
+    this.data.court!.libero_replacement2 = -1;
+    this.data.court!.myTeam = team.name;
+    this.data.court!.myteamId = team._id;
+    this.updateMatch();
   }
 
-  onGotoMyTeam = function (this: SettingPage) {
+  gotoTeams = function (this: SettingPage) {
     wx.navigateTo({
-      url: "../team/team"
+      url: "../teams/teams"
     })
   }
 }

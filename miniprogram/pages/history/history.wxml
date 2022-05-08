@@ -1,3 +1,5 @@
+<import src="matchblock.wxml" />
+
 <view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column;">
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
@@ -6,82 +8,20 @@
       <view> {{court ? "上次打开的比赛" : "您还未打开过比赛记录" }}</view>
     </view>
 
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;" bindtap='tapMatch' data-matchid="{{court._id}}" data-status="{{court.status}}">
-      <view class style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" bindtap="onTapMatch" data-matchid="{{court._id}}">
-        <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; width:60px; height: 35px;">
-          <view style="width:100%; height:20%; display:flex; flex-direction:row;">
-            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
-            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
+    <template is="matchblock" data="{{court: court}}" />
 
-          </view>
 
-          <view style="width:100%; height:80%;display:flex; flex-direction:row;">
-            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid; width:50%; height: 100%; color: Chocolate; background-color: white; text-align: center;">{{court.myScore}}</view>
-            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid; width:50%; height: 100%; color: #336699; background-color: white; text-align: center;">{{court.yourScore}}</view>
-          </view>
-        </view>
-
-        <view class='normal_item' style="font-size: 15px; width: 100%;">
-          <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
-          <view style="display: flex; flex-direction: row; align-items: center;">
-            <view> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
-            <block wx:if="{{court._id}}">
-              <image src="../../images/cloud.svg" class="status_icon"> </image>
-            </block>
-            <block wx:if="{{!court._id}}">
-              <image src="../../images/nocloud.svg" class="status_icon"> </image>
-            </block>
-          </view>
-          <view>地点：{{court.place}}</view>
-          <view>时间：{{court.create_time}}</view>
-        </view>
-      </view>
-    </view>
   </view>
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
 
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
       <view> {{matches3.length > 0 ? "好友分享的比赛" : "没有好友分享的比赛记录" }}</view>
-      <!-- <block wx:if="{{matches.length>0}}">
-    <view style=" display: flex; flex-direction: row; align-items: center;" bindtap="">
-      <view>查看全部</view>
-      <view style="color:orange">></view>
-    </view>
-  </block> -->
     </view>
 
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;" bindtap='tapMatch' data-matchid="{{item._id}}" data-status="{{item.status}}">
+    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
       <block wx:for="{{matches3}}" wx:key="create_time">
-        <view class style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" bindtap="onTapMatch" data-matchid="{{item._id}}">
-          <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; width:60px; height: 35px;">
-            <view style="width:100%; height:20%; display:flex; flex-direction:row;">
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
-
-            </view>
-
-            <view style="width:100%; height:80%;display:flex; flex-direction:row;">
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid; width:50%; height: 100%; color: Chocolate; background-color: white; text-align: center;">{{item.myScore}}</view>
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid; width:50%; height: 100%; color: #336699; background-color: white; text-align: center;">{{item.yourScore}}</view>
-            </view>
-          </view>
-
-          <view class='{{index==matches3.length-1 ? "last_item": "normal_item"}}' style="font-size: 15px; width: 100%;">
-            <view> 队伍：{{item.myTeam}} vs {{item.yourTeam}}</view>
-            <view style="display: flex; flex-direction: row; align-items: center;">
-              <view> 状态：{{item.status == 0 ? "已结束" : "进行中"}} </view>
-              <block wx:if="{{item._id}}">
-                <image src="../../images/cloud.svg" class="status_icon"> </image>
-              </block>
-              <block wx:if="{{!item._id}}">
-                <image src="../../images/nocloud.svg" class="status_icon"> </image>
-              </block>
-            </view>
-            <view>地点：{{item.place}}</view>
-            <view>时间：{{item.create_time}}</view>
-          </view>
-        </view>
+        <template is="matchblock" data="{{court: item}}" />
       </block>
     </view>
   </view>
@@ -89,46 +29,12 @@
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
 
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{matches.length > 0 ? "进行中的比赛" : "没有正在进行的比赛" }}</view>
-      <!-- <block wx:if="{{matches.length>0}}">
-        <view style=" display: flex; flex-direction: row; align-items: center;" bindtap="">
-          <view>查看全部</view>
-          <view style="color:orange">></view>
-        </view>
-      </block> -->
+      <view> {{matches.length > 0 ? "我创建的比赛" : "我还没有创建任何比赛" }}</view>
     </view>
 
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;" bindtap='tapMatch' data-matchid="{{item._id}}" data-status="{{item.status}}">
+    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
       <block wx:for="{{matches}}" wx:key="create_time">
-        <view class style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" bindtap="onTapMatch" data-matchid="{{item._id}}">
-          <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; width:60px; height: 35px;">
-            <view style="width:100%; height:20%; display:flex; flex-direction:row;">
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
-
-            </view>
-
-            <view style="width:100%; height:80%;display:flex; flex-direction:row;">
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid; width:50%; height: 100%; color: Chocolate; background-color: white; text-align: center;">{{item.myScore}}</view>
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid; width:50%; height: 100%; color: #336699; background-color: white; text-align: center;">{{item.yourScore}}</view>
-            </view>
-          </view>
-
-          <view class='{{index==matches.length-1 ? "last_item": "normal_item"}}' style="font-size: 15px; width: 100%;">
-            <view> 队伍：{{item.myTeam}} vs {{item.yourTeam}}</view>
-            <view style="display: flex; flex-direction: row; align-items: center;">
-              <view> 状态：{{item.status == 0 ? "已结束" : "进行中"}} </view>
-              <block wx:if="{{item._id}}">
-                <image src="../../images/cloud.svg" class="status_icon"> </image>
-              </block>
-              <block wx:if="{{!item._id}}">
-                <image src="../../images/nocloud.svg" class="status_icon"> </image>
-              </block>
-            </view>
-            <view>地点：{{item.place}}</view>
-            <view>时间：{{item.create_time}}</view>
-          </view>
-        </view>
+        <template is="matchblock" data="{{court: item, showDelete:true}}" />
       </block>
     </view>
   </view>
@@ -136,47 +42,12 @@
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
 
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{matches2.length > 0 ? "已结束的比赛" : "没有已完成的比赛记录" }}</view>
-      <!-- <block wx:if="{{matches.length>0}}">
-    <view style=" display: flex; flex-direction: row; align-items: center;" bindtap="">
-      <view>查看全部</view>
-      <view style="color:orange">></view>
-    </view>
-  </block> -->
+      <view> {{matches2.length > 0 ? "我参加的比赛" : "我还没有参加任何比赛" }}</view>
     </view>
 
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;" bindtap='tapMatch' data-matchid="{{item._id}}" data-status="{{item.status}}">
-      <block wx:for="{{matches2}}" wx:key="create_time">
-        <view class style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" bindtap="onTapMatch" data-matchid="{{item._id}}">
-          <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; width:60px; height: 35px;">
-            <view style="width:100%; height:20%; display:flex; flex-direction:row;">
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
+    <block wx:for="{{matches2}}" wx:key="create_time">
+      <template is="matchblock" data="{{court: item}}" />
+    </block>
 
-            </view>
-
-            <view style="width:100%; height:80%;display:flex; flex-direction:row;">
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid; width:50%; height: 100%; color: Chocolate; background-color: white; text-align: center;">{{item.myScore}}</view>
-              <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid; width:50%; height: 100%; color: #336699; background-color: white; text-align: center;">{{item.yourScore}}</view>
-            </view>
-          </view>
-
-          <view class='{{index==matches.length-1 ? "last_item": "normal_item"}}' style="font-size: 15px; width: 100%;">
-            <view> 队伍：{{item.myTeam}} vs {{item.yourTeam}}</view>
-            <view style="display: flex; flex-direction: row; align-items: center;">
-              <view> 状态：{{item.status == 0 ? "已结束" : "进行中"}} </view>
-              <block wx:if="{{item._id}}">
-                <image src="../../images/cloud.svg" class="status_icon"> </image>
-              </block>
-              <block wx:if="{{!item._id}}">
-                <image src="../../images/nocloud.svg" class="status_icon"> </image>
-              </block>
-            </view>
-            <view>地点：{{item.place}}</view>
-            <view>时间：{{item.create_time}}</view>
-          </view>
-        </view>
-      </block>
-    </view>
   </view>
 </view>

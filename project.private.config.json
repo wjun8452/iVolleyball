@@ -74,7 +74,7 @@
         {
           "name": "team_invite",
           "pathName": "pages/team/team",
-          "query": "teamId=16db756f6271f079010169b02abea461&action=invite",
+          "query": "teamId=16db756f6272809b0112acf4137fbc54&invite=true",
           "launchMode": "default",
           "scene": null
         },

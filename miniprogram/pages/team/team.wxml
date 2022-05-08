@@ -13,19 +13,13 @@
         </view>
       </block>
     </view>
-
-    <view wx:if="{{(!team) && (!loading)}}" class="teamblock_row">
-      <view>
-        <button size="mini" bindtap="onCreateTeam"> 创建球队 </button>
-      </view>
-    </view>
   </view>
 
   <view wx:if="{{team}}" class="teamblock">
     <view class="teamblock_row">
       <view> 球队名称: </view>
       <view wx:if="{{isMyTeam}}">
-        <input name="teamName" bindconfirm="onEditTeamName" placeholder="{{team.name}}"> </input>
+        <input name="teamName" bindconfirm="onEditTeamName" placeholder='{{team.name ? team.name : "输入球队名称"}}'> </input>
       </view>
       <view wx:else>
         {{team.name}}
@@ -73,7 +67,7 @@
       <view wx:if="{{isMyTeam}}" class="teamblock_row" style="margin-bottom: 5px;">
         <button open-type="share" size="default" style="width: 100%;"> 邀请好友加入 </button>
       </view>
-      <view class="teamblock_row">
+      <view wx:if="{{canJoin}}" class="teamblock_row">
         <button bindtap="onAddMySelf" size="default" style="width: 100%;"> 我加入 </button>
       </view>
     </view>

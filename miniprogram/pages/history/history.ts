@@ -17,10 +17,6 @@ class HistoryPage extends BasePage {
   data: HistoryPageData = new HistoryPageData();
   repo: VolleyRepository2 = new VolleyRepository2();
 
-  loginInfoCallback = function (this: HistoryPage, openid: string) {
-    this.fetchData(openid);
-  };
-
   onDataFetched: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
     console.log("courts:", courts)
     wx.hideLoading();
@@ -42,12 +38,9 @@ class HistoryPage extends BasePage {
   }
 
   onShow = function (this:HistoryPage) {
-    let openid = getApp().globalData.openid;
-    if (openid === '') {
-      getApp().loginInfoCallback = this.loginInfoCallback;
-    } else {
+    getApp().getOpenId((openid: string) => {
       this.fetchData(openid);
-    }
+    });
 
     this.data.court = this.repo.loadFromLocal();
 
@@ -62,8 +55,8 @@ class HistoryPage extends BasePage {
     wx.showLoading({
       title: '正在加载...',
     })
-    this.repo.fetchMatches(openid, 5, GameStatus.OnGoing, this.onDataFetched)
-    this.repo.fetchMatches(openid, 5, GameStatus.Ended, this.onDataFetched2)
+    this.repo.fetchMatches(openid, 8,  this.onDataFetched)
+    this.repo.fetchJointMatches(openid, 8,  this.onDataFetched2)
   }
 
   newMatch = function () {
@@ -73,7 +66,7 @@ class HistoryPage extends BasePage {
     );
   }
 
-  onTapMatch = function (e: any) {
+  onTapMatch = function (this: HistoryPage, e: any) {
     let _id: string = e.currentTarget.dataset.matchid;
     if (_id) {
       wx.navigateTo({
@@ -88,6 +81,21 @@ class HistoryPage extends BasePage {
 
   stopPageScroll = function () {
 
+  }
+
+  onDeleteMatch = function(this: HistoryPage,  e:any) {
+    let that = this
+    let _id:string = e.currentTarget.dataset.matchid;
+    if (_id) {
+      this.repo.deleteMatch(_id, (errorCode:number) => {
+        if (errorCode == 0) {
+          wx.showToast({icon: "success", title: "删除成功"})
+          that.fetchData(getApp().globalData.openid);
+        } else {
+          wx.showToast({icon: "error", title: "删除失败"})
+        }
+      })
+    }
   }
 }
 

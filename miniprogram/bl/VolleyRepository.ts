@@ -56,22 +56,22 @@ export class VolleyRepository {
     //如果指定了比赛的ID，则直接打开这个比赛，不管它是否在本地缓存内
     if (this.matchID) {
       this.watchOnlineMatch(false, false);
-    } 
+    }
     //否则会从本地缓存中加载上次存储的比赛
     else {
       let court = this.loadFromLocal();
       //如果本地缓存的是自己的进行中的比赛，则打开它
       if (court._openid === this.userID && court.status == GameStatus.OnGoing) {
-        if (court._id ) {
+        if (court._id) {
           this.matchID = court._id;
           this.watchOnlineMatch(false, false);
-        } 
+        }
         else {
           this.watchLocalMatch(court);
         }
-      }  else {
+      } else {
         this.watchLocalMatch(this.newLocalCourt());
-      } 
+      }
     }
   }
 
@@ -98,7 +98,7 @@ export class VolleyRepository {
               let t: Date = <Date><unknown>(data.create_time)
               court.create_time = parseTime(t);
             }
-            
+
             if (data.update_time) {
               if (data.update_time instanceof Date) {
                 let t2: Date = <Date><unknown>(data.update_time)
@@ -307,6 +307,68 @@ export interface onMatchesFeched {
 
 
 export class VolleyRepository2 {
+  fetchJointMatches(openid: string, maxcount: number, callback: onMatchesFeched) {
+    let matches: VolleyCourt[] = [];
+    const db = wx.cloud.database({
+      env: this.env
+    })
+
+    db.collection('vmatch').where({
+      "players_id": openid
+    }).field({
+      _id: true,
+      myScore: true,
+      yourScore: true,
+      create_time: true,
+      update_time: true,
+      myTeam: true,
+      yourTeam: true,
+      place: true,
+      _openid: true,
+      status: true,
+    }).orderBy('create_time', 'desc')
+      .limit(maxcount)
+      .get({
+        success(res) {
+          console.log("[db.vmatch.get] res:", res)
+          for (let i in res.data) {
+            let t: Date = <Date><unknown>(res.data[i].create_time)
+            res.data[i].create_time = parseTime(t);
+
+            if (res.data[i].update_time) {
+              if (res.data[i].update_time instanceof Date) {
+                let t2: Date = <Date><unknown>(res.data[i].update_time)
+                res.data[i].update_time = parseTime(t2);
+              }
+            } else {
+              res.data[i].update_time = res.data[i].create_time;
+            }
+            matches.push(res.data[i])
+          }
+          callback(matches)
+        },
+        fail(res) {
+          console.log(res)
+          callback(matches);
+        }
+      })
+  }
+
+
+  deleteMatch(_id: string, callback: (errorCode: number) => void) {
+    const db = wx.cloud.database({
+      env: this.env
+    })
+
+    db.collection('vmatch').doc(_id).remove({
+      success(res) {
+        callback(0);
+      },
+      fail(res) {
+        callback(1);
+      }
+    });
+  }
   private env: string = 'ilovevolleyball-d1813b'; //,test-705bde
   private cacheKey: string = "stats17";
 
@@ -315,15 +377,14 @@ export class VolleyRepository2 {
     return saved;
   }
 
-  fetchMatches(openid: string, maxcount: number, status: GameStatus, callback: onMatchesFeched) {
+  fetchMatches(openid: string, maxcount: number, callback: onMatchesFeched) {
     let matches: VolleyCourt[] = [];
     const db = wx.cloud.database({
       env: this.env
     })
 
     db.collection('vmatch').where({
-      _openid: openid,
-      status: status,
+      _openid: openid
     }).field({
       _id: true,
       myScore: true,
@@ -367,7 +428,7 @@ export class VolleyRepository2 {
 
 export class FriendsCourtRepo {
   private cacheKey: string = "fromFriends";
-  private courts : VolleyCourt[] = [];
+  private courts: VolleyCourt[] = [];
 
   constructor() {
     this.loadFriendsMatch();
@@ -385,15 +446,15 @@ export class FriendsCourtRepo {
 
   saveCourt(court: VolleyCourt) {
     for (let index in this.courts) {
-        if (court._id == this.courts[index]._id) {
-          return;
-        }
+      if (court._id == this.courts[index]._id) {
+        return;
+      }
     }
     this.courts.push(court)
     wx.setStorageSync(this.cacheKey, this.courts);
   }
 
-  getCourts() : VolleyCourt[] {
+  getCourts(): VolleyCourt[] {
     return this.courts;
   }
 

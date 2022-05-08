@@ -1,5 +1,5 @@
 export class VUser {
-  openid: String; //用户的微信openid
+  openid: string; //用户的微信openid
   userInfo: WechatMiniprogram.UserInfo; //用户的微信用户信息
 
   constructor() {
@@ -48,11 +48,47 @@ export class VTeam {
 
 
 export class TeamRepo {
-  fetchJointTeams(openid: string, arg1: (errorCode: number, teams: any[]) => void) {
-    throw new Error("Method not implemented.");
+  watcher: any = null;
+
+  deleteTeamByOwner(teamId: any, callback: (errorCode: number) => void) {
+    const db = wx.cloud.database({
+      env: this.env
+    })
+    db.collection('vteam').doc(teamId).remove({
+      success(res) {
+        callback(0);
+      },
+      fail(res) {
+        callback(1);
+      }
+    });
   }
 
-  private createTmpTeam(team:VTeam) : VTeam {
+  fetchJointTeams(openid: string, callback: (errorCode: number, teams: any[]) => void) {
+    const db = wx.cloud.database({
+      env: this.env
+    })
+
+    db.collection('vteam').where({
+      "players.user.openid": openid
+    }).get({
+      success(res) {
+        console.log("[db.vteam.fetchJointTeams] res:", res)
+        if (res.data.length == 0) {
+          callback(1, null);
+        } else {
+          let teams: VTeam[] = res.data;
+          callback(0, teams)
+        }
+      },
+      fail(res) {
+        console.log(res)
+        callback(2, null);
+      }
+    })
+  }
+
+  private createTmpTeam(team: VTeam): VTeam {
     let tempData: any = {};
     Object.assign(tempData, team);
     delete tempData._openid;
@@ -61,7 +97,7 @@ export class TeamRepo {
     return tempData;
   }
 
-  updateTeam(team:VTeam, callback: (success: boolean) => void) {
+  updateTeam(team: VTeam, callback: (success: boolean) => void) {
     const db = wx.cloud.database({
       env: this.env
     })
@@ -109,20 +145,16 @@ export class TeamRepo {
     })
   }
 
-  createTeam(team: VTeam, callback: (team: VTeam | null) => void) {
+  createTeam(teamOwner: VUser, callback: (teamId: string | null) => void) {
     const db = wx.cloud.database({
       env: this.env
     })
 
-    delete team._id;
-    delete team._openid;
-
     db.collection('vteam').add({
-      data: team,
+      data: { owner: teamOwner, name: "我的队伍", players: [] },
       success: function (res) {
-        console.log("[db.vteam.create]", res)
-        team._id = res._id
-        callback(team)
+        console.log("[db.vteam.create]", teamOwner, res)
+        callback(res._id);
       },
       fail: function (res) {
         console.error("[db.vteam.create]", res);
@@ -142,7 +174,7 @@ export class TeamRepo {
       _id: teamId
     }).get({
       success(res) {
-        console.log("[db.vteam.get] res:", res)
+        console.log("[db.vteam.loadTeamByID] res:", res)
         let team: VTeam = res.data[0];
         callback(team)
       },
@@ -153,7 +185,7 @@ export class TeamRepo {
     })
   }
 
-  fetchByOwner(ownerId:string, callback: (errorCode:number, team: VTeam | null) => void) {
+  fetchByOwner(ownerId: string, callback: (errorCode: number, teams: VTeam[] | null) => void) {
     const db = wx.cloud.database({
       env: this.env
     })
@@ -162,12 +194,12 @@ export class TeamRepo {
       _openid: ownerId
     }).get({
       success(res) {
-        console.log("[db.vteam.get] res:", res)
+        console.log("[db.vteam.fetchByOwner] res:", res)
         if (res.data.length == 0) {
           callback(1, null);
         } else {
-          let team: VTeam = res.data[0];
-          callback(0, team)
+          let teams: VTeam[] = res.data;
+          callback(0, teams)
         }
       },
       fail(res) {
@@ -177,17 +209,35 @@ export class TeamRepo {
     })
   }
 
-  loadOrCreateTeamByOwner(ownerId: string, callback: (team: VTeam | null) => void) {
-    this.fetchByOwner(ownerId, (errorCode:number, team: VTeam | null) => {
-      if (team == null) {
-        let newUser = new VUser();
-        newUser.openid = ownerId;
-        this.createTeam(new VTeam(newUser), (team: VTeam | null) => {
+  watchTeam(teamId: string, callback: (team: VTeam | null) => void) {
+    const db = wx.cloud.database({
+      env: this.env
+    })
+
+    console.log("[team] watcher created.")
+    this.watcher = db.collection('vteam').where({
+      _id: teamId
+    }).watch({
+      onChange: function (snapshot) {
+        console.log('[db.vteam.onChange]', teamId, snapshot.type, snapshot)
+        let data = snapshot.docs[0]
+        if (data) {
+          let team: VTeam = new VTeam();
+          Object.assign(team, data);
           callback(team);
-        })
-      } else {
-        callback(team);
+        }
+      },
+      onError: function (err) {
+        console.error(err)
       }
-    });
+    })
   }
+
+    /** 释放资源 */
+    close() {
+      if (this.watcher) {
+        this.watcher.close();
+        console.log("[team] watcher closed.")
+      }
+    }
 }

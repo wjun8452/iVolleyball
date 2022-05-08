@@ -17,7 +17,7 @@
 			<view class="navigator_text">历史记录 </view>
 		</navigator>
 
-		<navigator class="navigator_container" url="../team/team"> 
+		<navigator class="navigator_container" url="../teams/teams"> 
 			<image class="navigator_image" src="../../images/team.svg"></image>
 			<view class="navigator_text">球队管理 </view>
 		</navigator>

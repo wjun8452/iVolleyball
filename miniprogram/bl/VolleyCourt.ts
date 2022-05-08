@@ -81,6 +81,9 @@ export class VolleyCourt {
   yourScore: number = 0;
   /** 所有队员，包括不在场上的 */
   all_players: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2", "自由人"];
+  /** 用于快速索引的成员id */
+  players_id: string[] = [];
+  /** 名字关联的成员详细信息 */
   players_map: PlayerRecord = { "接应" : new VPlayer("接应"), "二传" : new VPlayer("二传"), "副攻1": new VPlayer("副攻1"), "主攻1": new VPlayer("主攻1"), "主攻2": new VPlayer("主攻2"), "副攻2": new VPlayer("副攻2"), "自由人": new VPlayer("自由人")};
   /** 是否启用自由人 */
   is_libero_enabled: boolean = false;
@@ -135,6 +138,9 @@ export class VolleyCourt {
   /** 比赛发生的地点名称 */
   place: string = "";
   update_time: string = "";
+  /** 比赛双方球队的id */
+  myteamId:string = ""; //我方的teamId
+  yourteamId:string = ""; //对方的teamId
 
   constructor(userID: string, placeInfo?: PlaceInfo) {
     this._openid = userID

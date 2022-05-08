@@ -1,7 +1,7 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
-		<text style="margin-left: 5px;">v3.13.0 (2022/5/4) 支持邀请微信好友加入球队 </text>
+		<text style="margin-left: 5px;">v3.13.0 (2022/5/4) 支持邀请微信好友加入球队，优化了球队管理功能 </text>
   </view>
   
   <view class="block1">

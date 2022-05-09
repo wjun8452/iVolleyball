@@ -24,6 +24,12 @@
     </view>
 
     <view class="teamblock_row">
+      <view class="teamblock_title"> 比赛地点 </view>
+      <view class="teamblock_value"> {{court.place}} </view>
+      <button size="mini" bindtap="onChooseLocation">选择地点</button>
+    </view>
+    
+    <view class="teamblock_row">
       <view class="teamblock_title"> 比分 </view>
       <view class="teamblock_value"> {{court.myScore}} : {{court.yourScore}}</view>
       <view><button size="mini" bindtap="onReset">重置分数</button></view>

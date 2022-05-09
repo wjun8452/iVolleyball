@@ -375,6 +375,23 @@ class SettingPage extends BasePage {
       url: "../teams/teams"
     })
   }
+
+  onChooseLocation = function(this:SettingPage) {
+    let that = this
+    wx.chooseLocation({
+      success: function(res) {
+        that.data.court!.place = res.name;
+        that.data.court!.latlon.latitude = res.latitude;
+        that.data.court!.latlon.longitude = res.longitude;
+        that.data.court!.address = res.address;
+        that.updateMatch()
+        console.log(res);
+      },
+      fail: function(res) {
+        console.log(res);
+      }
+    });
+  }
 }
 
 

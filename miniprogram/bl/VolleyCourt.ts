@@ -133,10 +133,11 @@ export class VolleyCourt {
   create_time: string = "";
   /** 比赛发生的城市 */
   city: string = "";
-  /** 比赛发生的经纬度 */
+  /** 比赛发生的经纬度和地址等 */
   latlon: any = { latitude: 0, longitude: 0 };
-  /** 比赛发生的地点名称 */
   place: string = "";
+  address: string = "";
+  
   update_time: string = "";
   /** 比赛双方球队的id */
   myteamId:string = ""; //我方的teamId

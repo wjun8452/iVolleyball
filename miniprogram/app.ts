@@ -1,5 +1,3 @@
-const qqMap = require('./utils/qqmap-wx-jssdk1.0/qqmap-wx-jssdk.js')
-
 import { LoginInfo } from './bl/LoginInfo'
 import { GlobalData } from './bl/GlobalData'
 

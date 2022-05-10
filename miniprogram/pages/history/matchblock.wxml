@@ -1,7 +1,7 @@
 <template name="matchblock">
 
-  <view style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" bindtap="onTapMatch" data-matchid="{{court._id}}">
-    <view style="display: flex; flex-direction: column; align-items: center;">
+  <view style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" >
+    <view style="display: flex; flex-direction: column; align-items: center;" bindtap="onTapMatch" data-matchid="{{court._id}}">
       <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; min-width:60px; height: 35px;">
         <view style="width:100%; height:20%; display:flex; flex-direction:row;">
           <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
@@ -25,14 +25,14 @@
       </view>
     </view>
 
-    <view class='normal_item' style="font-size: 15px; width: 100%;">
+    <view class='normal_item' style="font-size: 15px; width: 100%;" bindtap="onTapMatch" data-matchid="{{court._id}}">
       <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
       <view>地点：{{court.place}}</view>
       <view>时间：{{court.create_time}}</view>
     </view>
 
     <view wx:if="{{showDelete}}">
-      <button size="mini" bindtap="onDeleteMatch" data-matchid="{{item._id}}">删除</button>
+      <button size="mini" bindtap="onDeleteMatch" data-matchid="{{court._id}}">删除</button>
     </view>
   </view>
 

@@ -56,7 +56,7 @@ class SettingPage extends BasePage {
   }
 
 
-  onUnload = function (this: SettingPage) {
+  onHide = function(this:SettingPage) {
     if (this.repo) {
       this.repo.close();
     }

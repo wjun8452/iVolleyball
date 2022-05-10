@@ -118,6 +118,12 @@ class ScoreBoardPage extends BasePage {
     }
   }
 
+  onHide = function(this:ScoreBoardPage) {
+    if (this.repo) {
+      this.repo.close();
+    }
+  }
+
   /**
    * 生命周期函数--监听页面卸载
    */
@@ -132,6 +138,7 @@ class ScoreBoardPage extends BasePage {
    * @param 
    */
   onReset = function (this: ScoreBoardPage) {
+    console.log("onReset")
     if (!this.data.isOwner || this.data.court!.status == 0) {
       wx.showToast({
         title: '无法操作',

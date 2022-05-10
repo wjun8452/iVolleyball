@@ -15,6 +15,7 @@ class UsersPageData {
 class UsersPage extends BasePage {
   data: UsersPageData = new UsersPageData();
   optionTeamId: string | null = null;
+  teamRepo = new TeamRepo();
 
   onLoad = function (this: UsersPage, options: any) {
     wx.setNavigationBarTitle({
@@ -40,6 +41,12 @@ class UsersPage extends BasePage {
     }
   }
 
+  onUnload = function(this:UsersPage) {
+    if (this.teamRepo) {
+      this.teamRepo.close();
+    }
+  }
+
   updateIsMyTeam = function (this: UsersPage) {
     if (this.data.team) {
       this.data.isMyTeam = (this.data.user.openid == this.data.team.owner.openid);
@@ -54,7 +61,7 @@ class UsersPage extends BasePage {
     wx.showLoading({
       title: "正在加载"
     })
-    new TeamRepo().watchTeam(teamId, (team: VTeam | null) => {
+    this.teamRepo.watchTeam(teamId, (team: VTeam | null) => {
       this.data.loading = false;
       this.setData({ loading: false })
       wx.hideLoading();

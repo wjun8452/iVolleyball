@@ -35,6 +35,10 @@ class HistoryPage extends BasePage {
    * 生命周期函数--监听页面加载
    */
   onLoad = function (this: HistoryPage) {
+    let a:string = "abc"
+    let d:Date = new Date();
+    console.log(typeof (d));
+    console.log(typeof(new String("ab")));
   }
 
   onShow = function (this:HistoryPage) {
@@ -84,6 +88,7 @@ class HistoryPage extends BasePage {
   }
 
   onDeleteMatch = function(this: HistoryPage,  e:any) {
+    console.log("delet match" , e )
     let that = this
     let _id:string = e.currentTarget.dataset.matchid;
     if (_id) {

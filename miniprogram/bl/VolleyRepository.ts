@@ -94,9 +94,14 @@ export class VolleyRepository {
             let court: VolleyCourt = new VolleyCourt(that.userID);
             Object.assign(court, data);
 
-            if (data.create_time instanceof Date) {
-              let t: Date = <Date><unknown>(data.create_time)
+            let t = data.create_time
+            if (typeof(t) === "string") {
+              court.create_time = t;
+            }
+            else if (typeof(t) === "object" && t instanceof Date) {
               court.create_time = parseTime(t);
+            } else {
+              court.create_time = ""
             }
 
             if (data.update_time) {
@@ -246,6 +251,7 @@ export class VolleyRepository {
   close() {
     if (this.watcher) {
       this.watcher.close();
+      this.watcher = null;
       console.log("[Repository] watcher closed.")
     }
   }
@@ -330,10 +336,18 @@ export class VolleyRepository2 {
       .limit(maxcount)
       .get({
         success(res) {
-          console.log("[db.vmatch.get] res:", res)
+          console.log("[db.vmatch.get] players_id: ", openid, "res:", res)
           for (let i in res.data) {
             let t: Date = <Date><unknown>(res.data[i].create_time)
-            res.data[i].create_time = parseTime(t);
+
+            if (typeof(t) === "string") {
+              res.data[i].create_time = t;
+            }
+            else if (typeof(t) === "object" && t instanceof Date) {
+              res.data[i].create_time = parseTime(t);
+            } else {
+              res.data[i].create_time = ""
+            }
 
             if (res.data[i].update_time) {
               if (res.data[i].update_time instanceof Date) {
@@ -400,11 +414,18 @@ export class VolleyRepository2 {
       .limit(maxcount)
       .get({
         success(res) {
-          console.log("[db.vmatch.get] res:", res)
+          console.log("[db.vmatch.get] openid", openid, "res:", res)
           for (let i in res.data) {
             let t: Date = <Date><unknown>(res.data[i].create_time)
-            res.data[i].create_time = parseTime(t);
-
+            if (typeof(t) === "string") {
+              res.data[i].create_time = t;
+            }
+            else if (typeof(t) === "object" && t instanceof Date) {
+              res.data[i].create_time = parseTime(t);
+            } else {
+              res.data[i].create_time = ""
+            }
+            
             if (res.data[i].update_time) {
               if (res.data[i].update_time instanceof Date) {
                 let t2: Date = <Date><unknown>(res.data[i].update_time)

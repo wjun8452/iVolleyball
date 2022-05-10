@@ -237,6 +237,7 @@ export class TeamRepo {
     close() {
       if (this.watcher) {
         this.watcher.close();
+        this.watcher = null;
         console.log("[team] watcher closed.")
       }
     }

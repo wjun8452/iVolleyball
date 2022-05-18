@@ -128,6 +128,8 @@ export class VolleyRepository {
             } else {
               that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud)
             }
+          } else {
+            console.error("snapshot is empty, matchid:", that.matchID)
           }
         },
         onError: function (err) {

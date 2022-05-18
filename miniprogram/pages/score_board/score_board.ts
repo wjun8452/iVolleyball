@@ -33,12 +33,6 @@ class ScoreBoardPage extends BasePage {
   data: ScoreBoardPageData = new ScoreBoardPageData();
   repo: VolleyRepository | null = null;
 
-  loginInfoCallback = function (this: ScoreBoardPage, openid: string) {
-    //注意要再次获取新的对象
-    this.data.globalData = getApp().globalData;
-    this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo)
-  };
-
   option_matchID: string | null = null;
 
   constructor() {
@@ -91,10 +85,6 @@ class ScoreBoardPage extends BasePage {
       title: '大记分牌'
     })
 
-    wx.showLoading({
-      title: "正在加载"
-    })
-
     if (options && options._id) {
       this.option_matchID = options._id;
     }
@@ -110,12 +100,13 @@ class ScoreBoardPage extends BasePage {
   }
 
   onShow = function (this:ScoreBoardPage ) {
-    let openid = getApp().globalData.openid;
-    if (openid === '') {
-      getApp().loginInfoCallback = this.loginInfoCallback;
-    } else {
-      this.loginInfoCallback(openid)
-    }
+    wx.showLoading({
+      title: "正在加载"
+    })
+    getApp().getOpenId((openid: string) => {
+      this.data.globalData = getApp().globalData;
+      this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo)
+    })
   }
 
   onHide = function(this:ScoreBoardPage) {

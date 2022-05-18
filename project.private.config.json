@@ -18,7 +18,7 @@
         {
           "name": "pages/score_board/score_board",
           "pathName": "pages/score_board/score_board",
-          "query": "",
+          "query": "_id=1",
           "launchMode": "default",
           "scene": null
         },

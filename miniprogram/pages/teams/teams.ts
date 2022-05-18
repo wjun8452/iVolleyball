@@ -1,4 +1,4 @@
-import { TeamRepo, VUser } from "../../bl/TeamRepo";
+import { TeamRepo, VTeam, VUser } from "../../bl/TeamRepo";
 
 // pages/teams/teams.ts
 Page({
@@ -7,7 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    myteams: null,
+    myteams: [],
     jointTeams: [],
     user: new VUser(),
     hasUserInfo: false,
@@ -18,6 +18,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
+    wx.setNavigationBarTitle({
+      title: '球队管理',
+    })
+
     const newLocal = wx.getUserProfile;
     if (newLocal) {
       this.setData({
@@ -33,7 +37,7 @@ Page({
     }
 
     let teamRepo = new TeamRepo();
-    if (this.data.myteams && this.data.myteams.length >= 5) {
+    if (this.data.myteams && this.data.myteams!.length >= 5) {
       wx.showToast({ icon: "error", title: "最多5只队伍" });
     } else {
       wx.showLoading({ title: "正在加载" });
@@ -96,7 +100,7 @@ Page({
       wx.hideLoading();
       if (errorCode == 0) {
         console.log(that.data.user.openid)
-        new TeamRepo().fetchByOwner(that.data.user.openid, (errorCode: number, teams: VTeam | null) => {
+        new TeamRepo().fetchByOwner(that.data.user.openid, (errorCode: number, teams: VTeam[] | null) => {
           that.data.myteams = teams;
           that.setData({ myteams: teams })
         });
@@ -135,7 +139,7 @@ Page({
 
       let teamRepo = new TeamRepo();
 
-      teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam | null) => {
+      teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam[] | null) => {
         this.data.myteams = teams;
         this.setData({ myteams: teams })
       });

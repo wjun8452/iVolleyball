@@ -103,9 +103,24 @@ class ScoreBoardPage extends BasePage {
     wx.showLoading({
       title: "正在加载"
     })
-    getApp().getOpenId((openid: string) => {
-      this.data.globalData = getApp().globalData;
-      this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo)
+    getApp().getOpenId((openid: string, success: boolean) => {
+      if (success) {
+        this.data.globalData = getApp().globalData;
+        this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo)
+      } else {
+        wx.hideLoading()
+        wx.reportEvent && wx.reportEvent("wxdata_perf_monitor", {
+          "wxdata_perf_monitor_id": "getOpenId",
+          "wxdata_perf_monitor_level": 1,
+          "wxdata_perf_error_code": 1,
+          "wxdata_perf_error_msg": "登录失败",
+          "wxdata_perf_cost_time": 0,
+        })
+        wx.showToast({
+          title: "登陆失败",
+          icon: "error",
+        })
+      }
     })
   }
 

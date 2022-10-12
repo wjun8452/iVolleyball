@@ -16,9 +16,9 @@ let globalData: GlobalData = {
 App({
   globalData: globalData,
 
-  getOpenId: function (callback: (openid: string) => void) {
+  getOpenId: function (callback: (openid: string, success: boolean) => void) {
     if (globalData.openid) {
-      callback(globalData.openid)
+      callback(globalData.openid, true)
     }
     else {
       wx.cloud.callFunction({
@@ -28,11 +28,14 @@ App({
           //console.log(res)
           if (res.result) {
             globalData.openid = (res.result as LoginInfo).openid;
-            callback(globalData.openid)
+            callback(globalData.openid, true)
             console.log('[wx.cloud.login] openid:', globalData.openid)
+          } else {
+            callback("", false)
           }
         },
         fail: err => {
+          callback("", false)
           console.error('[wx.cloud.login] failed!', err)
         }
       })

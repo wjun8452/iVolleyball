@@ -38,7 +38,7 @@ class HistoryPage extends BasePage {
   }
 
   onShow = function (this:HistoryPage) {
-    getApp().getOpenId((openid: string) => {
+    getApp().getOpenId((openid: string, success:boolean) => {
       this.fetchData(openid);
     });
 

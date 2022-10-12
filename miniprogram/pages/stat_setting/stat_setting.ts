@@ -48,7 +48,7 @@ class SettingPage extends BasePage {
       title: '加载中',
     })
 
-    getApp().getOpenId((openid: string) => {
+    getApp().getOpenId((openid: string, success:boolean) => {
       this.repo = new VolleyRepository(this.onDataChanged, openid, this.data._id, getApp().globalData.placeInfo);
     })
 
@@ -302,7 +302,7 @@ class SettingPage extends BasePage {
       title: '正在加载',
     });
 
-    getApp().getOpenId((openid: string) => {
+    getApp().getOpenId((openid: string, success:boolean) => {
       let that = this
       let teamRepo = new TeamRepo();
       teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam[] | null) => {

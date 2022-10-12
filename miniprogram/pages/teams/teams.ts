@@ -132,7 +132,7 @@ Page({
       title: "正在加载"
     })
 
-    getApp().getOpenId((openid: string) => {
+    getApp().getOpenId((openid: string, success:boolean) => {
       this.data.user.openid = openid;
 
       this.loadUserInfo();

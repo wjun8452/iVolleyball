@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v3.13.3 (2022/10/12) 增加事件埋点，监控无法进入计分页面发生的次数 </text>
+  </view>
+
+  <view class="block1">
 		<text style="margin-left: 5px;">v3.13.2 (2022/5/18) 修复偶尔无法打开大记分牌页面，一直显示正在加载的问题</text>
   </view>
   

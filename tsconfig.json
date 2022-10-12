@@ -18,7 +18,7 @@
     "strictPropertyInitialization": true,
     "lib": ["ES2020"],
     "typeRoots": [
-      "./typings"
+      "./node_modules/miniprogram-api-typings"
     ]
   },
   "include": [

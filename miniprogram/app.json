@@ -23,5 +23,8 @@
     "scope.userLocation": {
       "desc": "你的位置信息将用于显示比赛场地"
     }
-  }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ]
 }

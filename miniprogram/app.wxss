@@ -59,16 +59,6 @@
   padding: 5px;
 }
 
-.normal_item {
-  border: 1px solid #E5E5E5;
-  border-top-style: none;
-  border-right-style: none;
-  border-bottom-style: 1px solid grey;
-  border-left-style: none;
-  padding: 5px;
-  margin: 5px;
-}
-
 .first_item {
   margin: 5px;
   padding: 5px;

@@ -54,8 +54,7 @@ export class VolleyRepository {
   /** todo: 这个地方要改 */
   private watchMatch() {
     //如果指定了比赛的ID，则直接打开这个比赛，不管它是否在本地缓存内
-    if (this.matchID) {
-      this.watchOnlineMatch(false, false);
+    if (this.matchID && this.watchOnlineMatch(false, false)) {
     }
     //否则会从本地缓存中加载上次存储的比赛
     else {
@@ -64,9 +63,12 @@ export class VolleyRepository {
       if (court._openid === this.userID && court.status == GameStatus.OnGoing) {
         if (court._id) {
           this.matchID = court._id;
-          this.watchOnlineMatch(false, false);
         }
-        else {
+        if (court._id && this.watchOnlineMatch(false, false)) {
+        }
+        else if (court._id) { //打开一个网络比赛，却失败了，那么就重新开一个比赛
+          this.watchLocalMatch(this.newLocalCourt());
+        } else { //不是网络比赛，那么就继续在本地操作
           this.watchLocalMatch(court);
         }
       } else {
@@ -76,7 +78,7 @@ export class VolleyRepository {
   }
 
 
-  private watchOnlineMatch(localToCloud: boolean, endMatch: boolean) {
+  private watchOnlineMatch(localToCloud: boolean, endMatch: boolean) : boolean {
     const that = this
     const db = wx.cloud.database({
       env: this.env
@@ -128,12 +130,15 @@ export class VolleyRepository {
             } else {
               that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud)
             }
+            return true;
           } else {
             console.error("snapshot is empty, matchid:", that.matchID)
+            return false;
           }
         },
         onError: function (err) {
           console.error(err)
+          return false;
         }
       })
   }
@@ -178,6 +183,7 @@ export class VolleyRepository {
         }
       })
     } else {
+      console.log("update a local match")
       wx.setStorageSync(this.cacheKey, court);
       this.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Local);
     }

@@ -1,40 +1,42 @@
 <template name="matchblock">
 
-  <view style="font-size: 20px; display: flex; flex-direction: row; width: 100%; align-items: center;" >
-    <view style="display: flex; flex-direction: column; align-items: center;" bindtap="onTapMatch" data-matchid="{{court._id}}">
-      <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; min-width:60px; height: 35px;">
-        <view style="width:100%; height:20%; display:flex; flex-direction:row;">
-          <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
-          <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
+  <view class="match-item {{court.isTouchMove ? 'match-item-touch-active':''}}" bindtouchstart="{{showDelete?'touchstart':''}}" bindtouchmove="{{showDelete?'touchmove':''}}" data-id="{{court._id}}">
+    <view class="match-item-content" bindtap="onTapMatch" data-matchid="{{court._id}}">
+      <view style="display: flex; flex-direction: column; align-items: center;">
+        <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; min-width:60px; height: 35px;">
+          <view style="width:100%; height:20%; display:flex; flex-direction:row;">
+            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
+            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
 
+          </view>
+
+          <view style="width:100%; height:80%;display:flex; flex-direction:row;">
+            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid; width:50%; height: 100%; color: Chocolate; background-color: white; text-align: center;">{{court.myScore}}</view>
+            <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid; width:50%; height: 100%; color: #336699; background-color: white; text-align: center;">{{court.yourScore}}</view>
+          </view>
         </view>
-
-        <view style="width:100%; height:80%;display:flex; flex-direction:row;">
-          <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid; width:50%; height: 100%; color: Chocolate; background-color: white; text-align: center;">{{court.myScore}}</view>
-          <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid; width:50%; height: 100%; color: #336699; background-color: white; text-align: center;">{{court.yourScore}}</view>
+        <view style="display: flex; flex-direction: row; align-items: center; font-size: small;">
+          <view> {{court.status == 0 ? "已结束" : "进行中"}} </view>
+          <block wx:if="{{court._id}}">
+            <image src="../../images/cloud.svg" class="status_icon"> </image>
+          </block>
+          <block wx:if="{{!court._id}}">
+            <image src="../../images/nocloud.svg" class="status_icon"> </image>
+          </block>
         </view>
       </view>
-      <view style="display: flex; flex-direction: row; align-items: center; font-size: small;">
-        <view> {{court.status == 0 ? "已结束" : "进行中"}} </view>
-        <block wx:if="{{court._id}}">
-          <image src="../../images/cloud.svg" class="status_icon"> </image>
-        </block>
-        <block wx:if="{{!court._id}}">
-          <image src="../../images/nocloud.svg" class="status_icon"> </image>
-        </block>
+
+      <view class="match-item-right">
+        <view class='match-item-textblock'>
+          <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
+          <view>地点：{{court.place}}</view>
+          <view>时间：{{court.create_time}}</view>
+        </view>
       </view>
     </view>
 
-    <view class='normal_item' style="font-size: 15px; width: 100%;" bindtap="onTapMatch" data-matchid="{{court._id}}">
-      <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
-      <view>地点：{{court.place}}</view>
-      <view>时间：{{court.create_time}}</view>
-    </view>
+    <view class="match-item-delete" bindtap="onDeleteMatch" data-matchid="{{court._id}}" style="color: red">删除</view>
 
-    <view wx:if="{{showDelete}}">
-      <button size="mini" bindtap="onDeleteMatch" data-matchid="{{court._id}}">删除</button>
-    </view>
   </view>
-
 
 </template>

@@ -68,15 +68,113 @@
   padding: 5px;
 }
 
-.normal_item {
+.list-item{
+  width: 100%;
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center;
+
   border: 1px solid @color_main_grey;
   border-top-style: none;
   border-right-style: none;
   border-bottom-style: 1px solid @color_main_grey;
   border-left-style: none;
+
+  margin-left: 5px;
+}
+
+.item-content {
+  width:100%;
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center;
+  
   padding: 5px;
   margin: 5px;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  -webkit-transform: translateX(280rpx);
+  transform: translateX(280rpx); 
+  margin-left: -300rpx;
 }
+
+.list-item-touch-active .item-content{
+  margin-left: -200rpx;
+}
+
+.list-item-touch-active .item-content, .list-item-touch-active .item-delete {
+  -webkit-transform: translateX(0) !important;
+  transform: translateX(0) !important;
+}
+.item-delete{
+  width: 100rpx;
+  height: 100%;
+  color: red;
+  -webkit-transform: translateX(180rpx);
+  transform: translateX(180rpx);
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.match-item{
+  width: 100%;
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.match-item-content {
+  width:100%;
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  -webkit-transform: translateX(100rpx);
+  transform: translateX(100rpx); 
+  margin-left: -100rpx;
+}
+
+.match-item-right {
+  width:100%;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center;
+  border: 1px solid @color_main_grey;
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom-style: 1px solid @color_main_grey;
+  border-left-style: none;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.match-item-textblock {
+  font-size: 15px; 
+  width: 100%;
+}
+
+.match-item-touch-active .match-item-content{
+  margin-left: -100 rpx;
+}
+
+.match-item-touch-active .match-item-content, .match-item-touch-active .match-item-delete {
+  -webkit-transform: translateX(0) !important;
+  transform: translateX(0) !important;
+}
+.match-item-delete{
+  width: 100rpx;
+  -webkit-transform: translateX(160rpx);
+  transform: translateX(160rpx);
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
 
 .first_item {
   margin: 5px;
@@ -136,6 +234,9 @@
   color:@color_main_blue;
   // background-color: @color_main_blue;
 }
+
+
+
 
 .avartar_container {
   display: flex; 

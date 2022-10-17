@@ -1,5 +1,6 @@
 import { LoginInfo } from './bl/LoginInfo'
 import { GlobalData } from './bl/GlobalData'
+import touch from './utils/touch.js'
 
 let globalData: GlobalData = {
   openid: '',
@@ -15,6 +16,7 @@ let globalData: GlobalData = {
 
 App({
   globalData: globalData,
+  touch: new touch(),
 
   getOpenId: function (callback: (openid: string, success: boolean) => void) {
     if (globalData.openid) {

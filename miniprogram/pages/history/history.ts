@@ -5,10 +5,12 @@ import { GlobalData } from "../../bl/GlobalData";
 import { GameStatus, VolleyCourt } from "../../bl/VolleyCourt";
 import { FriendsCourtRepo, onMatchesFeched, VolleyRepository2 } from "../../bl/VolleyRepository";
 
+const App = getApp()
+
 class HistoryPageData {
-  matches: VolleyCourt[] = []; //以前上传过的比赛
-  matches2: VolleyCourt[] = []; //已经结束的比赛
-  matches3: VolleyCourt[] = []; //来自他人分享的比赛
+  matches: VolleyCourt[] = []; //我创建的比赛
+  joint_matches: VolleyCourt[] = []; //我参加过的比赛
+  shared_matches: VolleyCourt[] = []; //来自他人分享的比赛
   court: VolleyCourt | null = null;
   globalData: GlobalData | null = null;
 }
@@ -27,7 +29,7 @@ class HistoryPage extends BasePage {
   onDataFetched2: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
     console.log("courts:", courts)
     wx.hideLoading();
-    this.data.matches2 = courts;
+    this.data.joint_matches = courts;
     this.setData(this.data);
   }
 
@@ -35,6 +37,9 @@ class HistoryPage extends BasePage {
    * 生命周期函数--监听页面加载
    */
   onLoad = function (this: HistoryPage) {
+    wx.setNavigationBarTitle({
+      title: '历史记录'
+    })
   }
 
   onShow = function (this:HistoryPage) {
@@ -45,7 +50,7 @@ class HistoryPage extends BasePage {
     this.data.court = this.repo.loadFromLocal();
 
     let friendsRepo = new FriendsCourtRepo();
-    this.data.matches3 = friendsRepo.getCourts();
+    this.data.shared_matches = friendsRepo.getCourts();
 
     this.setData(this.data);
   }
@@ -97,6 +102,25 @@ class HistoryPage extends BasePage {
         }
       })
     }
+  }
+
+  touchstart = function(this: HistoryPage, e:any) {
+    //开始触摸时 重置所有删除
+    let data = App.touch._touchstart(e, this.data.matches)
+    console.log("touchstart",data)
+    this.setData({
+      matches: data
+    })
+  }
+
+  //滑动事件处理
+  touchmove = function(this: HistoryPage, e:any) {
+    let data = App.touch._touchmove(e, this.data.matches, '_id')
+    
+    this.setData({
+      matches: data
+    })
+    console.log("touchmaove", data, this.data.matches)
   }
 }
 

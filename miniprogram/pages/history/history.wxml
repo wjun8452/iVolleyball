@@ -1,35 +1,20 @@
 <import src="matchblock.wxml" />
 
-<view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column;">
+<view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column;" catchtouchmove='stopPageScroll'>
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
       <view> {{court ? "上次打开的比赛" : "您还未打开过比赛记录" }}</view>
     </view>
 
     <template is="matchblock" data="{{court: court}}" />
-
-
   </view>
 
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{matches3.length > 0 ? "好友分享的比赛" : "没有好友分享的比赛记录" }}</view>
-    </view>
-
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
-      <block wx:for="{{matches3}}" wx:key="create_time">
-        <template is="matchblock" data="{{court: item}}" />
-      </block>
-    </view>
-  </view>
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
       <view> {{matches.length > 0 ? "我创建的比赛" : "我还没有创建任何比赛" }}</view>
+      <view style="font-size: 12px"> 显示最近8个 </view>
     </view>
 
     <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
@@ -40,14 +25,27 @@
   </view>
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{matches2.length > 0 ? "我参加的比赛" : "我还没有参加任何比赛" }}</view>
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
+      <view> {{joint_matches.length > 0 ? "我参加的比赛" : "我还没有参加任何比赛" }}</view>
+      <view style="font-size: 12px"> 显示最近8个 </view>
     </view>
 
-    <block wx:for="{{matches2}}" wx:key="create_time">
+    <block wx:for="{{joint_matches}}" wx:key="create_time">
       <template is="matchblock" data="{{court: item}}" />
     </block>
-
   </view>
+
+
+  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
+      <view> {{shared_matches.length > 0 ? "好友分享的比赛" : "没有好友分享的比赛记录" }}</view>
+    </view>
+
+    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
+      <block wx:for="{{shared_matches}}" wx:key="create_time">
+        <template is="matchblock" data="{{court: item}}" />
+      </block>
+    </view>
+  </view>
+
 </view>

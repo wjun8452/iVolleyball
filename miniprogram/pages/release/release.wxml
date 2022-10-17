@@ -1,7 +1,11 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
-		<text style="margin-left: 5px;">v3.13.3 (2022/10/12) 增加事件埋点，监控无法进入计分页面发生的次数 </text>
+		<text style="margin-left: 5px;">v3.13.4 (2022/10/17) 增加左滑删除功能，修复一处可能导致无法进入比赛记分页面的缺陷 </text>
+  </view>
+
+  <view class="block1">
+		<text style="margin-left: 5px;">v3.13.3 (2022/10/12) 增加事件埋点，监控无法进入记分页面发生的次数 </text>
   </view>
 
   <view class="block1">

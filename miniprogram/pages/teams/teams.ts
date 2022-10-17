@@ -1,5 +1,7 @@
 import { TeamRepo, VTeam, VUser } from "../../bl/TeamRepo";
 
+const App = getApp()
+
 // pages/teams/teams.ts
 Page({
 
@@ -110,8 +112,9 @@ Page({
     })
   },
 
-  onClickEditTeam(e:any) {
-    let teamId = e.target.dataset.teamid;
+  onClickEditTeam(e: any) {
+    let teamId = e.currentTarget.dataset.teamid;
+    console.log(teamId)
     wx.navigateTo({
       url: "../team/team?teamId=" + teamId
     })
@@ -132,7 +135,7 @@ Page({
       title: "正在加载"
     })
 
-    getApp().getOpenId((openid: string, success:boolean) => {
+    getApp().getOpenId((openid: string, success: boolean) => {
       this.data.user.openid = openid;
 
       this.loadUserInfo();
@@ -187,5 +190,22 @@ Page({
    */
   onShareAppMessage() {
 
-  }
+  },
+
+  touchstart(e) {
+    //开始触摸时 重置所有删除
+    let data = App.touch._touchstart(e, this.data.myteams)
+    this.setData({
+      myteams: data
+    })
+  },
+
+  //滑动事件处理
+  touchmove(e) {
+    let data = App.touch._touchmove(e, this.data.myteams, '_id')
+    this.setData({
+      myteams: data
+    })
+  },
+
 })

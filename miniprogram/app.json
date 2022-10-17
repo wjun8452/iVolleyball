@@ -15,7 +15,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FF9900",
-    "navigationBarTitleText": "排球记分牌",
+    "navigationBarTitleText": "排球计分",
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",

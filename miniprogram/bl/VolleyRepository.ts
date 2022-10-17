@@ -61,14 +61,11 @@ export class VolleyRepository {
       let court = this.loadFromLocal();
       //如果本地缓存的是自己的进行中的比赛，则打开它
       if (court._openid === this.userID && court.status == GameStatus.OnGoing) {
-        if (court._id) {
+        if (court._id) { //打开一个网络比赛
           this.matchID = court._id;
+          this.watchOnlineMatch(false, false);
         }
-        if (court._id && this.watchOnlineMatch(false, false)) {
-        }
-        else if (court._id) { //打开一个网络比赛，却失败了，那么就重新开一个比赛
-          this.watchLocalMatch(this.newLocalCourt());
-        } else { //不是网络比赛，那么就继续在本地操作
+        else { //不是网络比赛，那么就继续在本地操作
           this.watchLocalMatch(court);
         }
       } else {
@@ -130,15 +127,14 @@ export class VolleyRepository {
             } else {
               that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud)
             }
-            return true;
           } else {
             console.error("snapshot is empty, matchid:", that.matchID)
-            return false;
+            that.watchLocalMatch(that.newLocalCourt())
           }
         },
         onError: function (err) {
           console.error(err)
-          return false;
+          that.watchLocalMatch(that.newLocalCourt())
         }
       })
   }

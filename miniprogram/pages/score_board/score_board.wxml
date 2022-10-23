@@ -1,5 +1,5 @@
 <!--pages/score_board/score_board.wxml-->
-<view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
+<view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate({{titleLeft ? '-90deg' : '90deg'}}); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
 
 	<!-- 新手指引　-->
 	<view style="opacity:0; border:0px solid green; position:fixed; left: {{globalData.sysInfo.windowHeight/3}}px; top: {{globalData.sysInfo.windowWidth*2/3}}px; z-index: -2; display:flex;flex-direction:row;" id="fresh_guide">
@@ -58,6 +58,7 @@
 					</block>
 					<image src="../../images/share.svg" class='tool_button' bindtap='onShare'> </image>
 					<image src="../../images/stat.svg" class="tool_button" bindtap='onStat'></image>
+          <image src="../../images/rotate.svg" class="tool_button" bindtap='onRotate'></image>
 				</view>
 
 

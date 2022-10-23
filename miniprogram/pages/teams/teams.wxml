@@ -1,4 +1,4 @@
-<view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column;" catchtouchmove='stopPageScroll'>
+<view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column; overflow: hidden;">
 
   <view class='container' style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
     <view class='first_item' style="font-size: 20px; text-align: left; "> 我的信息 </view>

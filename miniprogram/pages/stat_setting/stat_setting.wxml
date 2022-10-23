@@ -120,12 +120,6 @@
     <view class="teamblock_row">
       <view class="teamblock_title"> 场上位置</view>
       <view class="teamblock_value"> {{court.myTeam}}</view>
-      <picker bindchange="onImportTeam" value="{{pikerTeamIndex}}" range="{{myteams}}" range-key="name">
-        <button size="mini"> 导入 </button>
-      </picker>
-      <view>
-        <button size="mini" bindtap="gotoTeams"> 管理 </button>
-      </view>
     </view>
 
     <view style="border: 1px solid grey; margin-bottom: 5px;">

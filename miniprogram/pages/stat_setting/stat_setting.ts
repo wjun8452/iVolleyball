@@ -63,8 +63,9 @@ class SettingPage extends BasePage {
   }
 
   onReset = function (this: SettingPage) {
-    this.data.court!.myScore = 0;
-    this.data.court!.yourScore = 0;
+    if (this.data.court) {
+      this.data.court.resetScore();
+    }
     this.updateMatch();
   }
 

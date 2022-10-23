@@ -570,4 +570,10 @@ export class VolleyCourt {
     this._rotate();
     this._checkLibero();
   }
+
+  resetScore() {
+    this.myScore = 0;
+    this.yourScore = 0;
+    this.stat_items = [];
+  }
 }

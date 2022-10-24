@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v3.13.6 (2022/10/24) 修复点击某一历史比赛记录后分数错误的问题 </text>
+  </view>
+
+  <view class="block1">
 		<text style="margin-left: 5px;">v3.13.5 (2022/10/23) 大记分牌增加屏幕旋转功能，修复历史记录、球队管理、设置页面的几个问题 </text>
   </view>
 

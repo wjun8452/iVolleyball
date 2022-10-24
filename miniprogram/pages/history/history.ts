@@ -107,7 +107,7 @@ class HistoryPage extends BasePage {
   touchstart = function(this: HistoryPage, e:any) {
     //开始触摸时 重置所有删除
     let data = App.touch._touchstart(e, this.data.matches)
-    console.log("touchstart",data)
+    //console.log("touchstart",data)
     this.setData({
       matches: data
     })
@@ -120,7 +120,7 @@ class HistoryPage extends BasePage {
     this.setData({
       matches: data
     })
-    console.log("touchmaove", data, this.data.matches)
+    //console.log("touchmaove", data, this.data.matches)
   }
 }
 

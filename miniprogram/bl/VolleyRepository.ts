@@ -54,7 +54,8 @@ export class VolleyRepository {
   /** todo: 这个地方要改 */
   private watchMatch() {
     //如果指定了比赛的ID，则直接打开这个比赛，不管它是否在本地缓存内
-    if (this.matchID && this.watchOnlineMatch(false, false)) {
+    if (this.matchID) {
+      this.watchOnlineMatch(false, false)
     }
     //否则会从本地缓存中加载上次存储的比赛
     else {
@@ -75,13 +76,13 @@ export class VolleyRepository {
   }
 
 
-  private watchOnlineMatch(localToCloud: boolean, endMatch: boolean) : boolean {
+  private watchOnlineMatch(localToCloud: boolean, endMatch: boolean)  {
     const that = this
     const db = wx.cloud.database({
       env: this.env
     })
 
-    console.log("[Repository] watcher created.")
+    console.log("[Repository] watcher created.", this.matchID)
     this.watcher = db.collection('vmatch').where({
       _id: this.matchID
     })

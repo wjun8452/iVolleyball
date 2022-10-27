@@ -1,7 +1,7 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
-		<text style="margin-left: 5px;">v3.13.7 (2022/10/27) 帮助页面增加微信二维码，点击识别可以添加作者微信，便于用户向作者反馈建议</text>
+		<text style="margin-left: 5px;">v.2022.10.27 帮助页面增加微信二维码，点击识别可以添加作者微信，便于用户向作者反馈建议</text>
   </view>
 
   <view class="block1">

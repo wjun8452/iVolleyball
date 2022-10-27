@@ -58,4 +58,10 @@ Page({
   onReachBottom: function () {
 
   },
+
+  gotoQRCode: function() {
+    wx.previewImage({
+      urls: ["cloud://ilovevolleyball-d1813b.696c-ilovevolleyball-d1813b-1253572757/mywxcode.jpg"],
+    })
+  }
 })

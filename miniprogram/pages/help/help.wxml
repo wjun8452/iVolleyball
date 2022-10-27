@@ -40,5 +40,9 @@
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
     <text style="margin-left: 5px;">... 建议与反馈：</text>
     <text style="margin-left: 15px;"> 点击小程序右上角...提出建议与反馈</text>
+    <view style="margin-left: 15px; display: flex; flex-direction: row; align-items: center ">
+      <view>联系作者：</view>
+      <image src="../../images/mywxcode.jpg" style="width: 20px; height: 20px;" bindtap="gotoQRCode"></image>
+    </view>
   </view>
 </view>

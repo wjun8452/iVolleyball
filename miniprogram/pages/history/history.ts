@@ -11,7 +11,7 @@ class HistoryPageData {
   matches: VolleyCourt[] = []; //我创建的比赛
   joint_matches: VolleyCourt[] = []; //我参加过的比赛
   shared_matches: VolleyCourt[] = []; //来自他人分享的比赛
-  court: VolleyCourt | null = null;
+  last_court: VolleyCourt | null = null;
   globalData: GlobalData | null = null;
 }
 
@@ -19,15 +19,15 @@ class HistoryPage extends BasePage {
   data: HistoryPageData = new HistoryPageData();
   repo: JointVolleyRepository = new JointVolleyRepository();
 
-  onDataFetched: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
-    console.log("courts:", courts)
+  onMyMatchesReady: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
+    console.log("my matches:", courts)
     wx.hideLoading();
     this.data.matches = courts;
     this.setData(this.data);
   }
 
-  onDataFetched2: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
-    console.log("courts:", courts)
+  onJointMatchesReady: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
+    console.log("joint matches:", courts)
     wx.hideLoading();
     this.data.joint_matches = courts;
     this.setData(this.data);
@@ -47,7 +47,7 @@ class HistoryPage extends BasePage {
       this.fetchData(openid);
     });
 
-    this.data.court = this.repo.loadFromLocal();
+    this.data.last_court = this.repo.loadFromLocal();
 
     let friendsRepo = new FriendsCourtRepo();
     this.data.shared_matches = friendsRepo.getCourts();
@@ -60,8 +60,8 @@ class HistoryPage extends BasePage {
     wx.showLoading({
       title: '正在加载...',
     })
-    this.repo.fetchMatches(openid, 8,  this.onDataFetched)
-    this.repo.fetchJointMatches(openid, 8,  this.onDataFetched2)
+    this.repo.fetchMatches(openid, 8,  this.onMyMatchesReady)
+    this.repo.fetchJointMatches(openid, 8,  this.onJointMatchesReady)
   }
 
   newMatch = function () {

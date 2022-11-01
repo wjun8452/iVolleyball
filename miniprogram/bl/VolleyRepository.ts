@@ -352,6 +352,7 @@ export class JointVolleyRepository {
       place: true,
       _openid: true,
       status: true,
+      mode: true,
     }).orderBy('create_time', 'desc')
       .limit(maxcount)
       .get({
@@ -430,6 +431,7 @@ export class JointVolleyRepository {
       place: true,
       _openid: true,
       status: true,
+      mode: true,
     }).orderBy('create_time', 'desc')
       .limit(maxcount)
       .get({

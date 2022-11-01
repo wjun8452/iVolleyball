@@ -77,8 +77,6 @@ type PlayerRecord = Record<string, VPlayer>; //队员姓名 --> 头像等信息
 export class VolleyCourt {
   /** 比赛模式，0：硬排球，1：5人气排球，2：4人气排 */
   mode: number = 0;
-  /** 场上队员人数，硬排球固定为6，气排球可以是5或者4 */
-  playerCount: number = 6;
   /** 场上队员名字，表下标是球场的位置，0: 后排最右即1号位(发球位置), 1: 2号位, 表中字符串是队员的名字，本数组有效的长度为playerCount */
   players: [string, string, string, string, string, string] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"];
   /** 场上队员微信openid，与players对应 */
@@ -148,7 +146,7 @@ export class VolleyCourt {
   yourteamId: string = ""; //对方的teamId
 
   /** mode: 硬排还是气排 */
-  constructor(userID: string, mode?: number,  placeInfo?: PlaceInfo) {
+  constructor(userID: string, mode?: number, placeInfo?: PlaceInfo) {
     this._openid = userID
 
     if (mode) {
@@ -390,6 +388,158 @@ export class VolleyCourt {
   }
 
   private updateAvailableItems() {
+    if (this.mode == 0) {
+      this.updateAvailableItems_yingpai()
+    } else if (this.mode == 1) {
+      this.updateAvailableItems_qipai5()
+    } else if (this.mode == 2) {
+      this.updateAvailableItems_qipai4()
+    }
+  }
+
+  private updateAvailableItems_qipai5() {
+    let who_serve = this.who_serve;
+    let items = this.play_items;
+    let serve = this.serve;
+    let cats = this.play_item_cats;
+    let players = this.players
+    let cat_allowed = this.cat_allowed;
+    let player_allowed = this.player_allowed;
+
+    let i: number = 0;
+    for (i = 0; i < items.length; i++) {
+      items[i] = [];
+      var item = items[i];
+
+      cats[i] = [];
+      var cat = cats[i];
+
+      if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
+        continue; //该队员不做统计
+      }
+
+      //添加顺序影响UI显示
+      if (serve && i == who_serve) {
+        this._createItems(cat, item, cat_allowed, StatCat.Serve, [
+          [StatName.ServeWin, 1],
+          [StatName.ServeNormal, 0],
+          [StatName.ServeLost, -1]
+        ]);
+      }
+
+      if (!serve) {
+        this._createItems(cat, item, cat_allowed, StatCat.Reception, [
+          [StatName.ReceptionPerfect, 0],
+          [StatName.ReceptionGood, 0],
+          [StatName.ReceptionBad, 0],
+          [StatName.ReceptionLost, -1]
+        ])
+      }
+
+      this._createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+        [StatName.ErChuanGood, 0],
+        [StatName.ErChuanBad, 0],
+        [StatName.ErChuanLost, -1]
+      ])
+
+      this._createItems(cat, item, cat_allowed, StatCat.Attack, [
+        [StatName.AttackWin, 1],
+        [StatName.AttackNormal, 0],
+        [StatName.AttackBlk, -1],
+        [StatName.AttackLost, -1]
+      ])
+
+
+      if (i >= 1 && i <= 3) {
+        this._createItems(cat, item, cat_allowed, StatCat.Block, [
+          [StatName.BlockWin, 1],
+          [StatName.BlockPlus, 0],
+          [StatName.BlockMinus, 0],
+          [StatName.BlockHalf, -1],
+          [StatName.BlockLost, -1]
+        ])
+      }
+
+      this._createItems(cat, item, cat_allowed, StatCat.Defend, [
+        [StatName.DefendGood, 0],
+        [StatName.DefendNormal, 0],
+        [StatName.DefendLost, -1]
+      ])
+    }
+  }
+
+  private updateAvailableItems_qipai4() {
+    let who_serve = this.who_serve;
+    let items = this.play_items;
+    let serve = this.serve;
+    let cats = this.play_item_cats;
+    let players = this.players
+    let cat_allowed = this.cat_allowed;
+    let player_allowed = this.player_allowed;
+
+    let i: number = 0;
+    for (i = 0; i < items.length; i++) {
+      items[i] = [];
+      var item = items[i];
+
+      cats[i] = [];
+      var cat = cats[i];
+
+      if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
+        continue; //该队员不做统计
+      }
+
+      //添加顺序影响UI显示
+      if (serve && i == who_serve) {
+        this._createItems(cat, item, cat_allowed, StatCat.Serve, [
+          [StatName.ServeWin, 1],
+          [StatName.ServeNormal, 0],
+          [StatName.ServeLost, -1]
+        ]);
+      }
+
+      if (!serve) {
+        this._createItems(cat, item, cat_allowed, StatCat.Reception, [
+          [StatName.ReceptionPerfect, 0],
+          [StatName.ReceptionGood, 0],
+          [StatName.ReceptionBad, 0],
+          [StatName.ReceptionLost, -1]
+        ])
+      }
+
+      this._createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+        [StatName.ErChuanGood, 0],
+        [StatName.ErChuanBad, 0],
+        [StatName.ErChuanLost, -1]
+      ])
+
+      this._createItems(cat, item, cat_allowed, StatCat.Attack, [
+        [StatName.AttackWin, 1],
+        [StatName.AttackNormal, 0],
+        [StatName.AttackBlk, -1],
+        [StatName.AttackLost, -1]
+      ])
+
+
+      if (i >= 1 && i <= 2) {
+        this._createItems(cat, item, cat_allowed, StatCat.Block, [
+          [StatName.BlockWin, 1],
+          [StatName.BlockPlus, 0],
+          [StatName.BlockMinus, 0],
+          [StatName.BlockHalf, -1],
+          [StatName.BlockLost, -1]
+        ])
+      }
+
+      this._createItems(cat, item, cat_allowed, StatCat.Defend, [
+        [StatName.DefendGood, 0],
+        [StatName.DefendNormal, 0],
+        [StatName.DefendLost, -1]
+      ])
+    }
+  }
+
+  private updateAvailableItems_yingpai() {
     let who_serve = this.who_serve;
     let items = this.play_items;
     let serve = this.serve;
@@ -542,7 +692,7 @@ export class VolleyCourt {
     if (item.score == 1) {
       this.serve = true;
       //rotate and serve
-      if ((mode == 0 && !serve) || (mode==1) || (mode==2)) {
+      if ((mode == 0 && !serve) || (mode == 1) || (mode == 2)) {
         this._rotate();
         this._checkLibero();
         this.updateAvailableItems();
@@ -561,9 +711,9 @@ export class VolleyCourt {
   private _prevPosition(stat: StatItem) {
     if (this.mode == 0) {
       this._prevPosition_yingpai(stat)
-    } else if(this.mode == 1) {
+    } else if (this.mode == 1) {
       this._prevPosition_qipai5(stat)
-    } else if(this.mode == 2) {
+    } else if (this.mode == 2) {
       this._prevPosition_qipai4(stat)
     }
   }
@@ -571,12 +721,12 @@ export class VolleyCourt {
   private _prevPosition_qipai5(stat: StatItem) {
     var players = this.players;
     if (stat.score > 0) {
-        var player = players[4];
-        players[4] = players[3];
-        players[3] = players[2];
-        players[2] = players[1];
-        players[1] = players[0];
-        players[0] = player;
+      var player = players[4];
+      players[4] = players[3];
+      players[3] = players[2];
+      players[2] = players[1];
+      players[1] = players[0];
+      players[0] = player;
     }
 
     if (stat.swapServe && stat.score > 0) { //刚刚得分获得发球权
@@ -591,11 +741,11 @@ export class VolleyCourt {
   private _prevPosition_qipai4(stat: StatItem) {
     var players = this.players;
     if (stat.score > 0) {
-        var player = players[3];
-        players[3] = players[2];
-        players[2] = players[1];
-        players[1] = players[0];
-        players[0] = player;
+      var player = players[3];
+      players[3] = players[2];
+      players[2] = players[1];
+      players[1] = players[0];
+      players[0] = player;
     }
 
     if (stat.swapServe && stat.score > 0) { //刚刚得分获得发球权
@@ -713,13 +863,10 @@ export class VolleyCourt {
   setMode(mode: number) {
     this.mode = mode;
     if (this.mode == 0) {
-      this.playerCount = 6;
       this.total_score = 25;
     } else if (this.mode == 1) {
-      this.playerCount = 5;
       this.total_score = 21;
     } else if (this.mode == 2) {
-      this.playerCount = 4;
       this.total_score = 21;
     } else {
       console.error("非法排球模式!")

@@ -4,10 +4,10 @@
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{court ? "上次打开的比赛" : "您还未打开过比赛记录" }}</view>
+      <view> {{last_court ? "上次打开的比赛" : "您还未打开过比赛记录" }}</view>
     </view>
 
-    <template is="matchblock" data="{{court: court}}" />
+    <template wx:if="{{last_court}}" is="matchblock" data="{{court: last_court}}" />
   </view>
 
 

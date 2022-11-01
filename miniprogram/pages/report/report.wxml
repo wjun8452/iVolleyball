@@ -6,6 +6,7 @@
   <!-- 得分信息 -->
   <view style="margin:1px 1px 8px 1px" class="block1">
     <view style="text-align: center;"> 比赛结果 </view>
+    <view style='text-align:left;'> 类型：{{court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}} </view>
     <view style='text-align:left;'> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
     <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
     <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
@@ -15,7 +16,7 @@
 
   <!--按统计大类循环，每个大类是一个表格 -->
   <block wx:for='{{summary["标题"]}}' wx:for-index="category" wx:key='index'>
-    <view style="margin:1px 1px 8px 1px; font-size: small; " class="block1">
+    <view style="margin:1px 1px 2px 1px; font-size: small; " class="block1">
       <!-- 表格名称 -->
       <view style="text-align: center; font-size: medium; padding: 5px;"> {{category}} </view>
       <!--标题行-->
@@ -29,7 +30,7 @@
       <!--数据行-->
       <block wx:for="{{summary}}" wx:for-index="player" wx:key='index'>
         <block wx:if='{{player!="标题"}}'>
-          <view style='display: flex; flex-direction: row;  align-items: center; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;'>
+          <view style='display: flex; flex-direction: row; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;'>
             <view style="flex:1;" class="avartar_container_vertical">
               <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
               <text class="nickName" style='color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; '>{{player}}</text>

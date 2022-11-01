@@ -25,7 +25,7 @@
       <text style="margin-left: 5px;">技术统计及设置</text>
     </view>
     <text style="margin-left: 15px;"> 在记分面板上方可以进入技术统计页面 </text>
-    <text style="margin-left: 15px;"> 支持正常转位和前后排简单转位，场上人员布置，自由人等设置 </text>
+    <text style="margin-left: 15px;"> 支持硬排和气排球，场上人员布置，自由人等设置 </text>
     <text style="margin-left: 15px;"> 减少统计项目或者只针对某个队员，可以大大简化统计工作；</text>
   </view>
 
@@ -35,6 +35,7 @@
       <text style="margin-left: 5px;">历史记录：</text>
     </view>
     <text style="margin-left: 15px;"> 此处可以查看近期上传的比赛记录</text>
+    <text style="margin-left: 15px;"> 左滑可以删除自己创建的比赛 </text>
   </view>
 
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
@@ -43,6 +44,7 @@
     <view style="margin-left: 15px; display: flex; flex-direction: row; align-items: center ">
       <view>联系作者：</view>
       <image src="../../images/mywxcode.jpg" style="width: 20px; height: 20px;" bindtap="gotoQRCode"></image>
+      <view>（点击放大后长按识别二维码）</view>
     </view>
   </view>
 </view>

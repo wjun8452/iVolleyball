@@ -28,6 +28,7 @@
 
       <view class="match-item-right">
         <view class='match-item-textblock'>
+          <view>类型：{{ court.mode==2 ? "4人气排球": court.mode==1 ? "5人气排球": "6人室内硬排球"}}</view>
           <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
           <view>地点：{{court.place}}</view>
           <view>时间：{{court.create_time}}</view>

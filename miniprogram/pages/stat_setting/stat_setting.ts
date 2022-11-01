@@ -120,14 +120,26 @@ class SettingPage extends BasePage {
     this.updateMatch();
   }
 
-  onTapMode = function (this: SettingPage, e: any) {
+  onFrontBackMode = function (this: SettingPage, e: any) {
     let mode = e.detail.value; //0: front_back, 1: normal
     if (mode == "0") {
       this.data.court!.front_back_mode = true;
     } else {
       this.data.court!.front_back_mode = false;
     }
+    this.updateMatch();
+  }
 
+  onTapMatchMode = function(this:SettingPage, e:any) {
+    let mode = e.detail.value;
+    if (mode == "0") {
+      this.data.court!.setMode(0);
+    } else if (mode == "1") {
+      this.data.court!.setMode(1);
+    } else {
+      this.data.court!.setMode(2);
+    }
+    this.repo?.setUserPreferenceCourtMode(this.data.court!.mode);
     this.updateMatch();
   }
 

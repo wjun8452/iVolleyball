@@ -1,82 +1,85 @@
 <!--pages/score_board/score_board.wxml-->
 <view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate({{titleLeft ? '-90deg' : '90deg'}}); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
 
-	<!-- 新手指引　-->
-	<view style="opacity:0; border:0px solid green; position:fixed; left: {{globalData.sysInfo.windowHeight/3}}px; top: {{globalData.sysInfo.windowWidth*2/3}}px; z-index: -2; display:flex;flex-direction:row;" id="fresh_guide">
-		<view class="single_touch" style="width:100px; height:100px; border:0px solid red">
-		</view>
-		<text style="text-align:center; color:#FF9900">滑动改变分数</text>
-	</view>
+  <!-- 新手指引　-->
+  <view style="opacity:0; border:0px solid green; position:fixed; left: {{globalData.sysInfo.windowHeight/3}}px; top: {{globalData.sysInfo.windowWidth*2/3}}px; z-index: -2; display:flex;flex-direction:row;" id="fresh_guide">
+    <view class="single_touch" style="width:100px; height:100px; border:0px solid red">
+    </view>
+    <text style="text-align:center; color:#FF9900">滑动改变分数</text>
+  </view>
 
-	<view style="border:0px solid; display:flex;flex-direction:row;justify-content:space-between;align-items:center;" class="color3">
+  <view style="border:0px solid; display:flex;flex-direction:row;justify-content:space-between;align-items:center;" class="color3">
 
-		<view style="border:0px solid; display: flex; flex-direction: row; height: 60px; justify-content: space-around;">
+    <view style="border:0px solid; display: flex; flex-direction: row; height: 60px; justify-content: space-around;">
 
-			<view style="display: flex; flex-direction: column;">
-				<view class='score_current_top'> {{team_name[0]}} </view>
-				<view class='score_current_bottom'> {{team_name[1]}} </view>
-			</view>
+      <view style="display: flex; flex-direction: column;">
+        <view class='score_current_top'> {{team_name[0]}} </view>
+        <view class='score_current_bottom'> {{team_name[1]}} </view>
+      </view>
 
-			<view wx:for="{{court.stat_items}}" wx:key="idx" wx:for-index="idx" wx:for-item="statItem" style="display: flex; flex-direction: column;">
-				<view class='{{leftMode ? (statItem.score>0?"score_history_top color1 bgcolor3":"score_history_hidden") : (statItem.score<0 ? "score_history_top color1 bgcolor3" : "score_history_hidden")}}' wx:if="{{statItem.score!=0 && (court.stat_items.length-idx) < maxStatItem}}">
-					{{leftMode ? (statItem.score>0 ? statItem.myscore : "-") : (statItem.score<0 ? statItem.yourscore : "-" )}} </view>
+      <view wx:for="{{court.stat_items}}" wx:key="idx" wx:for-index="idx" wx:for-item="statItem" style="display: flex; flex-direction: column;">
+        <view class='{{leftMode ? (statItem.score>0?"score_history_top color1 bgcolor3":"score_history_hidden") : (statItem.score<0 ? "score_history_top color1 bgcolor3" : "score_history_hidden")}}' wx:if="{{statItem.score!=0 && (court.stat_items.length-idx) < maxStatItem}}">
+          {{leftMode ? (statItem.score>0 ? statItem.myscore : "-") : (statItem.score<0 ? statItem.yourscore : "-" )}} </view>
 
-						<view class='{{leftMode ? (statItem.score<0?"score_history_bottom  color1 bgcolor3":"score_history_hidden") : (statItem.score>0?"score_history_bottom  color1 bgcolor3":"score_history_hidden")}}' wx:if="{{statItem.score!=0 && (court.stat_items.length-idx) < maxStatItem}}">
-							{{leftMode ? (statItem.score<0 ? statItem.yourscore : " -" ) : (statItem.score>0 ? statItem.myscore : "-")}}
-						</view>
-				</view>
+            <view class='{{leftMode ? (statItem.score<0?"score_history_bottom  color1 bgcolor3":"score_history_hidden") : (statItem.score>0?"score_history_bottom  color1 bgcolor3":"score_history_hidden")}}' wx:if="{{statItem.score!=0 && (court.stat_items.length-idx) < maxStatItem}}">
+              {{leftMode ? (statItem.score<0 ? statItem.yourscore : " -" ) : (statItem.score>0 ? statItem.myscore : "-")}}
+            </view>
+        </view>
 
-				<view style="display: flex; flex-direction: column;">
-					<view class='score_current_top'> {{leftMode ? court.myScore : court.yourScore}} </view>
-					<view class='score_current_bottom'> {{leftMode ? court.yourScore : court.myScore}} </view>
-				</view>
-			</view>
+        <view style="display: flex; flex-direction: column;">
+          <view class='score_current_top'> {{leftMode ? court.myScore : court.yourScore}} </view>
+          <view class='score_current_bottom'> {{leftMode ? court.yourScore : court.myScore}} </view>
+        </view>
+      </view>
 
-			<view style="display: flex;flex-direction: row;justify-content: flex-end;">
-				<view style="margin-right: 5px;">
-					<view style="display: flex; flex-direction: row; align-items: center;">
-						<block wx:if="{{court._id}}">
-							<image src="../../images/cloud.svg" class="status_icon"> </image>
-						</block>
+      <view style="display: flex;flex-direction: row;justify-content: flex-end;">
+        <view style="margin-right: 5px;">
+          <view style="display: flex; flex-direction: row; align-items: center;">
+            <view style="display: flex; flex-direction: column; align-items: center; border: solid 0px;">
+              <block wx:if="{{court._id}}">
+                <image style="height: 28px; width: 28px; border: solid 0px;" src="../../images/cloud.svg" class="status_icon"> </image>
+              </block>
+              <block wx:if="{{!court._id}}">
+                <image style="height: 28px; width: 28px; border: solid 0px;"  src="../../images/nocloud.svg"> </image>
+              </block>
+              <view style="line-height:14px; font-size: 14px;"> {{ (court.mode==1 || court.mode==2) ?"气排":"硬排"}} </view>
+            </view>
 
-						<block wx:if="{{!court._id}}">
-							<image src="../../images/nocloud.svg" class="status_icon"> </image>
-						</block>
 
-						<view style="display: flex; flex-direction: column;">
-							<view class=''> {{court.status==1?"":"已结束"}} </view>
-							<view> {{isOwner? "":"来自好友分享"}} </view>
-						</view>
+            <view style="display: flex; flex-direction: column;">
+              <view class=''> {{court.status==1?"":"已结束"}} </view>
+              <view> {{isOwner? "":"来自好友分享"}} </view>
+            </view>
 
-					</view>
-				</view>
+          </view>
+        </view>
 
-				<view style="border:0px solid; display: flex; flex-direction: row;">
-					<block wx:if="{{court.status==1 && isOwner}}">
-						<image src="../../images/swap.svg" class="tool_button" bindtap='swapTeam'> </image>
-						<image src="../../images/reset.svg" class="tool_button" bindtap='onReset'> </image>
-					</block>
-					<image src="../../images/share.svg" class='tool_button' bindtap='onShare'> </image>
-					<image src="../../images/stat.svg" class="tool_button" bindtap='onStat'></image>
+        <view style="border:0px solid; display: flex; flex-direction: row;">
+          <block wx:if="{{court.status==1 && isOwner}}">
+            <image src="../../images/swap.svg" class="tool_button" bindtap='swapTeam'> </image>
+            <image src="../../images/reset.svg" class="tool_button" bindtap='onReset'> </image>
+          </block>
+          <image src="../../images/share.svg" class='tool_button' bindtap='onShare'> </image>
+          <image src="../../images/stat.svg" class="tool_button" bindtap='onStat'></image>
           <image src="../../images/rotate.svg" class="tool_button" bindtap='onRotate'></image>
-				</view>
+        </view>
 
 
 
-			</view>
-		</view>
+      </view>
+    </view>
 
-		<view style="z-index:-1; display:flex;flex-direction:row;align-items:stretch; border:0px solid; height:{{globalData.sysInfo.windowWidth-60-5}}px; line-height:{{globalData.sysInfo.windowWidth-60-5}}px" id="score_board">
-			<block wx:if="{{(globalData.sysInfo.windowWidth-60-5)/1.6*4>globalData.sysInfo.windowHeight}}">
-				<!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况 !-->
-				<view bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center; border:0px solid blue;padding:0; "> {{ leftMode ? court.myScore : court.yourScore }} </view>
-				<view bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center;border:0px solid blue;padding:0;"> {{leftMode ? court.yourScore : court.myScore}} </view>
-			</block>
-			<block wx:if="{{(globalData.sysInfo.windowWidth-60-5)/1.6*4<=globalData.sysInfo.windowHeight}}">
-				<!-- 如果屏幕宽度是短板，则以宽度来设置字体大小 !-->
-				<text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center; border:0px solid;padding:0; "> {{ leftMode ? court.myScore : court.yourScore }} </text>
-				<text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center;border:0px solid;padding:0;"> {{leftMode ? court.yourScore : court.myScore}} </text>
-			</block>
-		</view>
+    <view style="z-index:-1; display:flex;flex-direction:row;align-items:stretch; border:0px solid; height:{{globalData.sysInfo.windowWidth-60-5}}px; line-height:{{globalData.sysInfo.windowWidth-60-5}}px" id="score_board">
+      <block wx:if="{{(globalData.sysInfo.windowWidth-60-5)/1.6*4>globalData.sysInfo.windowHeight}}">
+        <!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况 !-->
+        <view bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center; border:0px solid blue;padding:0; "> {{ leftMode ? court.myScore : court.yourScore }} </view>
+        <view bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center;border:0px solid blue;padding:0;"> {{leftMode ? court.yourScore : court.myScore}} </view>
+      </block>
+      <block wx:if="{{(globalData.sysInfo.windowWidth-60-5)/1.6*4<=globalData.sysInfo.windowHeight}}">
+        <!-- 如果屏幕宽度是短板，则以宽度来设置字体大小 !-->
+        <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style="flex:1; color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center; border:0px solid;padding:0; "> {{ leftMode ? court.myScore : court.yourScore }} </text>
+        <text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style="flex:1;color:RED; font-weight:bold; font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center;border:0px solid;padding:0;"> {{leftMode ? court.yourScore : court.myScore}} </text>
+      </block>
+    </view>
 
-	</view>
+  </view>

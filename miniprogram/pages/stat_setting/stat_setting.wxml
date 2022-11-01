@@ -3,6 +3,16 @@
 <view wx:if="{{court}}" class="color3" style="display: flex; flex-direction: column;">
 
   <view class="teamblock">
+    <view class="teamblock_row">
+      <radio-group class="radio-group" bindchange="onTapMatchMode">
+        <radio value="0" checked="{{court.mode==0}}" />6人硬排
+        <radio value="1" checked="{{court.mode==1}}" />5人气排
+        <radio value="2" checked="{{court.mode==2}}" />4人气排
+      </radio-group>
+    </view>
+  </view>
+
+  <view class="teamblock">
     <view class='teamblock_row'>
       <view class="teamblock_title">我方队伍</view>
       <view class="teamblock_value"> {{court.myTeam}}</view>
@@ -28,7 +38,7 @@
       <view class="teamblock_value"> {{court.place}} </view>
       <button size="mini" bindtap="onChooseLocation">选择地点</button>
     </view>
-    
+
     <view class="teamblock_row">
       <view class="teamblock_title"> 比分 </view>
       <view class="teamblock_value"> {{court.myScore}} : {{court.yourScore}}</view>
@@ -47,7 +57,7 @@
 
 
   <view class="teamblock">
-    <view class="teamblock_row">
+    <view wx:if="{{court.mode == 0}}" class="teamblock_row">
       <checkbox-group bindchange="setterEnabled">
         <checkbox checked="{{court.is_setter_enabled}}">
           固定二传
@@ -55,7 +65,7 @@
       </checkbox-group>
     </view>
 
-    <block wx:if="{{court.is_setter_enabled}}">
+    <block wx:if="{{court.is_setter_enabled && court.mode == 0}}">
       <view class="teamblock_row">
         <view class="teamblock_title">二传 </view>
         <view class="teamblock_value"> {{court.setter==-1 ? "" : court.all_players[court.setter]}} </view>
@@ -65,7 +75,7 @@
       </view>
     </block>
 
-    <view class="teamblock_row">
+    <view wx:if="{{court.mode == 0}}" class="teamblock_row">
       <checkbox-group bindchange="liberoEnabled">
         <checkbox checked="{{court.is_libero_enabled}}">
           启用自由人
@@ -73,7 +83,7 @@
       </checkbox-group>
     </view>
 
-    <block wx:if="{{court.is_libero_enabled}}">
+    <block wx:if="{{court.is_libero_enabled && court.mode == 0}}">
       <view class="teamblock_row">
         <view class="teamblock_title">自由人</view>
         <view class="teamblock_value">{{ court.libero == -1 ? "" : court.all_players[court.libero]}} </view>
@@ -83,7 +93,7 @@
       </view>
     </block>
 
-    <block wx:if="{{court.is_libero_enabled}}">
+    <block wx:if="{{court.is_libero_enabled && court.mode == 0}}">
       <view class="teamblock_row">
         <view class="teamblock_title">第一替换 </view>
         <view class="teamblock_value"> {{ court.libero_replacement1==-1 ? "" : court.all_players[court.libero_replacement1]}}</view>
@@ -93,7 +103,7 @@
       </view>
     </block>
 
-    <block wx:if="{{court.is_libero_enabled}}">
+    <block wx:if="{{court.is_libero_enabled && court.mode == 0}}">
       <view class="teamblock_row">
         <view class="teamblock_title">第二替换</view>
         <view class="teamblock_value">{{ court.libero_replacement2==-1 ? "" : court.all_players[court.libero_replacement2]}}</view>
@@ -103,8 +113,8 @@
       </view>
     </block>
 
-    <view class="teamblock_row">
-      <radio-group class="radio-group" bindchange="onTapMode">
+    <view wx:if="{{court.mode==0}}" class="teamblock_row">
+      <radio-group class="radio-group" bindchange="onFrontBackMode">
         <radio value="0" checked="{{court.front_back_mode}}" />前后排换位
         <radio value="1" checked="{{!court.front_back_mode}}" />正常换位
       </radio-group>
@@ -122,7 +132,7 @@
       <view class="teamblock_value"> {{court.myTeam}}</view>
     </view>
 
-    <view style="border: 1px solid grey; margin-bottom: 5px;">
+    <view wx:if="{{court.mode==0}}" style="border: 1px solid grey; margin-bottom: 5px;">
       <view class="teamblock_row">
         <block wx:for="{{[3,2,1]}}" wx:for-item="pos" wx:key="*this">
           <view style="flex:1; display: flex; flex-direction: column; margin: 5px;">
@@ -166,6 +176,148 @@
               </view>
             </view>
             <block wx:if='{{edit_pos!=pos && (pos==0||(court.front_back_mode && (pos==4 || pos==5 || pos==0)))}}'>
+              <checkbox-group style="margin-top: 5px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
+                <checkbox checked='{{pos==court.who_serve}}' disabled='{{!court.serve}}'>发球</checkbox>
+              </checkbox-group>
+            </block>
+
+            <block wx:if="{{edit_pos==pos}}">
+              <view style="border:1px dashed #336699;">
+                <view style="display: flex; flex-direction: column;">
+                  <block wx:for="{{court.all_players}}" wx:for-item="player" wx:key="*this">
+                    <block wx:if="{{player!=court.players[pos]}}">
+                      <view class="avartar_container" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'>
+                        <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                        <text class="nickName">{{player}}</text>
+                      </view>
+                    </block>
+                  </block>
+                  <block wx:if="{{court.all_players.length == 0}}">
+                    <view> 没有球员可供选择！</view>
+                  </block>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view wx:if="{{court.mode==1}}" style="border: 1px solid grey; margin-bottom: 5px;">
+      <view class="teamblock_row">
+        <block wx:for="{{[3,2,1]}}" wx:for-item="pos" wx:key="*this">
+          <view style="flex:1; display: flex; flex-direction: column; margin: 5px;">
+            <view data-position='{{pos}}' bindtap="onClickPlayer">
+              <view> {{(pos+1) + "号位"}} </view>
+              <view class="avartar_container">
+                <image class="avartar" src='{{court.players_map[court.players[pos]].user.userInfo.avatarUrl? court.players_map[court.players[pos]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                <text class="nickName">{{court.players[pos]}}</text>
+              </view>
+            </view>
+
+            <block wx:if="{{edit_pos==pos}}">
+              <view style="border:1px dashed #336699;">
+                <view style="display: flex; flex-direction: column;">
+                  <block wx:for="{{court.all_players}}" wx:for-item="player" wx:key="*this">
+                    <block wx:if="{{player!=court.players[pos]}}">
+                      <view class="avartar_container" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'>
+                        <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                        <text class="nickName">{{player}}</text>
+                      </view>
+                    </block>
+                  </block>
+                  <block wx:if="{{court.all_players.length == 0}}">
+                    <view> 没有球员可供选择！</view>
+                  </block>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+      </view>
+
+      <view class="teamblock_row">
+        <block wx:for="{{[4,0]}}" wx:for-item="pos" wx:key="*this">
+          <view style="flex:1; display: flex; flex-direction: column;margin: 5px;">
+            <view data-position='{{pos}}' bindtap="onClickPlayer">
+              <view> {{(pos+1) + "号位"}} </view>
+              <view class="avartar_container">
+                <image class="avartar" src='{{court.players_map[court.players[pos]].user.userInfo.avatarUrl? court.players_map[court.players[pos]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                <text class="nickName">{{court.players[pos]}}</text>
+              </view>
+            </view>
+            <block wx:if='{{edit_pos!=pos && pos==0}}'>
+              <checkbox-group style="margin-top: 5px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
+                <checkbox checked='{{pos==court.who_serve}}' disabled='{{!court.serve}}'>发球</checkbox>
+              </checkbox-group>
+            </block>
+
+            <block wx:if="{{edit_pos==pos}}">
+              <view style="border:1px dashed #336699;">
+                <view style="display: flex; flex-direction: column;">
+                  <block wx:for="{{court.all_players}}" wx:for-item="player" wx:key="*this">
+                    <block wx:if="{{player!=court.players[pos]}}">
+                      <view class="avartar_container" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'>
+                        <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                        <text class="nickName">{{player}}</text>
+                      </view>
+                    </block>
+                  </block>
+                  <block wx:if="{{court.all_players.length == 0}}">
+                    <view> 没有球员可供选择！</view>
+                  </block>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view wx:if="{{court.mode==2}}" style="border: 1px solid grey; margin-bottom: 5px;">
+      <view class="teamblock_row">
+        <block wx:for="{{[2,1]}}" wx:for-item="pos" wx:key="*this">
+          <view style="flex:1; display: flex; flex-direction: column; margin: 5px;">
+            <view data-position='{{pos}}' bindtap="onClickPlayer">
+              <view> {{(pos+1) + "号位"}} </view>
+              <view class="avartar_container">
+                <image class="avartar" src='{{court.players_map[court.players[pos]].user.userInfo.avatarUrl? court.players_map[court.players[pos]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                <text class="nickName">{{court.players[pos]}}</text>
+              </view>
+            </view>
+
+            <block wx:if="{{edit_pos==pos}}">
+              <view style="border:1px dashed #336699;">
+                <view style="display: flex; flex-direction: column;">
+                  <block wx:for="{{court.all_players}}" wx:for-item="player" wx:key="*this">
+                    <block wx:if="{{player!=court.players[pos]}}">
+                      <view class="avartar_container" bindtap="onChoosePlayer" data-position='{{pos}}' data-player='{{player}}'>
+                        <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                        <text class="nickName">{{player}}</text>
+                      </view>
+                    </block>
+                  </block>
+                  <block wx:if="{{court.all_players.length == 0}}">
+                    <view> 没有球员可供选择！</view>
+                  </block>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+      </view>
+
+      <view class="teamblock_row">
+        <block wx:for="{{[3,0]}}" wx:for-item="pos" wx:key="*this">
+          <view style="flex:1; display: flex; flex-direction: column;margin: 5px;">
+            <view data-position='{{pos}}' bindtap="onClickPlayer">
+              <view> {{(pos+1) + "号位"}} </view>
+              <view class="avartar_container">
+                <image class="avartar" src='{{court.players_map[court.players[pos]].user.userInfo.avatarUrl? court.players_map[court.players[pos]].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                <text class="nickName">{{court.players[pos]}}</text>
+              </view>
+            </view>
+            <block wx:if='{{edit_pos!=pos && pos==0}}'>
               <checkbox-group style="margin-top: 5px;" bindchange="onCheckWhoServe" data-position='{{pos}}'>
                 <checkbox checked='{{pos==court.who_serve}}' disabled='{{!court.serve}}'>发球</checkbox>
               </checkbox-group>

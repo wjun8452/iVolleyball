@@ -75,35 +75,35 @@ export enum GameStatus {
 type PlayerRecord = Record<string, VPlayer>; //队员姓名 --> 头像等信息
 
 export class VolleyCourt {
-  /** 我方得分 */
-  myScore: number = 0;
-  /** 对方得分 */
-  yourScore: number = 0;
-  /** 所有队员，包括不在场上的 */
-  all_players: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2", "自由人"];
-  /** 用于快速索引的成员id */
-  players_id: string[] = [];
-  /** 名字关联的成员详细信息 */
-  players_map: PlayerRecord = { "接应" : new VPlayer("接应"), "二传" : new VPlayer("二传"), "副攻1": new VPlayer("副攻1"), "主攻1": new VPlayer("主攻1"), "主攻2": new VPlayer("主攻2"), "副攻2": new VPlayer("副攻2"), "自由人": new VPlayer("自由人")};
-  /** 是否启用自由人 */
-  is_libero_enabled: boolean = false;
-  /** 自由人在all_players中的序号 */
-  libero: number = -1;
-  /** 自由人第一替换对象在all_players中的序号  */
-  libero_replacement1: number = -1;
-  /** 自由人第二替换对象在all_players中的序号, 两个序号可以一样 */
-  libero_replacement2: number = -1;
-  /** 是否固定二传  */
-  is_setter_enabled: boolean = false;
-  /** 二传在all_players中的序号 */
-  setter: number = -1;
-  /** 场上队员表，表下标是球场的位置，0: 后排最右即1号位(发球位置), 1: 2号位,  表中字符串是队员的名字 */
+  /** 比赛模式，0：硬排球，1：5人气排球，2：4人气排 */
+  mode: number = 0;
+  /** 场上队员人数，硬排球固定为6，气排球可以是5或者4 */
+  playerCount: number = 6;
+  /** 场上队员名字，表下标是球场的位置，0: 后排最右即1号位(发球位置), 1: 2号位, 表中字符串是队员的名字，本数组有效的长度为playerCount */
   players: [string, string, string, string, string, string] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"];
-  /** 场上6个队员当前可以统计的项目的数组，表下标是球场的位置（含义同players），每个元素表示一个队员，每个队员也有多个可用的统计项 */
+  /** 场上队员微信openid，与players对应 */
+  players_id: string[] = [];
+  /** 场上队员详细信息，key是队员名字 */
+  players_map: PlayerRecord = { "接应": new VPlayer("接应"), "二传": new VPlayer("二传"), "副攻1": new VPlayer("副攻1"), "主攻1": new VPlayer("主攻1"), "主攻2": new VPlayer("主攻2"), "副攻2": new VPlayer("副攻2"), "自由人": new VPlayer("自由人") };
+  /** 所有队员的名字，包括不在场上的 */
+  all_players: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2", "自由人"];
+  /** 是否启用自由人，仅对硬排有效 */
+  is_libero_enabled: boolean = false;
+  /** 自由人在all_players中的序号，仅对硬排有效  */
+  libero: number = -1;
+  /** 自由人第一替换对象在all_players中的序号，仅对硬排有效   */
+  libero_replacement1: number = -1;
+  /** 自由人第二替换对象在all_players中的序号, 两个序号可以一样，仅对硬排有效  */
+  libero_replacement2: number = -1;
+  /** 是否固定二传，仅对硬排有效   */
+  is_setter_enabled: boolean = false;
+  /** 二传在all_players中的序号，仅对硬排有效  */
+  setter: number = -1;
+  /** 场上队员当前可以统计的项目，下标与players对应，0号元素表示1号位 */
   play_items: [PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[]] = [[], [], [], [], [], []];
-  /** 场上队员可以统计的项目的分类， category for items available for the player */
+  /** 场上队员当前可以统计的项目的分类，下标与players对应，0号元素表示1号位 */
   play_item_cats: [StatCat[], StatCat[], StatCat[], StatCat[], StatCat[], StatCat[]] = [[], [], [], [], [], []];
-  /** 全部的统计项目  */
+  /** 全部统计项目的分类  */
   cat_all: StatCat[] = [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception];
   /** 用户设置的，允许被统计的目标球员 */
   player_allowed: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"];
@@ -115,8 +115,12 @@ export class VolleyCourt {
   who_serve: number = -1;
   /** true: 我发发球， false: 我方接发球 */
   serve: boolean = false;
-  /** true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6 */
+  /** true: 1号和2号轮换，3号与6号轮换，4号与5号轮换， false: 正常转位，6->5->4->3->2->1->6，仅对硬排有效 */
   front_back_mode: boolean = true;
+  /** 我方得分 */
+  myScore: number = 0;
+  /** 对方得分 */
+  yourScore: number = 0;
   /** 我方队伍名称 */
   myTeam: string = "我方";
   /** 对方队伍名称 */
@@ -127,7 +131,7 @@ export class VolleyCourt {
   _id: string | null = null; //match's id
   /** 1 比赛进行中, 0 比赛结束了 */
   status: GameStatus = GameStatus.OnGoing;
-  /** 局分上限 */
+  /** 局分上限，由用户自由设置，todo：应根据场次和mode自动设置 */
   total_score: number = 25; //唐朝 〟咖啡®🏝 建议增加每局的总分设置，现在一局必须要打到25分才可以, 2020-06-04 18:28:58 联系方式: 17717693609
   /** 比赛创建的时间 */
   create_time: string = "";
@@ -137,14 +141,19 @@ export class VolleyCourt {
   latlon: any = { latitude: 0, longitude: 0 };
   place: string = "";
   address: string = "";
-  
+
   update_time: string = "";
   /** 比赛双方球队的id */
-  myteamId:string = ""; //我方的teamId
-  yourteamId:string = ""; //对方的teamId
+  myteamId: string = ""; //我方的teamId
+  yourteamId: string = ""; //对方的teamId
 
-  constructor(userID: string, placeInfo?: PlaceInfo) {
+  /** mode: 硬排还是气排 */
+  constructor(userID: string, mode?: number,  placeInfo?: PlaceInfo) {
     this._openid = userID
+
+    if (mode) {
+      this.mode = mode
+    }
 
     if (placeInfo) {
       Object.assign(this, placeInfo);
@@ -175,8 +184,8 @@ export class VolleyCourt {
     }
   }
 
-  createStatItem(player: string, item_cat: StatCat, item_name: StatName, item_score: number, swap: boolean, myScore:number, yourScore:number): StatItem {
-    let obj:StatItem = {
+  createStatItem(player: string, item_cat: StatCat, item_name: StatName, item_score: number, swap: boolean, myScore: number, yourScore: number): StatItem {
+    let obj: StatItem = {
       player: player,
       category: item_cat,
       item: item_name,
@@ -212,12 +221,28 @@ export class VolleyCourt {
   }
 
   private _checkLibero() {
+    if (this.mode == 0) {
+      this._checkLibero_yingpai()
+    } else if (this.mode == 1) {
+      this._checkLibero_qipai();
+    } else if (this.mode == 2) {
+      this._checkLibero_qipai();
+    } else {
+
+    }
+  }
+
+  private _checkLibero_qipai() {
+
+  }
+
+  private _checkLibero_yingpai() {
     var serve = this.serve;
     var who_serve = this.who_serve;
 
     if (!this.is_libero_enabled) return;
-    if (this.libero==-1) return;
-    if (this.libero_replacement1==-1 && this.libero_replacement2==-1) return;
+    if (this.libero == -1) return;
+    if (this.libero_replacement1 == -1 && this.libero_replacement2 == -1) return;
 
     //如果自由人转到前排，则必须被换下
     for (var i = 1; i <= 3; i++) {
@@ -267,7 +292,41 @@ export class VolleyCourt {
     console.log("--- add 1 score ----")
   }
 
-  private _rotate() { //only called when we win the score or for adjust court
+  private _rotate() {
+    if (this.mode == 0) {
+      this._rotate_yingpai();
+    } else if (this.mode == 1) {
+      this._rotate_qipai5();
+    } else if (this.mode == 2) {
+      this._rotate_qipai4();
+    } else {
+      console.log("不支持的模式")
+    }
+  }
+
+
+  private _rotate_qipai5() {
+    let players = this.players;
+    this.who_serve = 0;
+    var player = players[4];
+    players[4] = players[0];
+    players[0] = players[1];
+    players[1] = players[2];
+    players[2] = players[3];
+    players[3] = player;
+  }
+
+  private _rotate_qipai4() {
+    let players = this.players;
+    this.who_serve = 0;
+    var player = players[3];
+    players[3] = players[0];
+    players[0] = players[1];
+    players[1] = players[2];
+    players[2] = player;
+  }
+
+  private _rotate_yingpai() { //only called when we win the score or for adjust court
     var players = this.players;
     var who_serve = this.who_serve;
 
@@ -337,7 +396,7 @@ export class VolleyCourt {
     let cats = this.play_item_cats;
     let players = this.players
     let libero = this.players.indexOf(this.all_players[this.libero]);
-    let cat_allowed =  this.cat_allowed;
+    let cat_allowed = this.cat_allowed;
     let player_allowed = this.player_allowed;
 
     let i: number = 0;
@@ -407,7 +466,29 @@ export class VolleyCourt {
     }
   }
 
+
   addScoreRotate() {
+    if (this.mode == 0) {
+      this._addScoreRotate_yingpai();
+    } else if (this.mode == 1) {
+      this._addScoreRotate_qipai();
+    } else if (this.mode == 2) {
+      this._addScoreRotate_qipai();
+    }
+  }
+
+  _addScoreRotate_qipai() {
+    var serve = this.serve
+    this.myScore = 1 + this.myScore;
+    this.stat_items.push(this.createStatItem("", StatCat.Null, StatName.NormalWin, 1, !serve, this.myScore, this.yourScore));
+
+    this.serve = true;
+    this._rotate();
+    this._checkLibero();
+    this.updateAvailableItems();
+  }
+
+  _addScoreRotate_yingpai() {
     var serve = this.serve
     this.myScore = 1 + this.myScore;
     this.stat_items.push(this.createStatItem("", StatCat.Null, StatName.NormalWin, 1, !serve, this.myScore, this.yourScore));
@@ -435,6 +516,7 @@ export class VolleyCourt {
     var player = this.players[position];
     var item = this.play_items[position][i];
     var serve = this.serve;
+    let mode = this.mode;
 
     var swap = false;
 
@@ -458,14 +540,13 @@ export class VolleyCourt {
     this.stat_items.push(this.createStatItem(player, item.category, item.name, item.score, swap, this.myScore, this.yourScore));
 
     if (item.score == 1) {
-      //next position
-      if (!serve) {
-        this.serve = true;
+      this.serve = true;
+      //rotate and serve
+      if ((mode == 0 && !serve) || (mode==1) || (mode==2)) {
         this._rotate();
         this._checkLibero();
         this.updateAvailableItems();
       }
-
     } else if (item.score == -1) {
       if (serve) {
         this.serve = false;
@@ -475,7 +556,58 @@ export class VolleyCourt {
     }
   }
 
-  private _prevPosition(stat: StatItem) { //called when pop stat
+
+
+  private _prevPosition(stat: StatItem) {
+    if (this.mode == 0) {
+      this._prevPosition_yingpai(stat)
+    } else if(this.mode == 1) {
+      this._prevPosition_qipai5(stat)
+    } else if(this.mode == 2) {
+      this._prevPosition_qipai4(stat)
+    }
+  }
+
+  private _prevPosition_qipai5(stat: StatItem) {
+    var players = this.players;
+    if (stat.score > 0) {
+        var player = players[4];
+        players[4] = players[3];
+        players[3] = players[2];
+        players[2] = players[1];
+        players[1] = players[0];
+        players[0] = player;
+    }
+
+    if (stat.swapServe && stat.score > 0) { //刚刚得分获得发球权
+      this.serve = false;
+    }
+
+    if (stat.swapServe && stat.score < 0) { //刚刚失分失去发球权
+      this.serve = true;
+    }
+  }
+
+  private _prevPosition_qipai4(stat: StatItem) {
+    var players = this.players;
+    if (stat.score > 0) {
+        var player = players[3];
+        players[3] = players[2];
+        players[2] = players[1];
+        players[1] = players[0];
+        players[0] = player;
+    }
+
+    if (stat.swapServe && stat.score > 0) { //刚刚得分获得发球权
+      this.serve = false;
+    }
+
+    if (stat.swapServe && stat.score < 0) { //刚刚失分失去发球权
+      this.serve = true;
+    }
+  }
+
+  private _prevPosition_yingpai(stat: StatItem) { //called when pop stat
     var players = this.players;
     var who_serve = this.who_serve;
 
@@ -575,5 +707,22 @@ export class VolleyCourt {
     this.myScore = 0;
     this.yourScore = 0;
     this.stat_items = [];
+  }
+
+  /** mode 0-硬排， 1-5人气排， 2-4人气排 */
+  setMode(mode: number) {
+    this.mode = mode;
+    if (this.mode == 0) {
+      this.playerCount = 6;
+      this.total_score = 25;
+    } else if (this.mode == 1) {
+      this.playerCount = 5;
+      this.total_score = 21;
+    } else if (this.mode == 2) {
+      this.playerCount = 4;
+      this.total_score = 21;
+    } else {
+      console.error("非法排球模式!")
+    }
   }
 }

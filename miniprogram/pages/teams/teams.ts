@@ -142,6 +142,8 @@ Page({
 
       let teamRepo = new TeamRepo();
 
+      console.log("load teams by owner: ", openid)
+
       teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam[] | null) => {
         this.data.myteams = teams;
         this.setData({ myteams: teams })

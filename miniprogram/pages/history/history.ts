@@ -3,7 +3,7 @@
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
 import { GameStatus, VolleyCourt } from "../../bl/VolleyCourt";
-import { FriendsCourtRepo, onMatchesFeched, VolleyRepository2 } from "../../bl/VolleyRepository";
+import { FriendsCourtRepo, onMatchesFeched, JointVolleyRepository } from "../../bl/VolleyRepository";
 
 const App = getApp()
 
@@ -17,7 +17,7 @@ class HistoryPageData {
 
 class HistoryPage extends BasePage {
   data: HistoryPageData = new HistoryPageData();
-  repo: VolleyRepository2 = new VolleyRepository2();
+  repo: JointVolleyRepository = new JointVolleyRepository();
 
   onDataFetched: onMatchesFeched = function (this: HistoryPage, courts: VolleyCourt[]) {
     console.log("courts:", courts)

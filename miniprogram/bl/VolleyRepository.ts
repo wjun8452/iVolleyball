@@ -241,7 +241,8 @@ export class VolleyRepository {
 
 
   private newLocalCourt(): VolleyCourt {
-    let court = this.placeInfo ? new VolleyCourt(this.userID, this.placeInfo) : new VolleyCourt(this.userID);
+    let mode = this.getUserPreferenceCourtMode();
+    let court = this.placeInfo ? new VolleyCourt(this.userID, mode, this.placeInfo) : new VolleyCourt(this.userID, mode);
     return court;
   }
 
@@ -310,6 +311,20 @@ export class VolleyRepository {
       this._uploadMatch(court, true);
     }
   }
+
+  setUserPreferenceCourtMode(mode: number) {
+    wx.setStorageSync("mode", mode);
+  }
+
+  getUserPreferenceCourtMode() : number {
+    let mode = wx.getStorageSync("mode")
+    console.log("load mode=", mode, typeof(mode))
+    if (typeof(mode)=="number") {
+      return mode;
+    } else {
+      return 0;
+    }
+  }
 }
 
 export interface onMatchesFeched {
@@ -317,7 +332,7 @@ export interface onMatchesFeched {
 }
 
 
-export class VolleyRepository2 {
+export class JointVolleyRepository {
   fetchJointMatches(openid: string, maxcount: number, callback: onMatchesFeched) {
     let matches: VolleyCourt[] = [];
     const db = wx.cloud.database({
@@ -483,5 +498,4 @@ export class FriendsCourtRepo {
   getCourts(): VolleyCourt[] {
     return this.courts;
   }
-
 }

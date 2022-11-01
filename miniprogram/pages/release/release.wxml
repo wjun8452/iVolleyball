@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v2022.11.01 增加5人气排球、4人气排球功能，可在技术统计设置页面选择开启</text>
+  </view>
+
+  <view class="block1">
 		<text style="margin-left: 5px;">v2022.10.27 帮助页面增加微信二维码，点击识别可以添加作者微信，便于用户向作者反馈建议</text>
   </view>
 

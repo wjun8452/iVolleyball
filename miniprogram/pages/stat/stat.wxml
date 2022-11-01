@@ -9,7 +9,7 @@
 		<text style="flex:1;text-align: center; "> {{court.yourTeam}} </text>
 	</view>
 
-	<view style="flex:10;" class="court">
+	<view wx:if="{{court.mode==0}}" style="flex:10;" class="court">
 		<view style="flex:1;" class="player_row">
 			<block wx:for="{{[3,2,1]}}" wx:key="*this">
 				<view style="flex:1;" class="player">
@@ -19,6 +19,40 @@
 		</view>
 		<view style="flex:1;" class="player_row">
 			<block wx:for="{{[4,5,0]}}" wx:key="*this">
+				<view style="flex:1;" class="player">
+					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
+				</view>
+			</block>
+		</view>
+	</view>
+
+  <view wx:if="{{court.mode==1}}" style="flex:10;" class="court">
+		<view style="flex:1;" class="player_row">
+			<block wx:for="{{[3,2,1]}}" wx:key="*this">
+				<view style="flex:1;" class="player">
+					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
+				</view>
+			</block>
+		</view>
+		<view style="flex:1;" class="player_row">
+			<block wx:for="{{[4,0]}}" wx:key="*this">
+				<view style="flex:1;" class="player">
+					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
+				</view>
+			</block>
+		</view>
+	</view>
+
+  <view wx:if="{{court.mode==2}}" style="flex:10;" class="court">
+		<view style="flex:1;" class="player_row">
+			<block wx:for="{{[2,1]}}" wx:key="*this">
+				<view style="flex:1;" class="player">
+					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
+				</view>
+			</block>
+		</view>
+		<view style="flex:1;" class="player_row">
+			<block wx:for="{{[3,0]}}" wx:key="*this">
 				<view style="flex:1;" class="player">
 					<template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items:court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats:court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled}}" />
 				</view>

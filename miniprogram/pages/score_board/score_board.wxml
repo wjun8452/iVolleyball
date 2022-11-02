@@ -37,7 +37,7 @@
           <view style="display: flex; flex-direction: row; align-items: center;">
             <view style="display: flex; flex-direction: column; align-items: center; border: solid 0px;">
               <block wx:if="{{court._id}}">
-                <image style="height: 28px; width: 28px; border: solid 0px;" src="../../images/cloud.svg" class="status_icon"> </image>
+                <image style="height: 28px; width: 28px; border: solid 0px;" src="../../images/cloud.svg"> </image>
               </block>
               <block wx:if="{{!court._id}}">
                 <image style="height: 28px; width: 28px; border: solid 0px;"  src="../../images/nocloud.svg"> </image>

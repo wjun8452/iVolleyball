@@ -1,3 +1,4 @@
+//微信用户
 export class VUser {
   openid: string; //用户的微信openid
   userInfo: WechatMiniprogram.UserInfo; //用户的微信用户信息
@@ -16,10 +17,11 @@ export class VUser {
   }
 }
 
+//球员
 export class VPlayer {
   user: VUser = new VUser(); //绑定的微信账号信息
   name: string = ""; //球员名称，若未指定，则同微信昵称，相当于微信的备注
-  number: string = ""; //秋衣号码
+  number: string = ""; //球衣号码
   constructor(name: string) {
     this.name = name;
   }
@@ -27,7 +29,7 @@ export class VPlayer {
 
 const DEFAULT_PLAYERS: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"]; //不再使用
 
-
+//球队
 export class VTeam {
   _openid: string; //team owner, reserved by DB
   _id: string; //team id, reserved by DB

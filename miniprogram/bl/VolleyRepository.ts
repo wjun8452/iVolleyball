@@ -333,8 +333,8 @@ export interface onMatchesFeched {
 
 
 export class JointVolleyRepository {
-  fetchJointMatches(openid: string, maxcount: number, callback: onMatchesFeched) {
-    let matches: VolleyCourt[] = [];
+  fetchJointMatches(openid: string, maxcount: number, callback: (matches: VolleyCourt[], success: boolean) => void) {
+    
     const db = wx.cloud.database({
       env: this.env
     })
@@ -358,6 +358,7 @@ export class JointVolleyRepository {
       .get({
         success(res) {
           console.log("[db.vmatch.get] players_id: ", openid, "res:", res)
+          let matches: VolleyCourt[] = [];
           for (let i in res.data) {
             let t: Date = <Date><unknown>(res.data[i].create_time)
 
@@ -380,11 +381,11 @@ export class JointVolleyRepository {
             }
             matches.push(res.data[i])
           }
-          callback(matches)
+          callback(matches, true)
         },
         fail(res) {
           console.log(res)
-          callback(matches);
+          callback([], false);
         }
       })
   }
@@ -412,8 +413,8 @@ export class JointVolleyRepository {
     return saved;
   }
 
-  fetchMatches(openid: string, maxcount: number, callback: onMatchesFeched) {
-    let matches: VolleyCourt[] = [];
+  fetchMatches(openid: string, maxcount: number, callback: (matches: VolleyCourt[], success: boolean) => void) {
+   
     const db = wx.cloud.database({
       env: this.env
     })
@@ -437,6 +438,7 @@ export class JointVolleyRepository {
       .get({
         success(res) {
           console.log("[db.vmatch.get] openid", openid, "res:", res)
+          let matches: VolleyCourt[] = [];
           for (let i in res.data) {
             let t: Date = <Date><unknown>(res.data[i].create_time)
             if (typeof(t) === "string") {
@@ -458,11 +460,11 @@ export class JointVolleyRepository {
             }
             matches.push(res.data[i])
           }
-          callback(matches)
+          callback(matches, true)
         },
         fail(res) {
           console.log(res)
-          callback(matches);
+          callback([], false);
         }
       })
   }

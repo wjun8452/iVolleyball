@@ -33,11 +33,11 @@ App({
             callback(globalData.openid, true)
             console.log('[wx.cloud.login] openid:', globalData.openid)
           } else {
-            callback("null", false)
+            callback("", false)
           }
         },
         fail: err => {
-          callback("null", false)
+          callback("", false)
           console.error('[wx.cloud.login] failed!', err)
         }
       })

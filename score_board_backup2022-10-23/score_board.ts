@@ -9,8 +9,15 @@ import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository"
 let globalData: GlobalData = getApp().globalData
 
 class ScoreBoardPageData {
-  /** 标题在屏幕左边 */
-  titleLeft: boolean = false;
+  /** 标题栏高度 */
+  titleHeight: number = 60;
+  /** 分数字体大小 */
+  scoreTextFontSize: number = 0;
+  /** 屏幕高度 */
+  screenHeight: number = 0;
+  /** 屏幕宽度 */
+  screenWidth: number = 0;
+
   /** 屏幕能显示的最多的分数个数，显示太多，会影响工具栏 */
   maxStatItem: number = 16;
   /** true：人面对屏幕，屏幕左边显示我方得分。team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量  */
@@ -36,7 +43,6 @@ class ScoreBoardPage extends BasePage {
   repo: VolleyRepository | null = null;
 
   option_matchID: string | null = null;
-  option_createNew: boolean = false; //不管是否有缓存，强制创建一个新的比赛
 
   constructor() {
     super()
@@ -92,27 +98,11 @@ class ScoreBoardPage extends BasePage {
       this.option_matchID = options._id;
     }
 
-    if (options && options.createNew==="true") {
-      this.option_createNew = true;
-    }
-
-    //加载本地设置
     try {
-      //FTUE
       let value: string = wx.getStorageSync("scoreBoard.firstTimeUse")
       if (value === "false") {
         this.data.firstTimeUse = false;
       }
-
-      value = wx.getStorageSync("scoreBoard.titleLeft")
-      console.log("scoreBoard.titleLeft", value)
-      if (value === "false") {
-        this.data.titleLeft = false;
-      } else {
-        this.data.titleLeft = true;
-      }
-
-      this.setData({firstTimeUse: this.data.firstTimeUse, titleLeft: this.data.titleLeft})
     } catch (e) {
       console.error(e)
     }
@@ -122,10 +112,15 @@ class ScoreBoardPage extends BasePage {
     wx.showLoading({
       title: "正在加载"
     })
+
+    this.calculateViewSize();
+
     getApp().getOpenId((openid: string, success: boolean) => {
       if (success) {
         this.data.globalData = getApp().globalData;
-        this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo, this.option_createNew)
+        this.setData({globalData: this.data.globalData})
+        this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo);
+        this.repo.watchMatch();
       } else {
         wx.hideLoading()
         wx.reportEvent && wx.reportEvent("wxdata_perf_monitor", {
@@ -211,8 +206,8 @@ class ScoreBoardPage extends BasePage {
       return;
     }
 
-    if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右   
-      if ((this.data.titleLeft && changeX < 0) || (!this.data.titleLeft && changeX > 0) ) { //加分
+    if (change_x_abs < change_y_abs) { //上下滑动幅度大于左右   
+      if (changeY < 0) { //加分
         mine ? this.data.court!.addScoreRotate() : this.data.court!.looseScoreRotate();
       } else { //减分
         var item = this.data.court!.getTopItem()
@@ -225,7 +220,7 @@ class ScoreBoardPage extends BasePage {
         }
       }
       this.updateMatch();
-    } else if (change_y_abs > this.data.globalData.sysInfo.windowHeight * 2 / 3) { //从左滑到右
+    } else if (change_x_abs > this.data.screenWidth * 2 / 3) { //从左滑到右
       this.onReset();
     }
   }
@@ -320,13 +315,6 @@ class ScoreBoardPage extends BasePage {
     }
   }
 
-  onRotate = function (this: ScoreBoardPage) {
-    this.data.titleLeft = !this.data.titleLeft;
-    this.setData({titleLeft: this.data.titleLeft})
-    wx.setStorageSync("scoreBoard.titleLeft", this.data.titleLeft.toString())
-    console.log("save", this.data.titleLeft.toString())
-  }
-
   onShareAppMessage = function (this: ScoreBoardPage) {
     let path: string = '/pages/score_board/score_board';
 
@@ -344,6 +332,17 @@ class ScoreBoardPage extends BasePage {
         })
       }
     }
+  }
+
+  calculateViewSize = function (this:ScoreBoardPage) {
+    let sysInfo = wx.getSystemInfoSync();
+    this.data.screenWidth = sysInfo.screenWidth;
+    this.data.screenHeight = sysInfo.screenHeight;
+    let h = this.data.screenHeight-this.data.titleHeight;
+    let w = this.data.screenWidth/2;
+    this.data.scoreTextFontSize = h > w ? (w-5) : (h-5);
+    this.data.scoreTextFontSize = 100;
+    this.setData({screenWidth:this.data.screenWidth,  screenHeight:this.data.screenHeight, scoreTextFontSize:this.data.scoreTextFontSize})
   }
 }
 

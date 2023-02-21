@@ -143,6 +143,13 @@ class HistoryPage extends BasePage {
       this.loadData();
     }
   }
+
+  onCreate = function (this: HistoryPage) {
+    console.log("hhaahah")
+    wx.navigateTo({
+      url: "../score_board/score_board?createNew=true",
+    })
+  }
 }
 
 Page(new HistoryPage())

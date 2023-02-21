@@ -1,19 +1,20 @@
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
     <view style="display: flex; flex-direction: row;align-items: center;">
-      <image src="../../images/board_blue.svg" style="width:20px;height:20px"></image>
+      <image src="../../images/board.svg" style="width:20px;height:20px"></image>
       <text style="margin-left: 5px;">比赛记分</text>
     </view>
-    <text style="margin-left: 15px;"> 加分 - 单指从下往上划；</text>
-    <text style="margin-left: 15px;"> 减分 - 单指从上往下划；</text>
-    <text style="margin-left: 15px;"> 分数归0 - 单指从左划到右；</text>
-    <text style="margin-left: 15px;"> 分享给好友 - 点击右上角...可以分享页面给好友</text>
-    <text style="margin-left: 15px;"> 分享后好友可以查看比分，技术统计报告等信息</text>
+    <text style="margin-left: 15px;"> 加分 - 手指在屏幕分数向上滑动 </text>
+    <text style="margin-left: 15px;"> 减分 - 手指在屏幕分数向下滑动 </text>
+    <text style="margin-left: 15px;"> 分数快速归0 - 手指从左划到右；</text>
+    <text style="margin-left: 15px;"> 分享给好友 - 点击右上角...可以分享页面给好友，分享后好友可以随时查看计分进展</text>
+    <text style="margin-left: 15px;"> 程序自动打开上次的计分，如果想强制开始新的计分，可在历史记录中点击新建按钮 </text>
+
   </view>
 
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
     <view style="display: flex; flex-direction: row; align-items: center;">
-      <image src="../../images/cloud_blue.svg" style="width:20px;height:20px"></image>
+      <image src="../../images/cloud.svg" style="width:20px;height:20px"></image>
       <text style="margin-left: 5px;">两种模式</text>
     </view>
     <text style="margin-left: 15px;"> 记分数据默认保存在本机，上传(分享)后可以保存在云端，进入云端模式后流畅度可能受网络因素的影响 </text>
@@ -24,27 +25,38 @@
       <image src="../../images/stat.svg" style="width:15px;height:15px"></image>
       <text style="margin-left: 5px;">技术统计及设置</text>
     </view>
-    <text style="margin-left: 15px;"> 在记分面板上方可以进入技术统计页面 </text>
-    <text style="margin-left: 15px;"> 支持硬排和气排球，场上人员布置，自由人等设置 </text>
+    <text style="margin-left: 15px;"> 比赛记分->技术统计，点击报告按钮可以查看队员的统计数字 </text>
+    <text style="margin-left: 15px;"> 技术统计->设置，可设置队名，硬排、气排球，场上位置，统计项目，统计球员等</text>
     <text style="margin-left: 15px;"> 减少统计项目或者只针对某个队员，可以大大简化统计工作；</text>
   </view>
 
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
     <view style="display: flex; flex-direction: row; align-items: center;">
-      <image src="../../images/history_blue.svg" style="width:20px;height:20px"></image>
-      <text style="margin-left: 5px;">历史记录：</text>
+      <image src="../../images/history.svg" style="width:20px;height:20px"></image>
+      <text style="margin-left: 5px;">历史记录</text>
     </view>
-    <text style="margin-left: 15px;"> 此处可以查看近期上传的比赛记录</text>
+    <text style="margin-left: 15px;"> 此处可以查看近期上传的比赛记录，也可以新建一个比赛记分</text>
     <text style="margin-left: 15px;"> 左滑可以删除自己创建的比赛 </text>
+  </view>
+
+
+  <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+    <view style="display: flex; flex-direction: row; align-items: center;">
+      <image src="../../images/team.svg" style="width:20px;height:20px"></image>
+      <text style="margin-left: 5px;">球队管理</text>
+    </view>
+    <text style="margin-left: 15px;"> 此处可以创建队伍，邀请好友加入自己的队伍</text>
+    <text style="margin-left: 15px;"> 左滑可以删除自己创建的队伍 </text>
   </view>
 
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
     <text style="margin-left: 5px;">... 建议与反馈：</text>
     <text style="margin-left: 15px;"> 点击小程序右上角...提出建议与反馈</text>
     <view style="margin-left: 15px; display: flex; flex-direction: row; align-items: center ">
-      <view>联系作者：</view>
-      <image src="../../images/mywxcode.jpg" style="width: 20px; height: 20px;" bindtap="gotoQRCode"></image>
-      <view>（点击放大后长按识别二维码）</view>
+      <view>点击下图，放大后长按，添加作者微信</view>
+    </view>
+    <view style="margin-left: 15px; ">
+      <image src="../../images/mywxcode.jpg" style="width: 40px; height: 40px;" bindtap="gotoQRCode"></image>
     </view>
   </view>
 </view>

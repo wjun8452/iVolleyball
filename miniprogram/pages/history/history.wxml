@@ -5,6 +5,8 @@
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
       <view> {{last_court ? "上次打开的比赛" : "您还未打开过比赛记录" }}</view>
+      <view> <button size="mini" bindtap="onCreate">新建</button>
+      </view>
     </view>
 
     <template wx:if="{{last_court}}" is="matchblock" data="{{court: last_court}}" />
@@ -13,7 +15,7 @@
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
-      <view> {{matches.length > 0 ? "我创建的比赛" : "我还没有创建任何比赛" }}</view>
+      <view> {{matches.length > 0 ? "我上传的比赛" : "我还没有上传任何比赛" }}</view>
       <view style="font-size: 12px"> 显示最近8个 </view>
     </view>
 

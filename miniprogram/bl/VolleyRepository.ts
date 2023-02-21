@@ -38,8 +38,9 @@ export class VolleyRepository {
    * 调用者需要使用 updateMatch(), reset() 等方法将对象的状态保存到本地缓存或云端。每次存储动作都会触发 callback 调用以通知使用者，
    * @param callback 接收变化通知的回调方法
    * @param matchID 除非用户指定比赛的ID，为了自动还原用户上次保存的对象，本类将首先从本地缓存中重构对象，如果发现缓存中的对象来自云端，则会从云端更新该对象
+   * @param createNew 是否强制创建一个新的比赛
    */
-  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo) {
+  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?:boolean) {
     this.callback = callback;
     this.userID = userID;
     if (matchID) {
@@ -48,29 +49,37 @@ export class VolleyRepository {
     if (placeInfo) {
       this.placeInfo = placeInfo;
     }
-    this.watchMatch();
+    if (createNew) {
+      this.watchMatch(createNew);
+    } else {
+      this.watchMatch(false);
+    }
   }
 
   /** todo: 这个地方要改 */
-  private watchMatch() {
-    //如果指定了比赛的ID，则直接打开这个比赛，不管它是否在本地缓存内
-    if (this.matchID) {
-      this.watchOnlineMatch(false, false)
-    }
-    //否则会从本地缓存中加载上次存储的比赛
-    else {
-      let court = this.loadFromLocal();
-      //如果本地缓存的是自己的进行中的比赛，则打开它
-      if (court._openid === this.userID && court.status == GameStatus.OnGoing) {
-        if (court._id) { //打开一个网络比赛
-          this.matchID = court._id;
-          this.watchOnlineMatch(false, false);
+  private watchMatch(createNew: boolean) {
+    if (createNew) {
+      this.watchLocalMatch(this.newLocalCourt());
+    } else {
+      //如果指定了比赛的ID，则直接打开这个比赛，不管它是否在本地缓存内
+      if (this.matchID) {
+        this.watchOnlineMatch(false, false)
+      }
+      //否则会从本地缓存中加载上次存储的比赛
+      else {
+        let court = this.loadFromLocal();
+        //如果本地缓存的是自己的进行中的比赛，则打开它
+        if (court._openid === this.userID && court.status == GameStatus.OnGoing) {
+          if (court._id) { //打开一个网络比赛
+            this.matchID = court._id;
+            this.watchOnlineMatch(false, false);
+          }
+          else { //不是网络比赛，那么就继续在本地操作
+            this.watchLocalMatch(court);
+          }
+        } else {
+          this.watchLocalMatch(this.newLocalCourt());
         }
-        else { //不是网络比赛，那么就继续在本地操作
-          this.watchLocalMatch(court);
-        }
-      } else {
-        this.watchLocalMatch(this.newLocalCourt());
       }
     }
   }

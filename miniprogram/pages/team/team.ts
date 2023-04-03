@@ -165,6 +165,7 @@ class UsersPage extends BasePage {
     wx.getUserProfile({
       desc: '用于完善球队的信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: (res) => {
+        console.log("getUserProfile success")
         this.data.user.userInfo = res.userInfo
         this.data.hasUserInfo = true;
         if (this.data.team && this.data.isMyTeam) {
@@ -181,6 +182,7 @@ class UsersPage extends BasePage {
 
   getUserInfo = function (this: UsersPage, e: any) {
     // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
+    console.log("getUserInfo clicked")
     this.data.user.userInfo = e.detail.userInfo;
     this.data.hasUserInfo = true;
     this.setData(this.data);

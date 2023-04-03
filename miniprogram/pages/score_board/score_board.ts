@@ -54,6 +54,7 @@ class ScoreBoardPage extends BasePage {
     this.data.team_name[0] = this.data.leftMode ? this.data.court.myTeam : this.data.court.yourTeam
     this.data.team_name[1] = this.data.leftMode ? this.data.court.yourTeam : this.data.court.myTeam
     this.data.isOwner = this.data.court._id ? this.data.globalData.openid === this.data.court._openid : true;
+    
 
     //更新界面
     this.setData(this.data)
@@ -92,7 +93,7 @@ class ScoreBoardPage extends BasePage {
       this.option_matchID = options._id;
     }
 
-    if (options && options.createNew==="true") {
+    if (options && options.createNew == "true") {
       this.option_createNew = true;
     }
 
@@ -126,6 +127,7 @@ class ScoreBoardPage extends BasePage {
       if (success) {
         this.data.globalData = getApp().globalData;
         this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo, this.option_createNew)
+        this.option_createNew = false;
       } else {
         wx.hideLoading()
         wx.reportEvent && wx.reportEvent("wxdata_perf_monitor", {

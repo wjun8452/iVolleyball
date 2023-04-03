@@ -1,9 +1,11 @@
 import { LoginInfo } from './bl/LoginInfo'
 import { GlobalData } from './bl/GlobalData'
 import touch from './utils/touch.js'
+import { VUser } from './bl/TeamRepo'
 
 let globalData: GlobalData = {
   openid: '',
+  user: new VUser(),
   cacheKey: "stats17",
   placeInfo: {
     place: "",
@@ -30,6 +32,7 @@ App({
           //console.log(res)
           if (res.result) {
             globalData.openid = (res.result as LoginInfo).openid;
+            globalData.user.openid = globalData.openid;
             callback(globalData.openid, true)
             console.log('[wx.cloud.login] openid:', globalData.openid)
           } else {

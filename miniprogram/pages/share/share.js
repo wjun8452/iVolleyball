@@ -1,17 +1,18 @@
-
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-      myTeam: "",
-      yourTeam: "",
-      place: "",
-      myScore: "",
-      yourScore: "",
-      create_time: "",
-      _id : ""
+    myTeam: "",
+    yourTeam: "",
+    place: "",
+    myScore: "",
+    yourScore: "",
+    create_time: "",
+    _id: "",
+    target: "",
+    which_umpire: 0
   },
 
   /**
@@ -21,7 +22,7 @@ Page({
     wx.setNavigationBarTitle({
       title: '分享比赛'
     })
- 
+
     this.data._id = options._id
     this.data.myTeam = options.myTeam
     this.data.yourTeam = options.yourTeam
@@ -29,7 +30,11 @@ Page({
     this.data.yourScore = options.yourScore
     this.data.place = options.place
     this.data.create_time = options.create_time
-    
+    this.data.target = options.target
+    this.data.which_umpire = options.which_umpire
+
+    console.log(this.data);
+
     this.setData(this.data)
   },
 
@@ -57,8 +62,7 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-  },
+  onUnload: function () {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
@@ -78,17 +82,38 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    var path = '/pages/score_board/score_board?_id=' + this.data._id
-    console.log("share path=" + path)
-    return {
-      title: '实时查看比赛分数',
-      path: path,
-      fail: function(res) {
-        wx.showToast({
-          title: '分享失败',
-        })
+    if (this.data.target == "stat_setting") {
+      if (this.data.which_umpire == "1") {
+        return this.gotoInvitePage(this.data._id, "inviteAsUmpire1=true");
+      } else if (this.data.which_umpire == "2") {
+        return this.gotoInvitePage(this.data._id, "inviteAsUmpire2=true");
+      }
+    } else {
+      var path = '/pages/score_board/score_board?_id=' + this.data._id
+      console.log("share path=" + path)
+      return {
+        title: '实时查看比赛分数',
+        path: path,
+        fail: function (res) {
+          wx.showToast({
+            title: '分享失败',
+          })
+        }
       }
     }
   },
 
+  gotoInvitePage: function (_id, inviteToken) {
+    let path = '/pages/stat_setting/stat_setting?_id=' + _id + "&" + inviteToken;
+    console.log("share path=" + path)
+    return {
+      title: '好友邀请你成为统计员',
+      path: path,
+      fail: function (res) {
+        wx.showToast({
+          title: '邀请失败',
+        })
+      }
+    }
+  }
 })

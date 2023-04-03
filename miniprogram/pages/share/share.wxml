@@ -2,9 +2,13 @@
 
 	<view class="color3 bgcolor2">
 
-		<view style="margin: 10px">
-			邀请您一起观赏本场比赛~
-		</view>
+		<view wx:if='{{target=="stat_setting"}}' style="margin: 10px">
+			邀请好友成为统计员
+    </view>
+    
+    <view wx:if='{{!target}}' style="margin: 10px">
+      邀请好友关注本场比赛
+    </view>
 
 		<view style="margin: 10px">
 			<view style='text-align:left;'> 队伍：{{myTeam}} vs {{yourTeam}}</view>
@@ -14,6 +18,6 @@
 		</view>
 	</view>
 
-	<button style="width:100%; border: 1px solid #336699; margin-top: 10px" open-type="share"> 分享 </button>
+	<button style="width:100%; border: 1px solid #336699; margin-top: 10px" open-type="share"> 邀请 </button>
 
 </view>

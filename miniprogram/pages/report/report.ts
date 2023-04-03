@@ -111,7 +111,8 @@ class ReportPage extends BasePage {
 
   createStaticAndSummary = function(this:ReportPage, data:VolleyCourt) {
       //create summary
-      let statistics:PlayerStatRecord = this.createStatistics(data.stat_items)
+      let stat_items = data.getMergedUmpireStats();
+      let statistics:PlayerStatRecord = this.createStatistics(stat_items)
       let players:string[] = this.getAllPlayers(data)
       this.createSummary(this.data.summary, players, statistics);
   }
@@ -137,16 +138,23 @@ class ReportPage extends BasePage {
   }
 
   onShareAppMessage = function(this:ReportPage) {
-    let path = '/pages/report/report?_id=' + this.data.matchID;
-    console.log("share path=" + path)
-    return {
-      title: '分享赛况',
-      path: path,
-      fail: function(res: any) {
-        console.error(res);
-        wx.showToast({
-          title: '分享失败',
-        })
+    if (!this.data.matchID) {
+      wx.showToast({
+        icon: "error",
+        title: "请先上传比赛数据"
+      })
+    } else {
+      let path = '/pages/report/report?_id=' + this.data.matchID;
+      console.log("share path=" + path)
+      return {
+        title: '分享赛况',
+        path: path,
+        fail: function(res: any) {
+          console.error(res);
+          wx.showToast({
+            title: '分享失败',
+          })
+        }
       }
     }
   }

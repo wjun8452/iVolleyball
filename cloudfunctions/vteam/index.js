@@ -9,7 +9,7 @@ cloud.init()
 
 const db = cloud.database()
 
-
+//对vteam做操作，譬如joinTeam, 申请人申请加入一个team
 exports.main = async (event, context) => {
   console.log(event)
   console.log(context)

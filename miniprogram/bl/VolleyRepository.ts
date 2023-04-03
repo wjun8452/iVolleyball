@@ -1,5 +1,6 @@
 import { PlaceInfo } from "../bl/PlaceInfo";
 import { parseTime } from "../utils/Util";
+import { VUser } from "./TeamRepo";
 import { GameStatus, VolleyCourt } from "./VolleyCourt";
 
 export enum Reason {
@@ -40,7 +41,8 @@ export class VolleyRepository {
    * @param matchID 除非用户指定比赛的ID，为了自动还原用户上次保存的对象，本类将首先从本地缓存中重构对象，如果发现缓存中的对象来自云端，则会从云端更新该对象
    * @param createNew 是否强制创建一个新的比赛
    */
-  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?:boolean) {
+  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?: boolean) {
+    console.log("constructor", callback, userID, matchID, placeInfo, createNew)
     this.callback = callback;
     this.userID = userID;
     if (matchID) {
@@ -85,7 +87,7 @@ export class VolleyRepository {
   }
 
 
-  private watchOnlineMatch(localToCloud: boolean, endMatch: boolean)  {
+  private watchOnlineMatch(localToCloud: boolean, endMatch: boolean) {
     const that = this
     const db = wx.cloud.database({
       env: this.env
@@ -102,12 +104,13 @@ export class VolleyRepository {
           if (data) {
             let court: VolleyCourt = new VolleyCourt(that.userID);
             Object.assign(court, data);
+            court.updateAvailableItems()
 
             let t = data.create_time
-            if (typeof(t) === "string") {
+            if (typeof (t) === "string") {
               court.create_time = t;
             }
-            else if (typeof(t) === "object" && t instanceof Date) {
+            else if (typeof (t) === "object" && t instanceof Date) {
               court.create_time = parseTime(t);
             } else {
               court.create_time = ""
@@ -166,6 +169,117 @@ export class VolleyRepository {
     this._updateMatch(court, false);
   }
 
+  /** 指派统计员 */
+  /**
+   * 
+   * @param matchId 
+   * @param who umpire1, umpire2
+   * @param who_id 
+   * @param avatarUrl 
+   * @param nickName 
+   * @param callback 
+   */
+  setUmpire(matchId: string, who: string, user: VUser, callback: (success: number) => void) {
+    wx.cloud.callFunction({
+      name: 'vmatch',
+      data: {
+        action: 'handleSetUmpire',
+        matchId: matchId,
+        who: who,
+        user: user,
+      },
+      success: (res: any) => {
+        console.log('[wx.cloud.vmatch.handleSetUmpire]', res)
+        if (res.result.errMsg.indexOf('ok') >= 0) {
+          callback(0)
+        } else if (res.result.errMsg.indexOf('invalid param, the user is already a umpire') >= 0) {
+          callback(4)
+        }
+        else if (res.result.errMsg.indexOf('invalid param') >= 0) {
+          callback(1)
+        } else if (res.result.errMsg.indexOf('not authorized') >= 0) {
+          callback(2)
+        } else {
+          callback(3)
+        }
+      },
+      fail: err => {
+        console.error('[wx.cloud.vmatch.handleSetUmpire] failed!', err)
+        callback(3)
+      }
+    })
+  }
+
+  /**
+   * @param who, "umpire1" or "umpire2"
+   * @param who_id the open id of the umpire
+   * @param court the match to update
+   * @param callback callback function
+   */
+  updateMatchByUmpire(who: string, who_id: string, court: VolleyCourt, callback: (success: number) => void) {
+    let matchId = court._id;
+
+    if (!matchId) {
+      callback(0);
+      this._updateMatch(court, false);
+    } else {
+      if (who == "umpire1") {
+        let data = {
+          play_items_umpire1: court.play_items_umpire1,
+          play_item_cats_umpire1: court.play_item_cats_umpire1,
+          stat_items_umpire1: court.stat_items_umpire1,
+          stat_umpire1_done: court.stat_umpire1_done
+        }
+        this._updateMatchByOthers(who, matchId, data, who_id, callback);
+      } else if (who == "umpire2") {
+        let data = {
+          play_items_umpire2: court.play_items_umpire2,
+          play_item_cats_umpire2: court.play_item_cats_umpire2,
+          stat_items_umpire2: court.stat_items_umpire2,
+          stat_umpire2_done: court.stat_umpire2_done
+        }
+        this._updateMatchByOthers(who, matchId, data, who_id, callback);
+      } else {
+        callback(3)
+      }
+    }
+  }
+
+  /**
+   * @param who who is updating the match
+   * @param matchId _id of the match
+   * @param matchData json data of the update part
+   * @param who_id the who_id's open id, cloud would check the authority of this id
+   * @param callback 0:ok, 1:invalid param, 2:who_id is not authorized, 3: failed
+   */
+  private _updateMatchByOthers(who: string, matchId: string | null, matchData: any, who_id: string, callback: (success: number) => void) {
+    wx.cloud.callFunction({
+      name: 'vmatch',
+      data: {
+        who: who,
+        action: 'handleUmpireStats',
+        matchId: matchId,
+        matchData: matchData,
+        who_id: who_id
+      },
+      success: (res: any) => {
+        console.log('[wx.cloud.vmatch.handleUmpireStats]', res)
+        if (res.result.errMsg.indexOf('ok') >= 0) {
+          callback(0)
+        } else if (res.result.errMsg.indexOf('invalid param') >= 0) {
+          callback(1)
+        } else if (res.result.errMsg.indexOf('not authorized') >= 0) {
+          callback(2)
+        } else {
+          callback(3)
+        }
+      },
+      fail: err => {
+        console.error('[wx.cloud.vmatch.handleUmpireStats] failed!', err)
+        callback(3)
+      }
+    })
+  }
 
   private _updateMatch(court: VolleyCourt, endMatch: boolean) {
     if (this.matchID && this.matchID != court._id) {
@@ -325,10 +439,10 @@ export class VolleyRepository {
     wx.setStorageSync("mode", mode);
   }
 
-  getUserPreferenceCourtMode() : number {
+  getUserPreferenceCourtMode(): number {
     let mode = wx.getStorageSync("mode")
-    console.log("load mode=", mode, typeof(mode))
-    if (typeof(mode)=="number") {
+    console.log("load mode=", mode, typeof (mode))
+    if (typeof (mode) == "number") {
       return mode;
     } else {
       return 0;
@@ -343,7 +457,7 @@ export interface onMatchesFeched {
 
 export class JointVolleyRepository {
   fetchJointMatches(openid: string, maxcount: number, callback: (matches: VolleyCourt[], success: boolean) => void) {
-    
+
     const db = wx.cloud.database({
       env: this.env
     })
@@ -371,10 +485,10 @@ export class JointVolleyRepository {
           for (let i in res.data) {
             let t: Date = <Date><unknown>(res.data[i].create_time)
 
-            if (typeof(t) === "string") {
+            if (typeof (t) === "string") {
               res.data[i].create_time = t;
             }
-            else if (typeof(t) === "object" && t instanceof Date) {
+            else if (typeof (t) === "object" && t instanceof Date) {
               res.data[i].create_time = parseTime(t);
             } else {
               res.data[i].create_time = ""
@@ -423,7 +537,7 @@ export class JointVolleyRepository {
   }
 
   fetchMatches(openid: string, maxcount: number, callback: (matches: VolleyCourt[], success: boolean) => void) {
-   
+
     const db = wx.cloud.database({
       env: this.env
     })
@@ -450,15 +564,15 @@ export class JointVolleyRepository {
           let matches: VolleyCourt[] = [];
           for (let i in res.data) {
             let t: Date = <Date><unknown>(res.data[i].create_time)
-            if (typeof(t) === "string") {
+            if (typeof (t) === "string") {
               res.data[i].create_time = t;
             }
-            else if (typeof(t) === "object" && t instanceof Date) {
+            else if (typeof (t) === "object" && t instanceof Date) {
               res.data[i].create_time = parseTime(t);
             } else {
               res.data[i].create_time = ""
             }
-            
+
             if (res.data[i].update_time) {
               if (res.data[i].update_time instanceof Date) {
                 let t2: Date = <Date><unknown>(res.data[i].update_time)

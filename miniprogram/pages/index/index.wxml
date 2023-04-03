@@ -2,11 +2,11 @@
 
 <view style="box-sizing:border-box; height:{{globalData.sysInfo.windowHeight}}px; width: {{globalData.sysInfo.windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; "  class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
 
-	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 30px; margin-bottom:30px; border:0px solid red;">
+	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 25px; margin-bottom:25px; border:0px solid red;">
 		<image style="width:64px; height:64px;" src="../../images/volleyball.png" background-size="cover"></image>
 	</view>
 
-	<view style="width:100%; height:45%; display:flex; flex-direction:column; justify-content: space-around;">
+	<view style="width:100%; height:40%; display:flex; flex-direction:column; justify-content: space-around;">
 		<navigator class="navigator_container" url='../score_board/score_board'>
 			<image class="navigator_image_big" src="../../images/board.svg"></image>
 				<view class="navigator_text"> 比赛记分 </view>
@@ -28,7 +28,7 @@
 		</navigator>
 
 		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version"> v2023.02.21 </view>
+			<view class="navigator_version"> v2023.02.21.2 </view>
 		</navigator>
 </view>
 

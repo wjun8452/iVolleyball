@@ -1,6 +1,6 @@
 import { PlaceInfo } from "../bl/PlaceInfo";
 import { parseTime } from "../utils/Util";
-import { VPlayer } from "./TeamRepo";
+import { VPlayer, VUser } from "./TeamRepo";
 
 export enum StatCat {
   Serve = "发球",
@@ -72,7 +72,8 @@ export enum GameStatus {
 }
 
 
-type PlayerRecord = Record<string, VPlayer>; //队员姓名 --> 头像等信息
+export type PlayerRecord = Record<string, VPlayer>; //队员姓名 --> 头像等信息
+export type PlayerStatRecord = Record<string, StatItem[]>; //队员姓名 --> 技术统计
 
 export class VolleyCourt {
   /** 比赛模式，0：硬排球，1：5人气排球，2：4人气排 */
@@ -99,16 +100,37 @@ export class VolleyCourt {
   setter: number = -1;
   /** 场上队员当前可以统计的项目，下标与players对应，0号元素表示1号位 */
   play_items: [PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[]] = [[], [], [], [], [], []];
-  /** 场上队员当前可以统计的项目的分类，下标与players对应，0号元素表示1号位 */
+  play_items_umpire1: [PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[]] = [[], [], [], [], [], []];
+  play_items_umpire2: [PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[], PlayItem[]] = [[], [], [], [], [], []];
+  /** 场上队员当前可以统计的项目的分类，为方便而与play_items冗余，下标与players对应，0号元素表示1号位 */
   play_item_cats: [StatCat[], StatCat[], StatCat[], StatCat[], StatCat[], StatCat[]] = [[], [], [], [], [], []];
+  play_item_cats_umpire1: [StatCat[], StatCat[], StatCat[], StatCat[], StatCat[], StatCat[]] = [[], [], [], [], [], []];
+  play_item_cats_umpire2: [StatCat[], StatCat[], StatCat[], StatCat[], StatCat[], StatCat[]] = [[], [], [], [], [], []];
   /** 全部统计项目的分类  */
   cat_all: StatCat[] = [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception];
   /** 用户设置的，允许被统计的目标球员 */
   player_allowed: string[] = ["接应", "二传", "副攻1", "主攻1", "主攻2", "副攻2"];
   /** 用户设置的，允许被统计项目 */
   cat_allowed: StatCat[] = [StatCat.Serve, StatCat.Attack, StatCat.Block, StatCat.Defend, StatCat.ErChuan, StatCat.Reception];
-  /** 场上队员的统计项目历史 */
+  /** 技术统计员被分配（允许）的统计项目 */
+  cat_allowed_umpire1: StatCat[] = [StatCat.Attack, StatCat.Block, StatCat.Reception];
+  cat_allowed_umpire2: StatCat[] = [];
+  /** 得分失分的历史 */
   stat_items: StatItem[] = [];
+  /** 主裁判 */
+  chief_umpire:  VUser = {openid:"", userInfo: {avatarUrl: "",city: "", country: "",gender: 0,  language: 'zh_CN',nickName: "", province: ""
+  }};
+  /** 技术统计的裁判员，裁判员1或2，和owner可以是同一个人 */
+  stat_umpire1: VUser = {openid:"", userInfo: {avatarUrl: "",city: "", country: "",gender: 0,  language: 'zh_CN',nickName: "", province: ""
+  }};
+  stat_umpire2: VUser = {openid:"", userInfo: {avatarUrl: "",city: "", country: "",gender: 0,  language: 'zh_CN',nickName: "", province: ""
+}};;
+  /** 技术统计裁判员做的统计，最终在客户端要，要与stat_items合并后形成显示数据，供前端使用 */
+  stat_items_umpire1: StatItem[] = [];
+  stat_items_umpire2: StatItem[] = [];
+  /** 技术统计裁判员是否已经完成了本轮统计，主裁判看到两个技术统计都完成之后，才能轮转 */
+  stat_umpire1_done: boolean = false;
+  stat_umpire2_done: boolean = false;
   /** 发球球员在players中的index */
   who_serve: number = -1;
   /** true: 我发发球， false: 我方接发球 */
@@ -146,9 +168,19 @@ export class VolleyCourt {
   yourteamId: string = ""; //对方的teamId
 
   /** mode: 硬排还是气排 */
-  constructor(userID: string, mode?: number, placeInfo?: PlaceInfo) {
+  constructor(userID: string, mode?: number, placeInfo?: PlaceInfo, chief_umpire?:VUser) {
     this._openid = userID
 
+    if (chief_umpire) {
+      this.chief_umpire = chief_umpire;
+    } else {
+      this.chief_umpire.openid = userID;
+    }
+
+    if (this.stat_umpire1) {
+      this.stat_umpire1.openid = userID;
+    }
+    
     if (mode) {
       this.mode = mode
     }
@@ -387,7 +419,16 @@ export class VolleyCourt {
     this.updateAvailableItems();
   }
 
-  private updateAvailableItems() {
+  public updateCatAllowdUmpire1(catsAllowed: StatCat[]) {
+    this.cat_allowed_umpire1 = catsAllowed;
+  }
+
+  public updateCatAllowdUmpire2(catsAllowed: StatCat[]) {
+    this.cat_allowed_umpire2 = catsAllowed;
+  }
+
+
+  public updateAvailableItems() {
     if (this.mode == 0) {
       this.updateAvailableItems_yingpai()
     } else if (this.mode == 1) {
@@ -542,22 +583,39 @@ export class VolleyCourt {
   private updateAvailableItems_yingpai() {
     let who_serve = this.who_serve;
     let items = this.play_items;
+    let items_umpire1 = this.play_items_umpire1;
+    let items_umpire2 = this.play_items_umpire2;
     let serve = this.serve;
     let cats = this.play_item_cats;
+    let cats_umpire1 = this.play_item_cats_umpire1;
+    let cats_umpire2 = this.play_item_cats_umpire2;
     let players = this.players
     let libero = this.players.indexOf(this.all_players[this.libero]);
     let cat_allowed = this.cat_allowed;
+    let cat_allowed_umpire1 = this.cat_allowed_umpire1;
+    let cat_allowed_umpire2 = this.cat_allowed_umpire2;
     let player_allowed = this.player_allowed;
 
     let i: number = 0;
+    //下标与players对应，0号元素表示1号位
     for (i = 0; i < items.length; i++) {
       //console.log(libero, i);
 
       items[i] = [];
+      items_umpire1[i] = [];
+      items_umpire2[i] = [];
+
       var item = items[i];
+      var item_umpire1 = items_umpire1[i];
+      var item_umpire2 = items_umpire2[i];
 
       cats[i] = [];
+      cats_umpire1[i] = [];
+      cats_umpire2[i] = [];
+
       var cat = cats[i];
+      var cat_umpire1 = cats_umpire1[i];
+      var cat_umpire2 = cats_umpire2[i];
 
       if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
         continue; //该队员不做统计
@@ -565,7 +623,19 @@ export class VolleyCourt {
 
       //添加顺序影响UI显示
       if (serve && i == who_serve) {
-        this._createItems(cat, item, cat_allowed, StatCat.Serve, [
+        // this._createItems(cat, item, cat_allowed, StatCat.Serve, [
+        //   [StatName.ServeWin, 1],
+        //   [StatName.ServeNormal, 0],
+        //   [StatName.ServeLost, -1]
+        // ]);
+
+        this._createItems(cat_umpire1, item_umpire1, cat_allowed_umpire1, StatCat.Serve, [
+          [StatName.ServeWin, 1],
+          [StatName.ServeNormal, 0],
+          [StatName.ServeLost, -1]
+        ]);
+
+        this._createItems(cat_umpire2, item_umpire2, cat_allowed_umpire2, StatCat.Serve, [
           [StatName.ServeWin, 1],
           [StatName.ServeNormal, 0],
           [StatName.ServeLost, -1]
@@ -573,7 +643,21 @@ export class VolleyCourt {
       }
 
       if (!serve) {
-        this._createItems(cat, item, cat_allowed, StatCat.Reception, [
+        // this._createItems(cat, item, cat_allowed, StatCat.Reception, [
+        //   [StatName.ReceptionPerfect, 0],
+        //   [StatName.ReceptionGood, 0],
+        //   [StatName.ReceptionBad, 0],
+        //   [StatName.ReceptionLost, -1]
+        // ])
+
+        this._createItems(cat_umpire1, item_umpire1, cat_allowed_umpire1, StatCat.Reception, [
+          [StatName.ReceptionPerfect, 0],
+          [StatName.ReceptionGood, 0],
+          [StatName.ReceptionBad, 0],
+          [StatName.ReceptionLost, -1]
+        ])
+
+        this._createItems(cat_umpire2, item_umpire2, cat_allowed_umpire2, StatCat.Reception, [
           [StatName.ReceptionPerfect, 0],
           [StatName.ReceptionGood, 0],
           [StatName.ReceptionBad, 0],
@@ -582,7 +666,19 @@ export class VolleyCourt {
       }
 
       if (!this.is_setter_enabled || (this.is_setter_enabled && this.all_players[this.setter] == players[i])) {
-        this._createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+        // this._createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+        //   [StatName.ErChuanGood, 0],
+        //   [StatName.ErChuanBad, 0],
+        //   [StatName.ErChuanLost, -1]
+        // ])
+
+        this._createItems(cat_umpire1, item_umpire1, cat_allowed_umpire1, StatCat.ErChuan, [
+          [StatName.ErChuanGood, 0],
+          [StatName.ErChuanBad, 0],
+          [StatName.ErChuanLost, -1]
+        ])
+
+        this._createItems(cat_umpire2, item_umpire2, cat_allowed_umpire2, StatCat.ErChuan, [
           [StatName.ErChuanGood, 0],
           [StatName.ErChuanBad, 0],
           [StatName.ErChuanLost, -1]
@@ -590,7 +686,21 @@ export class VolleyCourt {
       }
 
       if (i != libero) {
-        this._createItems(cat, item, cat_allowed, StatCat.Attack, [
+        // this._createItems(cat, item, cat_allowed, StatCat.Attack, [
+        //   [StatName.AttackWin, 1],
+        //   [StatName.AttackNormal, 0],
+        //   [StatName.AttackBlk, -1],
+        //   [StatName.AttackLost, -1]
+        // ])
+
+        this._createItems(cat_umpire1, item_umpire1, cat_allowed_umpire1, StatCat.Attack, [
+          [StatName.AttackWin, 1],
+          [StatName.AttackNormal, 0],
+          [StatName.AttackBlk, -1],
+          [StatName.AttackLost, -1]
+        ])
+
+        this._createItems(cat_umpire2, item_umpire2, cat_allowed_umpire2, StatCat.Attack, [
           [StatName.AttackWin, 1],
           [StatName.AttackNormal, 0],
           [StatName.AttackBlk, -1],
@@ -599,7 +709,23 @@ export class VolleyCourt {
       }
 
       if (i >= 1 && i <= 3) {
-        this._createItems(cat, item, cat_allowed, StatCat.Block, [
+        // this._createItems(cat, item, cat_allowed, StatCat.Block, [
+        //   [StatName.BlockWin, 1],
+        //   [StatName.BlockPlus, 0],
+        //   [StatName.BlockMinus, 0],
+        //   [StatName.BlockHalf, -1],
+        //   [StatName.BlockLost, -1]
+        // ])
+
+        this._createItems(cat_umpire1, item_umpire1, cat_allowed_umpire1, StatCat.Block, [
+          [StatName.BlockWin, 1],
+          [StatName.BlockPlus, 0],
+          [StatName.BlockMinus, 0],
+          [StatName.BlockHalf, -1],
+          [StatName.BlockLost, -1]
+        ])
+
+        this._createItems(cat_umpire2, item_umpire2, cat_allowed_umpire2, StatCat.Block, [
           [StatName.BlockWin, 1],
           [StatName.BlockPlus, 0],
           [StatName.BlockMinus, 0],
@@ -608,7 +734,19 @@ export class VolleyCourt {
         ])
       }
 
-      this._createItems(cat, item, cat_allowed, StatCat.Defend, [
+      // this._createItems(cat, item, cat_allowed, StatCat.Defend, [
+      //   [StatName.DefendGood, 0],
+      //   [StatName.DefendNormal, 0],
+      //   [StatName.DefendLost, -1]
+      // ])
+
+      this._createItems(cat_umpire1, item_umpire1, cat_allowed_umpire1, StatCat.Defend, [
+        [StatName.DefendGood, 0],
+        [StatName.DefendNormal, 0],
+        [StatName.DefendLost, -1]
+      ])
+
+      this._createItems(cat_umpire2, item_umpire2, cat_allowed_umpire2, StatCat.Defend, [
         [StatName.DefendGood, 0],
         [StatName.DefendNormal, 0],
         [StatName.DefendLost, -1]
@@ -662,6 +800,7 @@ export class VolleyCourt {
     }
   }
 
+  //当用于点击了一个统计项，需追加到stat_items，并转位，更新可以供用户选择的统计项目
   stateRotate(position: number, i: number) {
     var player = this.players[position];
     var item = this.play_items[position][i];
@@ -706,6 +845,23 @@ export class VolleyCourt {
     }
   }
 
+  //统计员点击了一个统计项目
+  stateUmpire1(position: number, i: number) {
+    var player = this.players[position];
+    var item = this.play_items_umpire1[position][i];
+
+    //createStatItem and _createPlayItem需要统一。。。
+    this.stat_items_umpire1.push(this.createStatItem(player, item.category, item.name, item.score, false, this.myScore, this.yourScore));
+  }
+
+  //统计员点击了一个统计项目
+  stateUmpire2(position: number, i: number) {
+    var player = this.players[position];
+    var item = this.play_items_umpire2[position][i];
+
+    //createStatItem and _createPlayItem需要统一。。。
+    this.stat_items_umpire2.push(this.createStatItem(player, item.category, item.name, item.score, false, this.myScore, this.yourScore));
+  }
 
 
   private _prevPosition(stat: StatItem) {
@@ -871,5 +1027,77 @@ export class VolleyCourt {
     } else {
       console.error("非法排球模式!")
     }
+  }
+
+  //合并两个统计员的共计，如果分配了统计员的情况下，report界面需要使用此方法做兼容性处理
+  getMergedUmpireStats(): StatItem[] {
+    let result = this.stat_items_umpire1.concat(this.stat_items_umpire2);
+    return result.length > 0 ? result : this.stat_items;
+  }
+
+  //获取本轮统计员的统计，按位置索引，用于显示本轮统计的实时状况
+  getUmpireStats(): PlayerStatRecord {
+    let result: PlayerStatRecord = {};
+
+    for (let i = 0; i < this.stat_items_umpire1.length; i++) {
+      let item = this.stat_items_umpire1[i];
+      if (item.myscore == this.myScore && item.yourscore == this.yourScore) {
+        if (!result[item.player]) {
+          result[item.player] = new Array;
+        }
+        result[item.player].push(item);
+      }
+    }
+
+    for (let i = 0; i < this.stat_items_umpire2.length; i++) {
+      let item = this.stat_items_umpire2[i];
+      if (item.myscore == this.myScore && item.yourscore == this.yourScore) {
+        if (!result[item.player]) {
+          result[item.player] = new Array;
+        }
+        result[item.player].push(item);
+      }
+    }
+
+    return result;
+  }
+
+  //清除统计员1本轮的统计，通常用于统计错误后的
+  /**
+   * 
+   * @param number 1: umpire1, 2: umpire2
+   * return true:撤销成功 false:撤销失败
+   */
+  revertUmpireStat(whichUmpire: number): boolean {
+    if (this.canRevertUmpireStat(whichUmpire)) {
+      let stats = whichUmpire == 1 ? this.stat_items_umpire1 : whichUmpire == 2 ? this.stat_items_umpire2 : [];
+      stats.pop();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 
+   * @param whichUmpire 1: umpire1, 2: umpire2
+   * return true：有可以撤销的item，false：没有
+   */
+  canRevertUmpireStat(whichUmpire: number): boolean {
+    let stats = whichUmpire == 1 ? this.stat_items_umpire1 : whichUmpire == 2 ? this.stat_items_umpire2 : [];
+    if (stats.length == 0) {
+      return false;
+    } else {
+      let last = stats[stats.length - 1];
+      if (last.myscore == this.myScore && last.yourscore == this.yourScore) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  setChiefUmpire(user:VUser) {
+    this.chief_umpire = user;
   }
 }

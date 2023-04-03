@@ -77,7 +77,7 @@ export class TeamRepo {
       success(res) {
         console.log("[db.vteam.fetchJointTeams] res:", res)
         if (res.data.length == 0) {
-          callback(1, null);
+          callback(1, []);
         } else {
           let teams: VTeam[] = res.data;
           callback(0, teams)
@@ -85,7 +85,7 @@ export class TeamRepo {
       },
       fail(res) {
         console.log(res)
-        callback(2, null);
+        callback(2, []);
       }
     })
   }

@@ -2,64 +2,78 @@
 
 <view wx:if="{{court}}" class="color3" style="display: flex; flex-direction: column;">
 
-  <view class="teamblock">
+  <!-- 邀请页面特有，比赛概览 -->
+  <view wx:if="{{inviteAsUmpire1 || inviteAsUmpire2}}" class="teamblock">
+    <view style="margin:1px 1px 8px 1px" class="block1">
+      <view style="text-align: center;"> 来自好友的邀请，请点击成为统计员 </view>
+      <view style='text-align:left;'> 类型：{{court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}} </view>
+      <view style='text-align:left;'> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
+      <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
+      <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
+      <view style='text-align:left;'> 地点：{{court.place}} </view>
+      <view style='text-align:left;'> 时间：{{court.create_time}} </view>
+    </view>
+  </view>
+
+  <!-- 类型 -->
+  <view wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}" class="teamblock">
     <view class="teamblock_row">
       <radio-group class="radio-group" bindchange="onTapMatchMode">
-        <radio value="0" checked="{{court.mode==0}}" />6人硬排
-        <radio value="1" checked="{{court.mode==1}}" />5人气排
-        <radio value="2" checked="{{court.mode==2}}" />4人气排
+        <radio disabled="true" value="0" checked="{{court.mode==0}}" />6人硬排
+        <radio disabled="{{court.status==0}}" value="1" checked="{{court.mode==1}}" />5人气排
+        <radio disabled="{{court.status==0}}" value="2" checked="{{court.mode==2}}" />4人气排
       </radio-group>
     </view>
   </view>
 
-  <view class="teamblock">
+  <!-- 队伍、场地、总分 -->
+  <view wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}" class="teamblock">
     <view class='teamblock_row'>
       <view class="teamblock_title">我方队伍</view>
       <view class="teamblock_value"> {{court.myTeam}}</view>
       <view>
-        <picker bindchange="onImportTeam" value="{{pikerTeamIndex}}" range="{{myteams}}" range-key="name">
-          <button size="mini"> 导入 </button>
+        <picker disabled="{{court.status==0}}" bindchange="onImportTeam" value="{{pikerTeamIndex}}" range="{{myteams}}" range-key="name">
+          <button disabled="{{court.status==0}}" size="mini"> 导入 </button>
         </picker>
       </view>
       <view>
-        <button size="mini" bindtap="gotoTeams"> 管理 </button>
+        <button disabled="{{court.status==0}}" size="mini" bindtap="gotoTeams"> 管理 </button>
       </view>
     </view>
 
     <view class='teamblock_row'>
       <view class="teamblock_title">对方队伍</view>
       <view class="teamblock_value">
-        <input bindconfirm='onEditTeam' data-obj="yourTeam" placeholder='{{court.yourTeam}}' />
+        <input disabled="{{court.status==0}}" bindconfirm='onEditTeam' data-obj="yourTeam" placeholder='{{court.yourTeam}}' />
       </view>
     </view>
 
     <view class="teamblock_row">
       <view class="teamblock_title"> 比赛地点 </view>
       <view class="teamblock_value"> {{court.place}} </view>
-      <button size="mini" bindtap="onChooseLocation">选择地点</button>
+      <button disabled="{{court.status==0}}" size="mini" bindtap="onChooseLocation">选择地点</button>
     </view>
 
     <view class="teamblock_row">
       <view class="teamblock_title"> 比分 </view>
       <view class="teamblock_value"> {{court.myScore}} : {{court.yourScore}}</view>
-      <view><button size="mini" bindtap="onReset">重置分数</button></view>
+      <view><button disabled="{{court.status==0}}" size="mini" bindtap="onReset">重置分数</button></view>
     </view>
 
     <view class="teamblock_row">
       <view class="teamblock_title"> 每局分数 </view>
       <view class="teamblock_value"> {{court.total_score}} </view>
-      <picker bindchange="bindTotalScoreChange" value="{{court.total_score-total_scores[0]}}" range="{{total_scores}}">
-        <button size="mini">设置局分</button>
+      <picker disabled="{{court.status==0}}" bindchange="bindTotalScoreChange" value="{{court.total_score-total_scores[0]}}" range="{{total_scores}}">
+        <button disabled="{{court.status==0}}" size="mini">设置局分</button>
       </picker>
     </view>
   </view>
 
-
-
-  <view class="teamblock">
+  <!-- 场上位置、二传、自由人 -->
+  <view wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}" class="teamblock">
     <view wx:if="{{court.mode == 0}}" class="teamblock_row">
       <checkbox-group bindchange="setterEnabled">
-        <checkbox checked="{{court.is_setter_enabled}}">
+        <checkbox disabled="{{court.status==0}}" checked="{{court.is_setter_enabled}}">
           固定二传
         </checkbox>
       </checkbox-group>
@@ -69,15 +83,15 @@
       <view class="teamblock_row">
         <view class="teamblock_title">二传 </view>
         <view class="teamblock_value"> {{court.setter==-1 ? "" : court.all_players[court.setter]}} </view>
-        <picker bindchange="bindSetterChange" value="{{court.setter}}" range="{{court.all_players}}">
-          <button size="mini">选择二传</button>
+        <picker disabled="{{court.status==0}}" bindchange="bindSetterChange" value="{{court.setter}}" range="{{court.all_players}}">
+          <button disabled="{{court.status==0}}" size="mini">选择二传</button>
         </picker>
       </view>
     </block>
 
     <view wx:if="{{court.mode == 0}}" class="teamblock_row">
       <checkbox-group bindchange="liberoEnabled">
-        <checkbox checked="{{court.is_libero_enabled}}">
+        <checkbox disabled="{{court.status==0}}" checked="{{court.is_libero_enabled}}">
           启用自由人
         </checkbox>
       </checkbox-group>
@@ -87,8 +101,8 @@
       <view class="teamblock_row">
         <view class="teamblock_title">自由人</view>
         <view class="teamblock_value">{{ court.libero == -1 ? "" : court.all_players[court.libero]}} </view>
-        <picker bindchange="bindLiberoChange" value="{{court.libero}}" range="{{court.all_players}}">
-          <button size="mini">选择球员</button>
+        <picker disabled="{{court.status==0}}" bindchange="bindLiberoChange" value="{{court.libero}}" range="{{court.all_players}}">
+          <button disabled="{{court.status==0}}" size="mini">选择球员</button>
         </picker>
       </view>
     </block>
@@ -97,8 +111,8 @@
       <view class="teamblock_row">
         <view class="teamblock_title">第一替换 </view>
         <view class="teamblock_value"> {{ court.libero_replacement1==-1 ? "" : court.all_players[court.libero_replacement1]}}</view>
-        <picker bindchange="bindLiberoReplacement1" value="{{court.libero_replacement[0]}}" range="{{court.all_players}}">
-          <button size="mini">选择球员</button>
+        <picker disabled="{{court.status==0}}" bindchange="bindLiberoReplacement1" value="{{court.libero_replacement[0]}}" range="{{court.all_players}}">
+          <button disabled="{{court.status==0}}" size="mini">选择球员</button>
         </picker>
       </view>
     </block>
@@ -107,28 +121,28 @@
       <view class="teamblock_row">
         <view class="teamblock_title">第二替换</view>
         <view class="teamblock_value">{{ court.libero_replacement2==-1 ? "" : court.all_players[court.libero_replacement2]}}</view>
-        <picker bindchange="bindLiberoReplacement2" value="{{court.libero_replacement[1]}}" range="{{court.all_players}}">
-          <button size="mini">选择球员</button>
+        <picker disabled="{{court.status==0}}" bindchange="bindLiberoReplacement2" value="{{court.libero_replacement[1]}}" range="{{court.all_players}}">
+          <button disabled="{{court.status==0}}" size="mini">选择球员</button>
         </picker>
       </view>
     </block>
 
     <view wx:if="{{court.mode==0}}" class="teamblock_row">
       <radio-group class="radio-group" bindchange="onFrontBackMode">
-        <radio value="0" checked="{{court.front_back_mode}}" />前后排换位
-        <radio value="1" checked="{{!court.front_back_mode}}" />正常换位
+        <radio disabled="{{court.status==0}}" value="0" checked="{{court.front_back_mode}}" />前后排换位
+        <radio disabled="{{court.status==0}}" value="1" checked="{{!court.front_back_mode}}" />正常换位
       </radio-group>
     </view>
 
     <view class="teamblock_row">
       <radio-group class="radio-group" bindchange="onTapServe">
-        <radio value="0" checked="{{court.serve}}" />我方发球
-        <radio value="1" checked="{{!court.serve}}" />对方发球
+        <radio disabled="{{court.status==0}}" value="0" checked="{{court.serve}}" />我方发球
+        <radio disabled="{{court.status==0}}" value="1" checked="{{!court.serve}}" />对方发球
       </radio-group>
     </view>
 
     <view class="teamblock_row">
-      <view class="teamblock_title"> 场上位置</view>
+      <view disabled="{{court.status==0}}" class="teamblock_title"> 场上位置</view>
       <view class="teamblock_value"> {{court.myTeam}}</view>
     </view>
 
@@ -346,26 +360,13 @@
     </view>
 
     <view class="teamblock_row">
-      <button bindtap='rotate' style="width: 100%;">转位</button>
+      <button disabled="{{court.status==0}}" bindtap='rotate' style="width: 100%;">转位</button>
     </view>
 
   </view>
 
-  <view class="teamblock">
-    <view style="margin-bottom: 10px; ">被统计的项目</view>
-    <checkbox-group bindchange="onCheckAllowedStatItem">
-      <view style='display:flex; flex-direction:row;flex-wrap: wrap;'>
-        <block wx:for="{{court.cat_all}}" wx:key="*this">
-          <view style='margin-right:10px; display:flex; flex-direction:row;'>
-            <view> {{item}} </view>
-            <checkbox value="{{item}}" checked="{{utils.contains(court.cat_allowed, item)}}" />
-          </view>
-        </block>
-      </view>
-    </checkbox-group>
-  </view>
-
-  <view class="teamblock">
+  <!-- 被统计球员-->
+  <view wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}" class="teamblock">
     <view style="margin-bottom: 10px; ">被统计的球员</view>
     <checkbox-group bindchange="onCheckAllowedPlayer">
       <view style='display:flex; flex-direction:row; flex-wrap: wrap;'>
@@ -375,10 +376,131 @@
               <image class="avartar" src='{{court.players_map[item].user.userInfo.avatarUrl? court.players_map[item].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
               <text class="nickName">{{item}}</text>
             </view>
-            <checkbox value="{{item}}" checked="{{utils.contains(court.player_allowed, item)}}" />
+            <checkbox disabled="{{court.status==0}}" value="{{item}}" checked="{{utils.contains(court.player_allowed, item)}}" />
           </view>
         </block>
       </view>
     </checkbox-group>
+  </view>
+
+  <!-- 主裁判 -->
+  <view class="teamblock">
+    <view class='teamblock_row'>
+      <view> 主裁判: </view>
+      <view class="avartar_container">
+        <image class="avartar" src='{{court.chief_umpire.userInfo.avatarUrl !="" ? court.chief_umpire.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+        <text class="nickName">{{court.chief_umpire.userInfo.nickName}}</text>
+      </view>
+      <block wx:if="{{!hasUserInfo && isOwner && !inviteAsUmpire1 && !inviteAsUmpire2}}">
+        <view>
+          <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" size="mini" data-umpire="0"> 登录（获取头像昵称） </button>
+          <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini" data-umpire="0"> 登录（获取头像昵称） </button>
+        </view>
+      </block>
+    </view>
+  </view>
+
+
+  <!-- 统计员1 -->
+  <view wx:if="{{(isOwner || inviteAsUmpire1) && !inviteAsUmpire2}}" class="teamblock">
+    <view style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 2px; ">
+      <view>统计员1: </view>
+      <view wx:if='{{court.stat_umpire1.openid!=""}}' class="avartar_container">
+        <image class="avartar" src='{{court.stat_umpire1.userInfo.avatarUrl ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+        <text class="nickName">{{court.stat_umpire1.userInfo.nickName}}</text>
+      </view>
+    </view>
+    <view class="teamblock_row" style="margin-bottom: 8px;" wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}">
+      <button disabled="{{court.status==0}}" size="mini" bindtap="onShare" data-umpire="1">邀请好友</button>
+
+      <block wx:if="{{!hasUserInfo}}">
+        <view>
+          <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="1" size="mini"> 成为统计员 </button>
+          <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" data-umpire="1" bindgetuserinfo="getUserInfo" size="mini"> 成为统计员 </button>
+        </view>
+      </block>
+      <block wx:if="{{hasUserInfo}}">
+        <button disabled="{{court.status==0}}" bindtap="setMyselfUmpire1" size="mini">成为统计员</button>
+      </block>
+
+      <button disabled='{{court.stat_umpire1.openid=="" || court.status==0}}' size="mini" bindtap="clearUmpire1">删除统计员</button>
+    </view>
+    <checkbox-group bindchange="onCheckAllowedStatCatUmpire1">
+      <view style='display:flex; flex-direction:row;flex-wrap: wrap;'>
+        <block wx:for="{{court.cat_all}}" wx:key="*this">
+          <view style='margin-right:10px; display:flex; flex-direction:row;'>
+            <view> {{item}} </view>
+            <checkbox disabled="{{!isOwner || court.status==0 || inviteAsUmpire1 || inviteAsUmpire2}}" value="{{item}}" checked="{{utils.contains(court.cat_allowed_umpire1, item)}}" />
+          </view>
+        </block>
+      </view>
+    </checkbox-group>
+  </view>
+
+  <!-- 统计员2 -->
+  <view wx:if="{{(isOwner || inviteAsUmpire2) && !inviteAsUmpire1}}" class="teamblock">
+    <view style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 2px; ">
+      <view>统计员2: </view>
+      <view wx:if='{{court.stat_umpire2.openid!=""}}' class="avartar_container">
+        <image class="avartar" src='{{court.stat_umpire2.userInfo.avatarUrl ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+        <text class="nickName">{{court.stat_umpire2.userInfo.nickName}}</text>
+      </view>
+    </view>
+    <view class="teamblock_row" style="margin-bottom: 8px;" wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}">
+      <button disabled="{{court.status==0}}" size="mini" bindtap="onShare" data-umpire="2">邀请好友</button>
+
+      <block wx:if="{{!hasUserInfo}}">
+        <view>
+          <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="2" size="mini"> 成为统计员 </button>
+          <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" data-umpire="2" bindgetuserinfo="getUserInfo" size="mini"> 成为统计员 </button>
+        </view>
+      </block>
+      <block wx:if="{{hasUserInfo}}">
+        <button disabled="{{court.status==0}}" bindtap="setMyselfUmpire2" size="mini">成为统计员</button>
+      </block>
+
+      <button disabled='{{court.stat_umpire2.openid=="" || court.status==0}}' size="mini" bindtap="clearUmpire2">删除统计员</button>
+    </view>
+    <checkbox-group bindchange="onCheckAllowedStatCatUmpire2">
+      <view style='display:flex; flex-direction:row;flex-wrap: wrap;'>
+        <block wx:for="{{court.cat_all}}" wx:key="*this">
+          <view style='margin-right:10px; display:flex; flex-direction:row;'>
+            <view> {{item}} </view>
+            <checkbox disabled="{{!isOwner || court.status==0 || inviteAsUmpire1 || inviteAsUmpire2}}" value="{{item}}" checked="{{utils.contains(court.cat_allowed_umpire2, item)}}" />
+          </view>
+        </block>
+      </view>
+    </checkbox-group>
+
+  </view>
+
+  <!-- 邀请页面特有，统计按钮 -->
+  <view wx:if="{{inviteAsUmpire1 || inviteAsUmpire2}}" class="teamblock">
+    <view class="teamblock_row">
+
+      <block wx:if="{{!hasUserInfo && inviteAsUmpire1}}">
+        <view>
+          <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="1"> 成为统计员 </button>
+          <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" data-umpire="1" bindgetuserinfo="getUserInfo"> 成为统计员 </button>
+        </view>
+      </block>
+      <block wx:if="{{hasUserInfo && inviteAsUmpire1}}">
+        <button disabled="{{court.status==0}}" bindtap="setMyselfUmpire1">成为统计员</button>
+      </block>
+
+
+      <block wx:if="{{!hasUserInfo && inviteAsUmpire2}}">
+        <view>
+          <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="2"> 成为统计员 </button>
+          <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" data-umpire="2" bindgetuserinfo="getUserInfo"> 成为统计员 </button>
+        </view>
+      </block>
+      <block wx:if="{{hasUserInfo && inviteAsUmpire2}}">
+        <button disabled="{{court.status==0}}" bindtap="setMyselfUmpire2">成为统计员</button>
+      </block>
+
+
+      <button disabled="{{court.status==0}}" bindtap="onStat"> 开始统计 </button>
+    </view>
   </view>
 </view>

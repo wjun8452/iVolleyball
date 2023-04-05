@@ -1,8 +1,0 @@
-<!--pages/stat_history.wxml-->
-
-<block wx:for="{{court.stat_items}}" wx:key="*this" wx:for-item="stat" wx:for-index="index">
-  <view>
-    {{stat.myscore}}:{{stat.yourscore}}, {{stat.item}}, {{stat.player}}
-  </view>
-
-</block>

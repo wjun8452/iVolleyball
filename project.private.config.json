@@ -53,7 +53,7 @@
         {
           "name": "",
           "pathName": "pages/stat_setting/stat_setting",
-          "query": "_id=2fb9e2a66367c25400bf1efc71f035f1&inviteAsUmpire1=true",
+          "query": "",
           "launchMode": "default",
           "scene": null
         },

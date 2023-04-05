@@ -128,7 +128,7 @@ export class VolleyCourt {
   /** 技术统计裁判员做的统计，最终在客户端要，要与stat_items合并后形成显示数据，供前端使用 */
   stat_items_umpire1: StatItem[] = [];
   stat_items_umpire2: StatItem[] = [];
-  /** 技术统计裁判员是否已经完成了本轮统计，主裁判看到两个技术统计都完成之后，才能轮转 */
+  /** 技术统计裁判员是否已经完成了本轮统计，主裁判看到两个技术统计都完成之后，才能轮转，默认值不能改 */
   stat_umpire1_done: boolean = false;
   stat_umpire2_done: boolean = false;
   /** 发球球员在players中的index */

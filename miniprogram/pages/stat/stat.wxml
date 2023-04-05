@@ -64,15 +64,18 @@
         </block>
 
 
-         <block wx:if="{{isUmpire1 && court.stat_umpire1_done }}">
+         <block wx:if='{{isUmpire1 && court.stat_umpire1_done && (court.stat_umpire2.openid=="" || court.stat_umpire2_done) }}'>
           <view style="color:green"> 请等候主裁判分 </view>
+        </block>
+
+        <block wx:if='{{isUmpire1 && court.stat_umpire1_done && court.stat_umpire2!="" && !court.stat_umpire2_done}}'>
+          <view style="color:green"> 请等候统计员2提交 </view>
         </block>
 
 
         <block wx:if="{{!isUmpire1 && !court.stat_umpire1_done }}">
           <view class=".color_main_orange"> 正在统计... </view>
         </block>
-
 
         <block wx:if="{{!isUmpire1 && court.stat_umpire1_done }}">
           <view style="color:green"> 已提交 </view>
@@ -84,7 +87,7 @@
         <view style="display:flex; flex-direction: row; ">
           <view>统计员2{{isUmpire2?"(你)":""}}: </view>
           <view class="avartar_container">
-            <image class="avartar_small" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+            <image class="avartar_small" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             <text class="nickName">{{court.stat_umpire2.userInfo.nickName}}</text>
           </view>
         </view>
@@ -94,15 +97,18 @@
         </block>
 
 
-         <block wx:if="{{isUmpire2 && court.stat_umpire2_done }}">
+         <block wx:if='{{isUmpire2 && court.stat_umpire2_done && (court.stat_umpire1.openid=="" || court.stat_umpire1_done) }}'>
           <view style="color:green"> 请等候主裁判分 </view>
+        </block>
+
+        <block wx:if='{{isUmpire2 && court.stat_umpire2_done && court.stat_umpire1.openid!="" && !court.stat_umpire1_done }}'>
+          <view style="color:green"> 请等候统计员1提交 </view>
         </block>
 
 
         <block wx:if="{{!isUmpire2 && !court.stat_umpire2_done }}">
           <view class=".color_main_orange"> 正在统计... </view>
         </block>
-
 
         <block wx:if="{{!isUmpire2 && court.stat_umpire2_done }}">
           <view style="color:green"> 已提交 </view>

@@ -42,7 +42,7 @@ export class VolleyRepository {
    * @param createNew 是否强制创建一个新的比赛
    */
   constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?: boolean) {
-    console.log("constructor", callback, userID, matchID, placeInfo, createNew)
+    console.log("constructor", userID, matchID, placeInfo, createNew)
     this.callback = callback;
     this.userID = userID;
     if (matchID) {

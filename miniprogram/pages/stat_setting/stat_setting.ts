@@ -31,6 +31,10 @@ class SettingPageData {
 
   /** 分享了哪一个统计员 */
   temp_which_umpire: string = "";
+
+  /** 当前用户是否是统计裁判, 一个用户不能同时担任两个统计员 */
+  isUmpire1: boolean = false;
+  isUmpire2: boolean = false;
 }
 
 class SettingPage extends BasePage {
@@ -44,6 +48,11 @@ class SettingPage extends BasePage {
     this.data.court = court;
 
     this.data.isOwner = this.data.court._id ? this.data.globalData.openid == this.data.court._openid : true;
+
+    if (this.data.court.stat_umpire1 && this.data.court.stat_umpire2) {
+      this.data.isUmpire1 = this.data.court.stat_umpire1.openid != "" ? (this.data.globalData.openid == this.data.court.stat_umpire1.openid) : false;
+      this.data.isUmpire2 = this.data.court.stat_umpire2.openid != "" ? (this.data.globalData.openid == this.data.court.stat_umpire2.openid) : false;
+    }
 
     this.setData(this.data);
 
@@ -545,8 +554,9 @@ class SettingPage extends BasePage {
 
   _setMyselfUmpire = function (this: SettingPage, who: string, user: VUser) {
     if (!this.data.court) return;
+
     if (!this.data.court?._id) {
-      if (who == "umpire1") {
+      if (who === "umpire1") {
         if (user.openid != "" && this.data.court.stat_umpire2.openid == user.openid) {
           wx.showToast({
             icon: 'error',
@@ -571,6 +581,7 @@ class SettingPage extends BasePage {
       }
       this.repo?.updateMatch(this.data.court)
     } else {
+      console.log("------haha------3")
       if (!this.data.globalData?.openid) {
         wx.showToast({
           icon: 'error',
@@ -629,7 +640,7 @@ class SettingPage extends BasePage {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认
     // 开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
     wx.getUserProfile({
-      desc: '用于完善球队的信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+      desc: '用于完善统计员信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: (res) => {
         console.log("getUserProfile success")
         that.data.user.userInfo = res.userInfo
@@ -642,11 +653,21 @@ class SettingPage extends BasePage {
           }
         }
 
-        if (umpire == "1") {
+        //更新头像
+        if (that.data.isUmpire1) {
           that.setMyselfUmpire1(that);
-        } else if (umpire == "2") {
+        }
+        if (that.data.isUmpire2) {
           that.setMyselfUmpire2(that);
         }
+
+        //可能被设置成另一个umpire
+        if (umpire == "1" && !that.data.isUmpire1) {
+          that.setMyselfUmpire1(that);
+        } else if (umpire == "2" && !that.data.isUmpire2) {
+          that.setMyselfUmpire2(that);
+        }
+
         that.setData(that.data)
         that.saveUserInfo();
       }
@@ -655,6 +676,10 @@ class SettingPage extends BasePage {
 
   getUserInfo = function (this: SettingPage, e: any) {
     // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
+    wx.showToast({
+      title:"getUserInfo"
+    })
+
     console.log("getUserInfo", e);
     let umpire = e.target.dataset.umpire;
     this.data.user.userInfo = e.detail.userInfo;
@@ -668,11 +693,20 @@ class SettingPage extends BasePage {
       }
     }
 
-    if (umpire == "1") {
+    if (this.data.isUmpire1) {
       this.setMyselfUmpire1(this);
-    } else if (umpire == "2") {
+    }
+
+    if (this.data.isUmpire2) {
       this.setMyselfUmpire2(this);
     }
+
+    if (umpire == "1" || !this.data.isUmpire1) {
+      this.setMyselfUmpire1(this);
+    } else if (umpire == "2" || !this.data.isUmpire2) {
+      this.setMyselfUmpire2(this);
+    }
+
     this.setData(this.data);
     this.saveUserInfo();
   }

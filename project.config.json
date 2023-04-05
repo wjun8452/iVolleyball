@@ -40,7 +40,8 @@
       "typescript",
       "less"
     ],
-    "ignoreUploadUnusedFiles": true
+    "ignoreUploadUnusedFiles": true,
+    "condition": false
   },
   "appid": "wx573d66c4ffa25272",
   "projectname": "iVolleyball",

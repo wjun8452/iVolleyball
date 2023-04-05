@@ -3,11 +3,21 @@
   <view class="match-item {{court.isTouchMove ? 'match-item-touch-active':''}}" bindtouchstart="{{showDelete?'touchstart':''}}" bindtouchmove="{{showDelete?'touchmove':''}}" data-id="{{court._id}}">
     <view class="match-item-content" bindtap="onTapMatch" data-matchid="{{court._id}}">
       <view style="display: flex; flex-direction: column; align-items: center;">
+        <view style="display:flex; flex-direction: row; align-items: baseline; ">
+          <view wx:if='{{court.chief_umpire.userInfo.avatarUrl!=""}}' class="avartar_container_between">
+            <view>
+              <image class="avartar_small" src='{{court.chief_umpire.userInfo.avatarUrl!="" ? court.chief_umpire.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+            </view>
+            <view>
+              <text class="nickName_small">{{court.chief_umpire.userInfo.nickName}}</text>
+            </view>
+          </view>
+        </view>
+
         <view style="display:flex; flex-direction:column; border:3px solid orange; border-radius: 1px; min-width:60px; height: 35px;">
           <view style="width:100%; height:20%; display:flex; flex-direction:row;">
             <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  border-right-color : orange; border-right-width:3px; border-right-style:solid;  width:50%; height: 100%; background-color: Chocolate;"></view>
             <view style="border-bottom-color : orange; border-bottom-width:3px; border-bottom-style:solid;  width:50%; height: 100%; background-color: #336699; "></view>
-
           </view>
 
           <view style="width:100%; height:80%;display:flex; flex-direction:row;">
@@ -25,7 +35,6 @@
           </block>
         </view>
       </view>
-
       <view class="match-item-right">
         <view class='match-item-textblock'>
           <view>类型：{{ court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}}</view>

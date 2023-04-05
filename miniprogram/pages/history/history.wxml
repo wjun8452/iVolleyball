@@ -4,7 +4,7 @@
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{last_court ? "上次打开的比赛" : "您还未打开过比赛记录" }}</view>
+      <view>上次打开的比赛</view>
       <view> <button size="mini" bindtap="onCreate">新建</button>
       </view>
     </view>
@@ -15,7 +15,7 @@
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
-      <view> {{matches.length > 0 ? "我上传的比赛" : "我还没有上传任何比赛" }}</view>
+      <view>我上传的比赛</view>
       <view style="font-size: 12px"> 显示最近8个 </view>
     </view>
 
@@ -28,7 +28,7 @@
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
-      <view> {{joint_matches.length > 0 ? "我参加的比赛" : "我还没有参加任何比赛" }}</view>
+      <view>我参加的比赛</view>
       <view style="font-size: 12px"> 显示最近8个 </view>
     </view>
 
@@ -40,7 +40,7 @@
 
   <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view> {{shared_matches.length > 0 ? "好友分享的比赛" : "没有好友分享的比赛记录" }}</view>
+      <view>好友分享的比赛</view>
     </view>
 
     <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">

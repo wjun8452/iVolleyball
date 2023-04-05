@@ -45,7 +45,6 @@ export function parseTime(date:Date, format?:string) : string {
     return format2;
 }
 
-
 export function friendlyDate(date: Date) {
     let timestamp = date.getTime();
     let formats: any = {

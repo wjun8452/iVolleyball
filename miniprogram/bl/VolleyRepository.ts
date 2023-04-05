@@ -476,6 +476,9 @@ export class JointVolleyRepository {
       _openid: true,
       status: true,
       mode: true,
+      chief_umpire: true,
+      stat_umpire1: true,
+      stat_umpire2: true
     }).orderBy('create_time', 'desc')
       .limit(maxcount)
       .get({
@@ -556,6 +559,9 @@ export class JointVolleyRepository {
       _openid: true,
       status: true,
       mode: true,
+      chief_umpire: true,
+      stat_umpire1: true,
+      stat_umpire2: true
     }).orderBy('create_time', 'desc')
       .limit(maxcount)
       .get({
@@ -600,6 +606,18 @@ export class FriendsCourtRepo {
 
   constructor() {
     this.loadFriendsMatch();
+    this.sortMatch();
+  }
+
+  private compareMatch(match1:VolleyCourt, match2: VolleyCourt) : number {
+    let dateT1 = new Date(match1.create_time);
+    let dateT2 = new Date(match2.create_time);
+    return dateT1==dateT2 ? 0 : dateT1 > dateT2 ? -1 : 1;
+  }
+
+  //按创建时间降序排序
+  private sortMatch() {
+    this.courts.sort(this.compareMatch);
   }
 
   private loadFriendsMatch() {

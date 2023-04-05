@@ -14,6 +14,7 @@ class HistoryPageData {
   last_court: VolleyCourt | null = null; //上次打开的比赛
   globalData: GlobalData | null = null;
   isLoading: boolean = false; //节流阀，防止重复下拉
+  openid: string = ""; //当前微信用户id
 }
 
 class HistoryPage extends BasePage {
@@ -49,6 +50,7 @@ class HistoryPage extends BasePage {
     //加载云端的比赛
     getApp().getOpenId((openid: string, success: boolean) => {
       if (success) {
+        this.data.openid = openid;
         this.fetchCloudMatches(openid);
       } else {
         wx.hideLoading();
@@ -67,6 +69,7 @@ class HistoryPage extends BasePage {
     this.repo.fetchMatches(openid, 8, (matches: VolleyCourt[], success: boolean) => {
       if (success) {
         this.data.matches = matches;
+        console.log("我上传的比赛:", matches)
       } else {
         wx.showToast({
           title: '加载我的比赛失败',

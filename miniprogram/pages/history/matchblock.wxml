@@ -41,7 +41,7 @@
           <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
           <view wx:if='{{court.place!=""}}'>地点：{{court.place}}</view>
           <view wx:if='{{court.stat_umpire1.openid!=""}}' class="avartar_container">
-            <view>统计员1：</view>
+            <view>统计员1{{cout.stat_umpire1.openid==openid?"（你）":""}}：</view>
             <view>
               <image class="avartar_small" src='{{court.stat_umpire1.userInfo.avatarUrl!="" ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             </view>
@@ -50,7 +50,7 @@
             </view>
           </view>
           <view wx:if='{{court.stat_umpire2.openid!=""}}' class="avartar_container">
-            <view>统计员2：</view>
+            <view>统计员2{{cout.stat_umpire2.openid==openid?"（你）":""}}：</view>
             <view>
               <image class="avartar_small" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             </view>

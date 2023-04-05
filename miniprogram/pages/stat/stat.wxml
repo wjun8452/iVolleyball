@@ -68,7 +68,7 @@
           <view style="color:green"> 请等候主裁判分 </view>
         </block>
 
-        <block wx:if='{{isUmpire1 && court.stat_umpire1_done && court.stat_umpire2!="" && !court.stat_umpire2_done}}'>
+        <block wx:if='{{isUmpire1 && court.stat_umpire1_done && court.stat_umpire2.openid!="" && !court.stat_umpire2_done}}'>
           <view style="color:green"> 请等候统计员2提交 </view>
         </block>
 

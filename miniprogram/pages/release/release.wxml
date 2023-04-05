@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v2023.04.05.2 修复一些问题 </text>
+  </view>
+
+  <view class="block1">
 		<text style="margin-left: 5px;">v2023.04.05 支持邀请好友做技术统计 </text>
   </view>
 

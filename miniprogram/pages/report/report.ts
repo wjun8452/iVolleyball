@@ -332,6 +332,10 @@ class ReportPage extends BasePage {
     //   ReceptionPerfect: "一传到位",
     //     ReceptionLost: "一传失误",
 
+    if (statSumRecord.hasOwnProperty(StatName.ReceptionBad)) {
+      total += statSumRecord[StatName.ReceptionBad]
+    }
+
     if (statSumRecord.hasOwnProperty(StatName.ReceptionLost)) {
       lost += statSumRecord[StatName.ReceptionLost]
       total += statSumRecord[StatName.ReceptionLost]
@@ -429,7 +433,8 @@ class ReportPage extends BasePage {
 
     //   DefendLost: "防守失误",
     //     DefendGood: "防守到位",
-    //       DefendNormal: "防守一般",
+    // DefendNormal = "防守无攻",
+
     total = 0
     lost = 0
     win = 0
@@ -453,6 +458,7 @@ class ReportPage extends BasePage {
     summary["防反起球"]["总数"] = total
     summary["防反起球"]["失误"] = lost
     summary["防反起球"]["有效防起"] = win
+    summary["防反起球"]["防起无攻"] = normal
     summary["防反起球"]["到位率"] = total == 0 ? "0" : (win / total * 100).toFixed(0) + "%"
     summary["防反起球"]["到位效率"] = total == 0 ? "0" : ((win - lost) / total * 100).toFixed(0) + "%"
 

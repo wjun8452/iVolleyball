@@ -440,20 +440,20 @@ export class VolleyCourt {
 
   private updateAvailableItems_qipai5() {
     let who_serve = this.who_serve;
-    let items = this.play_items;
     let serve = this.serve;
-    let cats = this.play_item_cats;
     let players = this.players
-    let cat_allowed = this.cat_allowed;
     let player_allowed = this.player_allowed;
+    let cats_umpire1 = this.play_item_cats_umpire1;
+    let cats_umpire2 = this.play_item_cats_umpire2;
+    let cat_allowed_umpire1 = this.cat_allowed_umpire1;
+    let cat_allowed_umpire2 = this.cat_allowed_umpire2;
+    let items_umpire1 = this.play_items_umpire1;
+    let items_umpire2 = this.play_items_umpire2;
 
     let i: number = 0;
-    for (i = 0; i < items.length; i++) {
-      items[i] = [];
-      var item = items[i];
-
-      cats[i] = [];
-      var cat = cats[i];
+    for (i = 0; i < items_umpire1.length; i++) {
+      items_umpire1[i] = [];
+      cats_umpire1[i] = [];
 
       if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
         continue; //该队员不做统计
@@ -461,7 +461,7 @@ export class VolleyCourt {
 
       //添加顺序影响UI显示
       if (serve && i == who_serve) {
-        this._createItems(cat, item, cat_allowed, StatCat.Serve, [
+        this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Serve, [
           [StatName.ServeWin, 1],
           [StatName.ServeNormal, 0],
           [StatName.ServeLost, -1]
@@ -469,7 +469,7 @@ export class VolleyCourt {
       }
 
       if (!serve) {
-        this._createItems(cat, item, cat_allowed, StatCat.Reception, [
+        this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Reception, [
           [StatName.ReceptionPerfect, 0],
           [StatName.ReceptionGood, 0],
           [StatName.ReceptionBad, 0],
@@ -477,13 +477,13 @@ export class VolleyCourt {
         ])
       }
 
-      this._createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+      this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.ErChuan, [
         [StatName.ErChuanGood, 0],
         [StatName.ErChuanBad, 0],
         [StatName.ErChuanLost, -1]
       ])
 
-      this._createItems(cat, item, cat_allowed, StatCat.Attack, [
+      this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Attack, [
         [StatName.AttackWin, 1],
         [StatName.AttackNormal, 0],
         [StatName.AttackBlk, -1],
@@ -492,7 +492,7 @@ export class VolleyCourt {
 
 
       if (i >= 1 && i <= 3) {
-        this._createItems(cat, item, cat_allowed, StatCat.Block, [
+        this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Block, [
           [StatName.BlockWin, 1],
           [StatName.BlockPlus, 0],
           [StatName.BlockMinus, 0],
@@ -501,30 +501,16 @@ export class VolleyCourt {
         ])
       }
 
-      this._createItems(cat, item, cat_allowed, StatCat.Defend, [
+      this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1,  StatCat.Defend, [
         [StatName.DefendGood, 0],
         [StatName.DefendNormal, 0],
         [StatName.DefendLost, -1]
       ])
     }
-  }
 
-  private updateAvailableItems_qipai4() {
-    let who_serve = this.who_serve;
-    let items = this.play_items;
-    let serve = this.serve;
-    let cats = this.play_item_cats;
-    let players = this.players
-    let cat_allowed = this.cat_allowed;
-    let player_allowed = this.player_allowed;
-
-    let i: number = 0;
-    for (i = 0; i < items.length; i++) {
-      items[i] = [];
-      var item = items[i];
-
-      cats[i] = [];
-      var cat = cats[i];
+    for (i = 0; i < items_umpire2.length; i++) {
+      items_umpire2[i] = [];
+      cats_umpire2[i] = [];
 
       if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
         continue; //该队员不做统计
@@ -532,7 +518,7 @@ export class VolleyCourt {
 
       //添加顺序影响UI显示
       if (serve && i == who_serve) {
-        this._createItems(cat, item, cat_allowed, StatCat.Serve, [
+        this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Serve, [
           [StatName.ServeWin, 1],
           [StatName.ServeNormal, 0],
           [StatName.ServeLost, -1]
@@ -540,7 +526,7 @@ export class VolleyCourt {
       }
 
       if (!serve) {
-        this._createItems(cat, item, cat_allowed, StatCat.Reception, [
+        this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Reception, [
           [StatName.ReceptionPerfect, 0],
           [StatName.ReceptionGood, 0],
           [StatName.ReceptionBad, 0],
@@ -548,13 +534,86 @@ export class VolleyCourt {
         ])
       }
 
-      this._createItems(cat, item, cat_allowed, StatCat.ErChuan, [
+      this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.ErChuan, [
         [StatName.ErChuanGood, 0],
         [StatName.ErChuanBad, 0],
         [StatName.ErChuanLost, -1]
       ])
 
-      this._createItems(cat, item, cat_allowed, StatCat.Attack, [
+      this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Attack, [
+        [StatName.AttackWin, 1],
+        [StatName.AttackNormal, 0],
+        [StatName.AttackBlk, -1],
+        [StatName.AttackLost, -1]
+      ])
+
+
+      if (i >= 1 && i <= 3) {
+        this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Block, [
+          [StatName.BlockWin, 1],
+          [StatName.BlockPlus, 0],
+          [StatName.BlockMinus, 0],
+          [StatName.BlockHalf, -1],
+          [StatName.BlockLost, -1]
+        ])
+      }
+
+      this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Defend, [
+        [StatName.DefendGood, 0],
+        [StatName.DefendNormal, 0],
+        [StatName.DefendLost, -1]
+      ])
+    }
+
+  }
+
+  private updateAvailableItems_qipai4() {
+    let who_serve = this.who_serve;
+    let serve = this.serve;
+    let cats = this.play_item_cats;
+    let players = this.players
+    let player_allowed = this.player_allowed;
+    let cats_umpire1 = this.play_item_cats_umpire1;
+    let cats_umpire2 = this.play_item_cats_umpire2;
+    let cat_allowed_umpire1 = this.cat_allowed_umpire1;
+    let cat_allowed_umpire2 = this.cat_allowed_umpire2;
+    let items_umpire1 = this.play_items_umpire1;
+    let items_umpire2 = this.play_items_umpire2;
+
+    let i: number = 0;
+    for (i = 0; i < items_umpire1.length; i++) {
+      items_umpire1[i] = [];
+      cats_umpire1[i] = [];
+
+      if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
+        continue; //该队员不做统计
+      }
+
+      //添加顺序影响UI显示
+      if (serve && i == who_serve) {
+        this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Serve, [
+          [StatName.ServeWin, 1],
+          [StatName.ServeNormal, 0],
+          [StatName.ServeLost, -1]
+        ]);
+      }
+
+      if (!serve) {
+        this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Reception, [
+          [StatName.ReceptionPerfect, 0],
+          [StatName.ReceptionGood, 0],
+          [StatName.ReceptionBad, 0],
+          [StatName.ReceptionLost, -1]
+        ])
+      }
+
+      this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1,  StatCat.ErChuan, [
+        [StatName.ErChuanGood, 0],
+        [StatName.ErChuanBad, 0],
+        [StatName.ErChuanLost, -1]
+      ])
+
+      this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1,  StatCat.Attack, [
         [StatName.AttackWin, 1],
         [StatName.AttackNormal, 0],
         [StatName.AttackBlk, -1],
@@ -563,7 +622,7 @@ export class VolleyCourt {
 
 
       if (i >= 1 && i <= 2) {
-        this._createItems(cat, item, cat_allowed, StatCat.Block, [
+        this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Block, [
           [StatName.BlockWin, 1],
           [StatName.BlockPlus, 0],
           [StatName.BlockMinus, 0],
@@ -572,7 +631,64 @@ export class VolleyCourt {
         ])
       }
 
-      this._createItems(cat, item, cat_allowed, StatCat.Defend, [
+      this._createItems(cats_umpire1[i], items_umpire1[i], cat_allowed_umpire1, StatCat.Defend, [
+        [StatName.DefendGood, 0],
+        [StatName.DefendNormal, 0],
+        [StatName.DefendLost, -1]
+      ])
+    }
+
+    for (i = 0; i < items_umpire2.length; i++) {
+      items_umpire2[i] = [];
+      cats_umpire2[i] = [];
+
+      if (player_allowed != null && player_allowed != undefined && -1 == player_allowed.indexOf(players[i])) {
+        continue; //该队员不做统计
+      }
+
+      //添加顺序影响UI显示
+      if (serve && i == who_serve) {
+        this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Serve, [
+          [StatName.ServeWin, 1],
+          [StatName.ServeNormal, 0],
+          [StatName.ServeLost, -1]
+        ]);
+      }
+
+      if (!serve) {
+        this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Reception, [
+          [StatName.ReceptionPerfect, 0],
+          [StatName.ReceptionGood, 0],
+          [StatName.ReceptionBad, 0],
+          [StatName.ReceptionLost, -1]
+        ])
+      }
+
+      this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.ErChuan, [
+        [StatName.ErChuanGood, 0],
+        [StatName.ErChuanBad, 0],
+        [StatName.ErChuanLost, -1]
+      ])
+
+      this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Attack, [
+        [StatName.AttackWin, 1],
+        [StatName.AttackNormal, 0],
+        [StatName.AttackBlk, -1],
+        [StatName.AttackLost, -1]
+      ])
+
+
+      if (i >= 1 && i <= 2) {
+        this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Block, [
+          [StatName.BlockWin, 1],
+          [StatName.BlockPlus, 0],
+          [StatName.BlockMinus, 0],
+          [StatName.BlockHalf, -1],
+          [StatName.BlockLost, -1]
+        ])
+      }
+
+      this._createItems(cats_umpire2[i], items_umpire2[i], cat_allowed_umpire2, StatCat.Defend, [
         [StatName.DefendGood, 0],
         [StatName.DefendNormal, 0],
         [StatName.DefendLost, -1]
@@ -583,17 +699,18 @@ export class VolleyCourt {
   private updateAvailableItems_yingpai() {
     let who_serve = this.who_serve;
     let items = this.play_items;
-    let items_umpire1 = this.play_items_umpire1;
-    let items_umpire2 = this.play_items_umpire2;
     let serve = this.serve;
     let cats = this.play_item_cats;
     let cats_umpire1 = this.play_item_cats_umpire1;
     let cats_umpire2 = this.play_item_cats_umpire2;
-    let players = this.players
-    let libero = this.players.indexOf(this.all_players[this.libero]);
-    let cat_allowed = this.cat_allowed;
     let cat_allowed_umpire1 = this.cat_allowed_umpire1;
     let cat_allowed_umpire2 = this.cat_allowed_umpire2;
+    let items_umpire1 = this.play_items_umpire1;
+    let items_umpire2 = this.play_items_umpire2;
+    let players = this.players
+    let libero = this.players.indexOf(this.all_players[this.libero]);
+    // let cat_allowed = this.cat_allowed;
+    
     let player_allowed = this.player_allowed;
 
     let i: number = 0;
@@ -605,7 +722,7 @@ export class VolleyCourt {
       items_umpire1[i] = [];
       items_umpire2[i] = [];
 
-      var item = items[i];
+      // var item = items[i];
       var item_umpire1 = items_umpire1[i];
       var item_umpire2 = items_umpire2[i];
 
@@ -613,7 +730,7 @@ export class VolleyCourt {
       cats_umpire1[i] = [];
       cats_umpire2[i] = [];
 
-      var cat = cats[i];
+      // var cat = cats[i];
       var cat_umpire1 = cats_umpire1[i];
       var cat_umpire2 = cats_umpire2[i];
 

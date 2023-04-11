@@ -19,7 +19,7 @@
   <view wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}" class="teamblock">
     <view class="teamblock_row">
       <radio-group class="radio-group" bindchange="onTapMatchMode">
-        <radio disabled="true" value="0" checked="{{court.mode==0}}" />6人硬排
+        <radio disabled="{{court.status==0}}" value="0" checked="{{court.mode==0}}" />6人硬排
         <radio disabled="{{court.status==0}}" value="1" checked="{{court.mode==1}}" />5人气排
         <radio disabled="{{court.status==0}}" value="2" checked="{{court.mode==2}}" />4人气排
       </radio-group>

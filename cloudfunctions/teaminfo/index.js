@@ -1,7 +1,10 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
-cloud.init()
-const db = cloud.database()
+
+const ENV = 'ilovevolleyball-d1813b'; 
+cloud.init({env: ENV})
+
+const db = cloud.database({env: cloud.DYNAMIC_CURRENT_ENV})
 
 // 返回一个队伍的详细信息，包括其成员的头像、昵称等
 exports.main = async (event, context) => {

@@ -22,13 +22,18 @@
 			<view class="navigator_text">球队管理 </view>
 		</navigator>
 
+    <navigator class="navigator_container" url="../news/news"> 
+			<image class="navigator_image" src="../../images/team.svg"></image>
+			<view class="navigator_text"> 排球新闻 </view>
+		</navigator>
+
 		<navigator class="navigator_container" url="../help/help"> 
 			<image class="navigator_image" src="../../images/help.svg"></image>
 			<view class="navigator_text">使用帮助 </view>
 		</navigator>
 
 		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version"> v2023.04.11 </view>
+			<view class="navigator_version"> v2023.04.22 </view>
 		</navigator>
 </view>
 

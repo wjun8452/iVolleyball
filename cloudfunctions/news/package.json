@@ -1,5 +1,5 @@
 {
-  "name": "openapi",
+  "name": "news",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "https": "latest",
+    "rss-parser": "^3.13.0",
     "wx-server-sdk": "latest"
   }
 }

@@ -105,6 +105,13 @@
           "query": "_id=d90a0a756367c27c005558c66c32527d",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/news/news",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

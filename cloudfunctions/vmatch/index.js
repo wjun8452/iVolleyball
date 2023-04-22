@@ -4,10 +4,11 @@
 const cloud = require('wx-server-sdk')
 
 // 初始化 cloud
-cloud.init()
+const ENV = 'ilovevolleyball-d1813b'; 
+cloud.init({env: ENV})
 
+const db = cloud.database({env: cloud.DYNAMIC_CURRENT_ENV})
 
-const db = cloud.database()
 
 handleUmpireStats = async function (who, who_id, matchId, matchData) {
   if (!who) {

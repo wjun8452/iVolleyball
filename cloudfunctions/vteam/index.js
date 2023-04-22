@@ -4,10 +4,11 @@
 const cloud = require('wx-server-sdk')
 
 // 初始化 cloud
-cloud.init()
+const ENV = 'ilovevolleyball-d1813b'; 
+cloud.init({env: ENV})
 
+const db = cloud.database({env: cloud.DYNAMIC_CURRENT_ENV})
 
-const db = cloud.database()
 
 //对vteam做操作，譬如joinTeam, 申请人申请加入一个team
 exports.main = async (event, context) => {

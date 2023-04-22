@@ -1,0 +1,16 @@
+<!--pages/news.wxml-->
+
+<block wx:for="{{news}}" wx:for-index="index">
+  <view style="display:flex; flex-direction: column; margin: 10px; margin-bottom: 20px;">
+    <view style="font-size: large;" bindtap="onNewsDetail" data-newsId="{{item._id}}"> {{item.title}} </view>
+    <view style="color: grey;"> {{item.pubDate}} </view>
+    <view> {{item.contentSnippet}}... </view>
+  </view>
+  <!-- <web-view wx:if="{{index==0}}" src="{{item.link}}"> </web-view> -->
+
+
+  <!-- 
+"creator":"","title":"杭州亚运会沙排场馆亮相 55支代表队角逐全国沙排大..","link":"http://baijiahao.baidu.com/s?id=1763594829674277776","pubDate":"2023-04-19T14:56:10.000Z","author":"","content":"<a target=\"_blank\" href=http://baijiahao.baidu.com/s?id=1763594829674277776><img border=\"0\" src=\"http://t1.baidu.com/it/u=http%3A%2F%2Ft11.baidu.com%2Fit%2Fu%3D2311840298%2C202053829%26fm%3D30%26app%3D106%26f%3DJPEG%3Fw%3D312%26h%3D208%26s%3D6B966285420313410C1DE1870300E092&fm=30\"></a><br>潮新闻记者应磊4月19日，记者从宁波市举办的新闻发布会了解到，4月23日至27日韵味杭州·2023年“农行杯”全国沙滩排球大满贯赛（宁波象山站）将在象山举行。这次大满贯赛是第19届亚运会沙滩排球的测试","contentSnippet":"潮新闻记者应磊4月19日，记者从宁波市举办的新闻发布会了解到，4月23日至27日韵味杭州·2023年“农行杯”全国沙滩排球大满贯赛（宁波象山站）将在象山举行。这次大满贯赛是第19届亚运会沙滩排球的测试","isoDate":"2023-04-19T14:56:10.000Z"}
+
+-->
+</block>

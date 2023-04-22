@@ -4,7 +4,9 @@
 const cloud = require('wx-server-sdk')
 
 // 初始化 cloud
-cloud.init()
+const ENV = 'ilovevolleyball-d1813b'; 
+cloud.init({evn: ENV})
+
 
 /**
  * 这个示例将经自动鉴权过的小程序用户 openid 返回给小程序端

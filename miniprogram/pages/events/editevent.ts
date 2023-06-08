@@ -147,6 +147,7 @@ Page({
             that.setData(that.data);
           })
         } else if (that.data.type == "insert") {
+          that.data.event.base_id = that.data.base_id;
           new EventRepo().insertEvent(openid, that.data.event, (success: boolean) => {
             wx.hideLoading();
             if (success) {

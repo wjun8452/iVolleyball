@@ -64,15 +64,19 @@ class ScoreBoardPage extends BasePage {
       wx.vibrateShort({ type: 'medium' });
     }
 
+    if (!this.data.court) {
+      return;
+    }
+
     //判断并提示比赛是否结束，并可能走到重置流程
-    if (reason == Reason.Update && this.data.court!.isMatchOver()) {
+    if (reason == Reason.Update && this.data.court.isMatchOver()) {
       this.onReset();
     }
 
     if (reason == Reason.LocalToCloud) {
-      let url: string = '../share/share?_id=' + this.data.court!._id + "&myTeam=" + this.data.court?.myTeam + "&yourTeam=" + this.data.court?.yourTeam
-        + "&myScore=" + this.data.court?.myScore + "&yourScore=" + this.data.court?.yourScore
-        + "&place=" + this.data.court?.place + "&create_time=" + this.data.court?.create_time;
+      let url: string = '../share/share?_id=' + this.data.court._id + "&myTeam=" + this.data.court.myTeam + "&yourTeam=" + this.data.court.yourTeam
+        + "&myScore=" + this.data.court.myScore + "&yourScore=" + this.data.court.yourScore
+        + "&place=" + this.data.court.place + "&create_time=" + this.data.court.create_time;
 
       wx.navigateTo({
         url: url
@@ -166,14 +170,18 @@ class ScoreBoardPage extends BasePage {
    */
   onReset = function (this: ScoreBoardPage) {
     console.log("onReset")
-    if (!this.data.isOwner || this.data.court!.status == 0) {
+    if (!this.data.court) {
+      return;
+    }
+
+    if (!this.data.isOwner || this.data.court.status == 0) {
       wx.showToast({
         title: '无法操作',
       })
       return;
     }
 
-    let content = this.data.court!._id ? "将保存本次比赛，回到本地模式，重新开始记分" : "将清零分数，重新开始记分";
+    let content = this.data.court._id ? "将保存本次比赛，回到本地模式，重新开始记分" : "将清零分数，重新开始记分";
 
     var that = this
     wx.showModal({
@@ -182,19 +190,23 @@ class ScoreBoardPage extends BasePage {
       showCancel: true,
       success: function (res) {
         if (res.confirm) {
-          that.repo?.reset(that.data.court!);
+          that.repo?.reset(that.data.court);
         } else if (res.cancel) { }
       }
     })
   }
 
   updateMatch = function (this: ScoreBoardPage) {
+    if (!this.data.court) {
+      return;
+    }
+
     if (this.repo?.isOnlineMode()) {
       wx.showLoading({
         title: '正在加载',
       })
     }
-    this.repo!.updateMatch(this.data.court!)
+    this.repo!.updateMatch(this.data.court)
   }
 
   touch_end = function (this: ScoreBoardPage, mine: boolean, start_x: number, start_y: number, end_x: number, end_y: number) {
@@ -206,7 +218,11 @@ class ScoreBoardPage extends BasePage {
 
     if (change_x_abs < 50 && change_y_abs < 50) return;
 
-    if (!this.data.isOwner || this.data.court!.status == 0) {
+    if (!this.data.court) {
+      return;
+    }
+
+    if (!this.data.isOwner || this.data.court.status == 0) {
       wx.showToast({
         title: '无法操作',
       })
@@ -215,15 +231,15 @@ class ScoreBoardPage extends BasePage {
 
     if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右   
       if ((this.data.titleLeft && changeX < 0) || (!this.data.titleLeft && changeX > 0) ) { //加分
-        mine ? this.data.court!.addScoreRotate() : this.data.court!.looseScoreRotate();
+        mine ? this.data.court.addScoreRotate() : this.data.court.looseScoreRotate();
       } else { //减分
-        var item = this.data.court!.getTopItem()
+        var item = this.data.court.getTopItem()
         if (item != null && mine && item.score > 0) {
-          this.data.court!.popStatItem();
+          this.data.court.popStatItem();
         } else if (item != null && (!mine) && item.score < 0) {
-          this.data.court!.popStatItem();
+          this.data.court.popStatItem();
         } else { //revert score and remove stat item
-          this.data.court!.revertScore(mine)
+          this.data.court.revertScore(mine)
         }
       }
       this.updateMatch();
@@ -292,10 +308,14 @@ class ScoreBoardPage extends BasePage {
   }
 
   onShare = function (this: ScoreBoardPage) {
-    if (this.data.court!._id) {
-      let url: string = '../share/share?_id=' + this.data.court!._id + "&myTeam=" + this.data.court?.myTeam + "&yourTeam=" + this.data.court?.yourTeam
-        + "&myScore=" + this.data.court?.myScore + "&yourScore=" + this.data.court?.yourScore
-        + "&place=" + this.data.court?.place + "&create_time=" + this.data.court?.create_time;
+    if (!this.data.court) {
+      return;
+    }
+
+    if (this.data.court._id) {
+      let url: string = '../share/share?_id=' + this.data.court._id + "&myTeam=" + this.data.court.myTeam + "&yourTeam=" + this.data.court.yourTeam
+        + "&myScore=" + this.data.court.myScore + "&yourScore=" + this.data.court.yourScore
+        + "&place=" + this.data.court.place + "&create_time=" + this.data.court.create_time;
 
       console.log(url);
 
@@ -306,14 +326,18 @@ class ScoreBoardPage extends BasePage {
       wx.showLoading({
         title: '正在加载...',
       })
-      this.repo?.uploadMatch(this.data.court!);
+      this.repo?.uploadMatch(this.data.court);
     }
   }
 
   onStat = function (this: ScoreBoardPage) {
-    if (this.data.court!._id) {
+    if (!this.data.court) {
+      return;
+    }
+
+    if (this.data.court._id) {
       wx.navigateTo({
-        url: '../stat/stat?_id=' + this.data.court!._id
+        url: '../stat/stat?_id=' + this.data.court._id
       })
     } else {
       wx.navigateTo({
@@ -332,8 +356,12 @@ class ScoreBoardPage extends BasePage {
   onShareAppMessage = function (this: ScoreBoardPage) {
     let path: string = '/pages/score_board/score_board';
 
-    if (this.data.court && this.data.court!._id) {
-      path = '/pages/score_board/score_board?_id=' + this.data.court?._id;
+    if (!this.data.court) {
+      return null;
+    }
+
+    if (this.data.court._id) {
+      path = '/pages/score_board/score_board?_id=' + this.data.court._id;
     }
 
     return {

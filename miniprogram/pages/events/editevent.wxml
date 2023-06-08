@@ -1,0 +1,29 @@
+<view>
+<view> {{event.name}} </view>
+
+<view> 比赛模式 </view>
+<radio-group>
+  <radio checked="{{event.mode==0}}" value="0"> 单循环赛 </radio>
+  <radio checked="{{event.mode==1}}" value="1"> 分组循环再淘汰赛 </radio>
+</radio-group>
+</view>
+
+<view>
+<view> 队伍设置 </view>
+    <view style="display: flex; flex-direction: row; align-items: baseline;">
+        <button size="mini" bindtap="delete_all"> 清空 </button>
+        <button size="mini"> 智能粘贴 </button>
+        <button size="mini" bindtap="add"> + </button>
+      </view>
+    <block wx:for="{{event.teams}}">
+      <view style="display: flex; flex-direction: row; align-items: baseline;">
+        <view> {{index+1}}: </view>
+        <view> <input placeholder='{{"队伍" + (index+1)}}' bindinput="onInput" data-index="{{index}}" value="{{item.name}}"> </input> </view>
+        <button size="mini" bindtap="delete" data-index="{{index}}"> - </button>
+      </view>
+    </block>
+</view>
+
+
+<button wx:if='{{type=="new" || type=="insert"}}' type="primary" bindtap="create"> 创建 </button>
+<button wx:if='{{type=="update"}}' type="primary" bindtap="update"> 更新 </button>

@@ -1,9 +1,15 @@
 <!--pages/news.wxml-->
 
+<view wx:if="{{isOwner}}">
+  <button type="primary" bindtap="onRefreshNews"> 触发服务器更新新闻
+  </button>
+</view>
+
 <block wx:for="{{news}}" wx:for-index="index">
   <view style="display:flex; flex-direction: column; margin: 10px; margin-bottom: 20px;">
     <view style="font-size: large;" bindtap="onNewsDetail" data-newsId="{{item._id}}"> {{item.title}} </view>
-    <view style="color: grey;"> {{item.pubDate}} </view>
+    <view style="color: grey;"> 发表：{{item.pubDate}} </view>
+    <view style="color: grey;"> 抓取: {{item.updateTime}} </view>
     <view> {{item.contentSnippet}}... </view>
   </view>
   <!-- <web-view wx:if="{{index==0}}" src="{{item.link}}"> </web-view> -->

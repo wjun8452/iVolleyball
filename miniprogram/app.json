@@ -11,7 +11,11 @@
     "pages/share/share",
     "pages/team/team",
     "pages/teams/teams",
-    "pages/news/news"
+    "pages/news/news",
+    "pages/events/events",
+    "pages/events/editevent",
+    "pages/events/board",
+    "pages/events/round"
   ],
   "window": {
     "backgroundTextStyle": "light",

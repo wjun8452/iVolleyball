@@ -22,6 +22,11 @@
 			<view class="navigator_text">球队管理 </view>
 		</navigator>
 
+    <navigator class="navigator_container" url="../events/events"> 
+			<image class="navigator_image" src="../../images/team.svg"></image>
+			<view class="navigator_text">赛事组织 </view>
+		</navigator>
+
     <navigator class="navigator_container" url="../news/news"> 
 			<image class="navigator_image" src="../../images/team.svg"></image>
 			<view class="navigator_text"> 排球新闻 </view>

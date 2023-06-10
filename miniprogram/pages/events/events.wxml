@@ -1,14 +1,14 @@
-<view>
+<view class="main">
 
   <!-- tab headers -->
   <view class="container" style="display:flex; flex-direction: row; justify-content: space-between; ">
 
-    <view class='{{tab==0 ? "sel" : ""}}' bindtap="onClickTab" data-tab="0"> 搜索 </view>
-    <view class='{{tab==1 ? "sel" : ""}}' bindtap="onClickTab" data-tab="1"> 最近 </view>
-    <view class='{{tab==2 ? "sel" : ""}}' bindtap="onClickTab" data-tab="2"> 大厅 </view>
-    <view class='{{tab==3 ? "sel" : ""}}' bindtap="onClickTab" data-tab="3"> 收藏 </view>
+    <!-- <view class='{{tab==0 ? "sel" : ""}}' bindtap="onClickTab" data-tab="0"> 搜索 </view> -->
+    <!-- <view class='{{tab==1 ? "sel" : ""}}' bindtap="onClickTab" data-tab="1"> 最近 </view> -->
     <view class='{{tab==4 ? "sel" : ""}}' bindtap="onClickTab" data-tab="4"> 管理 </view>
-
+    <view class='{{tab==3 ? "sel" : ""}}' bindtap="onClickTab" data-tab="3"> 收藏 </view>
+    <view class='{{tab==2 ? "sel" : ""}}' bindtap="onClickTab" data-tab="2"> 大厅 </view>
+   
   </view>
 
   <view style="width: 100%;">
@@ -23,29 +23,33 @@
 
       <view wx:if="{{tab==4}}">显示可管理的比赛，下拉可刷新</view>
       <view wx:if="{{tab==2}}">显示最近20场比赛，下拉可刷新</view>
+      <view wx:if="{{tab==3}}">显示已收藏的比赛，下拉可刷新</view>
     </view>
 
     <block wx:for="{{userEvents}}" wx:for-item="userEvent">
       <view class="container">
         <view class="first_item" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-          <view class="avartar_container">
-            <image class="avartar" src='{{userEvent.owner.userInfo.avatarUrl? userEvent.owner.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+          <view style="display: flex; flex-direction: row; align-items: center;">
+            <view class="avartar_container">
+              <image class="avartar" src='{{userEvent.owner.userInfo.avatarUrl? userEvent.owner.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+            </view>
+            <view> {{userEvent.owner.userInfo.nickName}} </view>
           </view>
 
           <view>
-            <checkbox-group bindchange="addFavorite" data-openid="{{userEvent._openid}}" wx:if="{{tab==2}}" style="display: flex; flex-direction: row;">
+            <checkbox-group bindchange="addFavorite" data-openid="{{userEvent._openid}}" wx:if="{{tab==2 || tab==3}}" style="display: flex; flex-direction: row;">
               <view> 收藏 </view>
-              <checkbox checked="{{false}}"> </checkbox>
+              <checkbox checked="{{userEvent.isFavorite}}"> </checkbox>
             </checkbox-group>
           </view>
         </view>
 
         <view class="list-item" wx:for="{{userEvent.events}}" wx:key="create_time" wx:for-item="event" style="display: flex; flex-direction: row; justify-content: space-between;" wx:if="{{viewAll || index<=2}}">
-          <view bindtap="viewEvent" data-openid="{{userEvent._openid}}" data-base_id="{{event.base_id}}"> {{event.name}} </view>
-          <view wx:if="{{tab==4}}" bindtap="editEvent" data-openid="{{userEvent._openid}}" data-base_id="{{event.base_id}}"> 编辑 > </view>
+          <view class="clickable" style="flex: 3" bindtap="viewEvent" data-openid="{{userEvent._openid}}" data-base_id="{{event.base_id}}"> {{event.name}} </view>
+          <view wx:if="{{tab==4}}"  class="clickable" style="flex:1" bindtap="editEvent" data-openid="{{userEvent._openid}}" data-base_id="{{event.base_id}}"> 编辑 > </view>
         </view>
 
-        <view class="last_item">
+        <view class="last_item clickable">
           <view wx:if="{{userEvent.events.length > 3 && !viewAll}}" bindtap="viewAll">查看全部</view>
         </view>
       </view>

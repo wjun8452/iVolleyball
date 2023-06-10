@@ -13,7 +13,7 @@ Page({
     row_edit: -1,
     col_edit: -1,
     
-    score_sets: {score: "-:-", win:0, loose:0, sets: [], win_scores: [], loose_scores: []},
+    score_sets: {},
   },
 
   /**

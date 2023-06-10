@@ -16,7 +16,7 @@
     </view>
   </view>
 
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
+  <view class="container" style="display:flex; flex-direction: column;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
       <view> 我创建的队伍 </view>
       <view><button size="mini" bindtap="onClickCreateNewTeam">创建</button></view>
@@ -41,7 +41,7 @@
   </view>
 
 
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
+  <view class="container" style="display:flex; flex-direction: column;">
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
       <view> 我加入的队伍 </view>
     </view>

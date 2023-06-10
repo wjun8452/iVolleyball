@@ -33,7 +33,8 @@ exports.main = async (event, context) => {
           {
             data: {
               'events': _.push(event_data),
-              'base_id': event_data.base_id
+              'base_id': event_data.base_id,
+              'update_time': db.serverDate(),
             }
           }
         );
@@ -51,7 +52,8 @@ exports.main = async (event, context) => {
         .update(
           {
             data: {
-              'events.$': event_data
+              'events.$': event_data,
+              'update_time': db.serverDate(),
             }
           }
         );

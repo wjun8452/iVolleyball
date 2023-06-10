@@ -2,6 +2,18 @@
 @color_main_blue: #336699;
 @color_main_yellow: #FFFFCC;
 @color_main_grey: #E5E5E5;
+@color_main_text: #35383be0;
+@color_clickable: @color_main_blue;
+
+.main {
+  color: @color_main_text;
+}
+
+.teamblock_row input {
+  color: #555;
+  width: 100px;
+}
+
 
 .iconmedium {
   text-align: center;
@@ -61,7 +73,7 @@
 
 
 .container {
-  color: @color_main_blue;
+  color: @color_main_text;
   background-color: @color_main_yellow;
   border-radius: 8px;
   border-top-style: 1px solid grey;
@@ -73,7 +85,6 @@
 }
 
 .list-item {
-  width: 100%;
   display: flex;
   flex-direction: row; 
   justify-content: space-between; 
@@ -284,4 +295,12 @@
   color: @color_main_blue;
   margin: 2px; 
   border: 1px solid @color_main_blue;
+}
+
+.clickable {
+  color: @color_clickable;
+}
+
+.non-clickable {
+  color: black
 }

@@ -13,6 +13,7 @@ Page({
     type: "new",
     openid: "",
     base_id: -1,
+    loaded: false,
   },
 
   /**
@@ -20,6 +21,10 @@ Page({
    */
   onLoad(options) {
     this.loadUserInfo();
+
+    if (this.data.hasUserInfo) {
+      this.data.event = new Event(0, "", this.data.user, 0, []);
+    }
 
     for (let i = 0; i < 4; i++) {
       this.add();
@@ -59,11 +64,15 @@ Page({
         if (success && event) {
           that.data.event = event;
           console.log(that.data)
-          that.setData(that.data);
         } else {
           wx.showToast({ "title": "失败", "icon": "error" })
         }
+        that.data.loaded = true;
+        that.setData(that.data);
       })
+    } else {
+      this.data.loaded = true;
+      this.setData(this.data);
     }
   },
 
@@ -103,8 +112,8 @@ Page({
   },
 
   add() {
-    let team = new VTeam(getApp().globalData.user);
-    team.name = ""
+    let team = new VTeam();
+    team.name = "队伍" + (this.data.event.teams.length + 1);
     this.data.event.teams.push(team);
     new EventHelper().initTeamMatches(this.data.event);
     new EventHelper().updateTeamScore(this.data.event);
@@ -213,5 +222,25 @@ Page({
       }
       this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
     }
+  },
+
+  onEditName (e) {
+    let name = e.detail.value
+    name = name.replace(/^\s*|\s*$/g, "");
+    if (name.length > 0) {
+      this.data.event.name = name;
+    } else {
+      wx.showToast({
+        title: '名称不能为空！',
+        icon: "error"
+      })
+    }
+  },
+
+  onClearTeams(e) {
+    for (let i = 0; i < this.data.event.teams.length; i++) {
+      this.data.event.teams[i].name = "";
+    }
+    this.setData(this.data);
   }
 })

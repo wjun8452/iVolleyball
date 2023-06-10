@@ -66,7 +66,7 @@ Page({
     if (rindex > cindex) {
       wx.navigateTo({
         url: "./round",
-        event: {
+        events: {
           updateSetScore: (result) => {
             console.log("updateSetScore triggered", result)
             that.sync_lock = true;

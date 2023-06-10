@@ -1,5 +1,6 @@
-import { parseTime } from "../utils/Util";
-import { VUser, VTeam } from "./TeamRepo"
+import { parseDate, parseTime } from "../utils/Util";
+import { FavoriteOpenidRepo } from "./FavoriteOpenidRepo";
+import { VUser, VTeam, TeamRepo } from "./TeamRepo"
 
 const CLOUD_ENV: string = 'ilovevolleyball-d1813b'; //,test-705bde
 
@@ -37,7 +38,7 @@ export class Event {
     this.base_id = base_id;
 
     if (this.name == "") {
-      this.name = parseTime(new Date()) + " " + owner.userInfo.nickName + " 创建的比赛"
+      this.name = parseDate(new Date()) + " " + owner.userInfo.nickName + " 创建的比赛"
     }
 
     this.team_matches = new EventHelper().initTeamMatches(this);
@@ -292,6 +293,7 @@ export class EventRepo {
 
     if (createTime != undefined) {
       tempData.create_time = createTime;
+      tempData.update_time = createTime;
     }
 
     delete tempData._openid;
@@ -299,6 +301,7 @@ export class EventRepo {
 
     if (createTime == undefined) {
       delete tempData.create_time;
+      delete tempData.update_time;
     }
 
     return tempData;
@@ -327,12 +330,20 @@ export class EventRepo {
     })
   };
 
-  fetchUserEvents(where_clause: {}, callback: (success: boolean, events: UserEvent[] | null) => void) {
+  fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?:FavoriteOpenidRepo) {
+    return this._fetchUserEvents({}, callback, favoriteOpenidRepo);
+  }
+
+  fetchUserEvents(openid:string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?:FavoriteOpenidRepo) {
+    return this._fetchUserEvents({_openid: openid}, callback, favoriteOpenidRepo);
+  }
+
+  private _fetchUserEvents(where_clause:{}, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?:FavoriteOpenidRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
 
-    db.collection("vevent").where(where_clause).get({
+    db.collection("vevent").where(where_clause).orderBy('update_time', 'desc').get({
       success(res) {
         console.log("db.vevent.get", where_clause)
         console.log(res)
@@ -340,6 +351,15 @@ export class EventRepo {
 
         for (let k = 0; k < userEvents.length; k++) {
           let userEvent = userEvents[k];
+
+          if (favoriteOpenidRepo) {
+            if (favoriteOpenidRepo.isFavorite(userEvent._openid)) {
+              userEvent["isFavorite"] = true;
+            } else {
+              userEvent["isFavorite"] = false;
+            }
+          }
+
           for (let i = 0; i < userEvent.events.length; i++) {
             let event = userEvent.events[i];
             let t = event.create_time;

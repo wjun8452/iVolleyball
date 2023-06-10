@@ -21,6 +21,27 @@ function formatNumber(n:number) : string{
     return m[1] ? m : '0' + m
 }
 
+
+/** 
+ * 时间戳转化为年 月 日
+ * number: 传入时间戳 
+ * format：返回格式，支持自定义，但参数必须与formateArr里保持一致 
+*/
+export function parseDate(date:Date, format?:string) : string {
+  let format2 = format ? format : "Y/M/D"
+  let formateArr = ['Y', 'M', 'D'];
+  let returnArr:string[] = [];
+
+  returnArr.push(date.getFullYear().toString());
+  returnArr.push(formatNumber(date.getMonth() + 1));
+  returnArr.push(formatNumber(date.getDate()));
+
+  for (let i in returnArr) {
+      format2 = format2.replace(formateArr[i], returnArr[i]);
+  }
+  return format2;
+}
+
 /** 
  * 时间戳转化为年 月 日 时 分 秒 
  * number: 传入时间戳 

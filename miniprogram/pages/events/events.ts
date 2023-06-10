@@ -1,25 +1,30 @@
 // pages/matches/matches.ts
 import { Event, EventRepo, UserEvent } from "../../bl/EventRepo"
+import { FavoriteEventRepo } from "../../bl/FavoriteEventRepo";
+import { FavoriteOpenidRepo } from "../../bl/FavoriteOpenidRepo";
 import { VUser } from "../../bl/TeamRepo";
 
 Page({
+  favoriteOpenidRepo: new FavoriteOpenidRepo(),
 
   /**
    * 页面的初始数据
    */
   data: {
     viewAll: false,
-    tab: 4, //目前选择的是哪个tab
+    tab: 4, //0-搜索，1-最近，2-大厅，3-收藏，4-管理
     userEvents: [], //multiple Events of mulitple owners
     user: new VUser(),
     hasUserInfo: false,
-    canIUseGetUserProfile: false
+    canIUseGetUserProfile: false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad() {
+    this.favoriteOpenidRepo.load();
+
     const newLocal = wx.getUserProfile;
     if (newLocal) {
       this.setData({
@@ -41,7 +46,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.loadEvents();
+    this.loadByTab();
   },
 
   /**
@@ -55,14 +60,13 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    this.loadEvents();
+    this.loadByTab();
   },
 
   /**
@@ -119,30 +123,64 @@ Page({
     let tab = e.currentTarget.dataset.tab;
     if (this.data.tab == tab) return;
     this.data.tab = tab;
-    this.data.viewAll = false;
-    this.setData(this.data);
+    this.showInitData(); //refresh UI immediatly
+    this.loadByTab();
   },
 
-  loadEvents() {
+  loadByTab() {
+    if (this.data.tab == 4) { //管理
+      this.loadEventsTab4();
+    } else if (this.data.tab == 3) {//收藏
+      this.loadEventsTab3();
+    } else if (this.data.tab == 2) {//大厅
+      this.loadEventsTab2();
+    }
+  },
+
+  loadEventsTab2() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
     getApp().getOpenId((openid: string, success: boolean) => {
       if (success) {
-        let where_clause = {};
-        if (this.data.tab == 4) {
-          where_clause = { _openid: openid }
-        }
+        new EventRepo().fetchAllUserEvents(that._callback, this.favoriteOpenidRepo);
+      } else {
+        wx.showToast({ title: "获取openid失败！" })
+        wx.stopPullDownRefresh();
+      }
+    });
+  },
 
-        new EventRepo().fetchUserEvents(where_clause, (success: boolean, userEvents: UserEvent[] | null) => {
-          wx.hideLoading();
-          if (success && userEvents) {
-            that.data.userEvents = userEvents;
-            that.setData(that.data);
-          } else {
-            wx.showToast({ title: "加载失败！" })
-          }
-          wx.stopPullDownRefresh();
-        });
+  _callback(success: boolean, userEvents: UserEvent[] | null) {
+    wx.hideLoading();
+    if (success && userEvents) {
+      this.data.userEvents = userEvents;
+      this.setData(this.data);
+    } else {
+      wx.showToast({ title: "加载失败！" })
+    }
+    wx.stopPullDownRefresh();
+  },
+
+
+  loadEventsTab4() {
+    wx.showLoading({ "title": "正在加载..." })
+    const that = this;
+    getApp().getOpenId((openid: string, success: boolean) => {
+      if (success) {
+        new EventRepo().fetchUserEvents(openid, that._callback);
+      } else {
+        wx.showToast({ title: "获取openid失败！" })
+        wx.stopPullDownRefresh();
+      }
+    });
+  },
+
+  loadEventsTab3() {
+    wx.showLoading({ "title": "正在加载..." })
+    const that = this;
+    getApp().getOpenId((openid: string, success: boolean) => {
+      if (success) {
+        new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
       } else {
         wx.showToast({ title: "获取openid失败！" })
         wx.stopPullDownRefresh();
@@ -155,8 +193,17 @@ Page({
     this.setData(this.data);
   },
 
-  addFavorite() {
-
+  addFavorite(e) {
+    let openid = e.currentTarget.dataset.openid;
+    const values = e.detail.value;
+    if (values.length > 0) {
+      this.favoriteOpenidRepo.add(openid)
+    } else {
+      this.favoriteOpenidRepo.remove(openid);
+      if (this.data.tab == 3) {
+        this.loadByTab();
+      }
+    }
   },
 
   getUserProfile(e: any) {
@@ -197,5 +244,11 @@ Page({
       }
       this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
     }
+  },
+
+  showInitData() {
+    this.data.viewAll = false; //collapsed
+    this.data.userEvents = [];
+    this.setData(this.data);
   }
 })

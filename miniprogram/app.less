@@ -1,19 +1,9 @@
+//same as stat_setting
+
 @color_main_orange: #FF9900;
 @color_main_blue: #336699;
 @color_main_yellow: #FFFFCC;
 @color_main_grey: #E5E5E5;
-@color_main_text: #35383be0;
-@color_clickable: @color_main_blue;
-
-.main {
-  color: @color_main_text;
-}
-
-.teamblock_row input {
-  color: #555;
-  width: 100px;
-}
-
 
 .iconmedium {
   text-align: center;
@@ -73,7 +63,7 @@
 
 
 .container {
-  color: @color_main_text;
+  color: @color_main_blue;
   background-color: @color_main_yellow;
   border-radius: 8px;
   border-top-style: 1px solid grey;
@@ -85,6 +75,7 @@
 }
 
 .list-item {
+  width: 100%;
   display: flex;
   flex-direction: row; 
   justify-content: space-between; 
@@ -223,10 +214,13 @@
   align-items: center;
   min-height: 40px;
   white-space:nowrap;
+  width: 100%;
 }
 
 .teamblock_title {
   min-width: calc(4em + 30rpx);
+  display: flex;
+  flex-direction: row;
 }
 
 .teamblock_value {
@@ -297,10 +291,94 @@
   border: 1px solid @color_main_blue;
 }
 
-.clickable {
-  color: @color_clickable;
+.score_input_pannel {
+  background-color: @color_main_orange
 }
 
-.non-clickable {
-  color: black
+
+.table {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+}
+
+.tr {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.th,
+.td,
+.tc {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border-right: 1px solid grey;
+  border-bottom: 1px solid grey;
+  width: 100%;
+  height: 100%;
+}
+
+.th {
+  border-top: 1px solid grey;
+}
+
+//第一列
+.tc {
+  border-left: 1px solid grey;
+}
+
+//基础的盒子，可以实现内部文字居中
+.mytext_view {
+  width: 100%;
+  height: 100%;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  // border: 1px solid red;
+}
+
+.mybutton_view {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid grey;
+  border-radius: 5px;
+
+  width: 100%;
+  height: 100%;
+}
+
+.edit {
+  // background-color: yellow;
+}
+
+
+.highligh {
+  // background-color: lightblue;
+}
+
+// .th.tc {
+//   background: linear-gradient(to top right,
+//       rgba(0, 0, 0, 0) 0%,
+//       rgba(0, 0, 0, 0) calc(50% - 1px),
+//       rgba(128, 128, 128, 1) 50%,
+//       rgba(0, 0, 0, 0) calc(50% + 1px),
+//       rgba(0, 0, 0, 0) 100%);
+// }
+
+
+.color_score {
+  color: @color_main_orange
 }

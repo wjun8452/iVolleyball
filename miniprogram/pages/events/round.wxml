@@ -1,68 +1,80 @@
 <!--pages/matches/round.wxml-->
-
-
-<view> {{score_sets.score}} </view>
-
-<view wx:for="{{score_sets.sets}}" wx:item="item">
-
-  <view > 第 {{index+1}} 局比分: {{item}} 
+<view>
+  <view class="teamblock" style="font-size: x-large; align-items: center;">
+    <view class="teamblock_row">
+      <view>{{team1}}</view>
+      <view class="color_score">{{matchScore.winset_str}}</view>
+      <view>{{team2}}</view>
+    </view>
   </view>
-
-  <view bindtap="onSetScore" data-index="{{index}}"> 点击设置
-  </view>
-
-  <view bindtap="deleteSet" data-index="{{index}}"> 删除 </view>
-
 </view>
 
-<view bindtap="onNewSet"> 添加1局 </view>
+<view class="teamblock">
+  <view class="teamblock_row" wx:for="{{matchScore.setScores}}" wx:item="item">
+    <view class="teamblock_row">
+      <view style="flex:1">第 {{index+1}} 局比分: </view>
+      <view class="color_score" style="flex:1" >{{item.score_str}}</view>
+    </view>
+    <view class="teamblock_row">
+      <button size="mini" bindtap="onSetScore" data-index="{{index}}" disabled="{{!isOwner}}"> 设置
+      </button>
+      <button size="mini" bindtap="deleteSet" data-index="{{index}}" disabled="{{!isOwner}}"> 删除 </button>
+    </view>
+  </view>
+  <view class="teamblock_row">
+    <button size="mini" bindtap="onNewSet" disabled="{{!isOwner}}"> 添加1局 </button>
+  </view>
+</view>
 
-<button bindtap="onConfirm"> 确定 </button>
-
+<view class="teamblock">
+  <view class="teamblock_row">
+    <button style="width: 50%;" size="default" bindtap="onConfirm" disabled="{{!isOwner}}"> 确定 </button>
+  </view>
+</view>
 
 <!-- 分数输入框 -->
-<view wx:if="{{showScoreInput}}" style='position: absolute; left: 0px; top:{{false ? "0vh" : "70vh"}}; width: 100%; height: 30vh; border: solid 1px red; background-color: burlywood; display: flex; flex-direction: row; {{landscape ? "transform-origin:top left;transform: rotate(90deg) translateY(-100%)" : "" }}'>
+<view wx:if="{{showScoreInput}}" style='position: absolute; left: 0px; top:{{false ? "0vh" : "70vh"}}; width: 100%; height: 30vh; display: flex; flex-direction: row;' class=".score_input_pannel">
 
-<view style="flex: 1; display: flex; ">
-  <view class="table" style="margin: 2px">
-    <view class="tr">
-      <view class="th tc" bindtap="on25" data-isleft="true"> 25 </view>
-      <view class="th" bindtap="on0" data-isleft="true"> 0 </view>
-      <view class="th" bindtap="clearScore" data-isleft="true"> 清除 </view>
-    </view>
+  <view style="flex: 1; display: flex; ">
+    <view class="table" style="margin: 2px">
+      <view class="tr">
+        <view class="th tc" bindtap="on25" data-isleft="true"> 25 </view>
+        <view class="th" bindtap="on0" data-isleft="true"> 0 </view>
+        <view class="th" bindtap="clearScore" data-isleft="true"> 清除 </view>
+      </view>
 
-    <view class="tr" wx:for="{{[1,2,3]}}" wx:for-item="row">
-      <view class='{{column==1 ? "tc" : "td"}}' wx:for="{{[1, 2, 3]}}" wx:for-item="column" bindtap="onTapScore" data-isleft="true" data-score="{{(row-1)*3 + column}}"> {{(row-1)*3 + column}} </view>
-    </view>
-  </view>
-</view>
-
-<view style="flex: 1; display: flex; flex-direction: column;">
-  <view style="flex:1; display: flex; flex-direction: row; justify-content: space-around;">
-    <view>2#</view>
-    <view>3#</view>
-  </view>
-  <view style="flex:2; display: flex; flex-direction: row; justify-content: space-around;">
-    <view> {{score_left_edit}} </view>
-    <view>:</view>
-    <view>{{score_right_edit}}</view>
-  </view>
-  <view style="flex:1; border: solid 1px black;" bindtap="confirmScore"> 确定 </view>
-  <view style="flex:1; border: solid 1px black;" bindtap="hideScoreInput"> 取消 </view>
-</view>
-
-<view style="display: flex; flex: 1;">
-  <view class="table" style="margin: 2px">
-    <view class="tr">
-      <view class="th tc" bindtap="on25" data-isleft="false"> 25 </view>
-      <view class="th" bindtap="on0" data-isleft="false"> 0 </view>
-      <view class="th" bindtap="clearScore" data-isleft="false"> 清除 </view>
-    </view>
-
-    <view class="tr" wx:for="{{[1,2,3]}}" wx:for-item="row">
-      <view class='{{column==1 ? "tc" : "td"}}' wx:for="{{[1, 2, 3]}}" wx:for-item="column" bindtap="onTapScore" data-isleft="false" data-score="{{(row-1)*3 + column}}"> {{(row-1)*3 + column}} </view>
+      <view class="tr" wx:for="{{[1,2,3]}}" wx:for-item="row">
+        <view class='{{column==1 ? "tc" : "td"}}' wx:for="{{[1, 2, 3]}}" wx:for-item="column" bindtap="onTapScore" data-isleft="true" data-score="{{(row-1)*3 + column}}"> {{(row-1)*3 + column}} </view>
+      </view>
     </view>
   </view>
-</view>
+
+  <view style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; margin-top: 5px; margin-bottom: 5px;">
+    <view style="flex:1; display: flex; flex-direction: row; justify-content: space-around;">
+      <view>{{team1}}</view>
+      <view>{{team2}}</view>
+    </view>
+    <view style="flex:1; display: flex; flex-direction: row; justify-content: space-around;">
+      <view> {{score_left_edit}} </view>
+      <view>:</view>
+      <view>{{score_right_edit}}</view>
+    </view>
+    <view style="flex:1; " class="mybutton_view" bindtap="confirmScore"> 确定 </view>
+    <view style="flex:1; " class="mybutton_view" bindtap="hideScoreInput"> 取消 </view>
+  </view>
+
+  <view style="display: flex; flex: 1;">
+    <view class="table" style="margin: 2px">
+      <view class="tr">
+        <view class="th tc" bindtap="on25" data-isleft="false"> 25 </view>
+        <view class="th" bindtap="on0" data-isleft="false"> 0 </view>
+        <view class="th" bindtap="clearScore" data-isleft="false"> 清除 </view>
+      </view>
+
+      <view class="tr" wx:for="{{[1,2,3]}}" wx:for-item="row">
+        <view class='{{column==1 ? "tc" : "td"}}' wx:for="{{[1, 2, 3]}}" wx:for-item="column" bindtap="onTapScore" data-isleft="false" data-score="{{(row-1)*3 + column}}"> {{(row-1)*3 + column}} </view>
+      </view>
+    </view>
+  </view>
 
 </view>

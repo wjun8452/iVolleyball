@@ -154,6 +154,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/events/board",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

@@ -25,6 +25,10 @@ exports.main = async (event, context) => {
     return { errMsg: "action must not be empty!" }
   }
 
+  if (_openid != cloud.getWXContext().OPENID) {
+    return { errMsg: "permission denied!"}
+  }
+
   if (action == "insert") {
     try {
       const _ = db.command

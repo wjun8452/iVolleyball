@@ -156,7 +156,7 @@ Page({
       this.data.userEvents = userEvents;
       this.setData(this.data);
     } else {
-      wx.showToast({ title: "加载失败！" })
+      wx.showToast({ title: "加载失败！", icon: "error" })
     }
     wx.stopPullDownRefresh();
   },
@@ -169,7 +169,7 @@ Page({
       if (success) {
         new EventRepo().fetchUserEvents(openid, that._callback);
       } else {
-        wx.showToast({ title: "获取openid失败！" })
+        wx.showToast({ title: "获取openid失败！" , icon: "error" })
         wx.stopPullDownRefresh();
       }
     });
@@ -182,7 +182,7 @@ Page({
       if (success) {
         new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
       } else {
-        wx.showToast({ title: "获取openid失败！" })
+        wx.showToast({ title: "获取openid失败！" , icon: "error" })
         wx.stopPullDownRefresh();
       }
     });

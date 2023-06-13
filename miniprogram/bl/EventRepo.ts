@@ -4,6 +4,68 @@ import { VUser, VTeam, TeamRepo } from "./TeamRepo"
 
 const CLOUD_ENV: string = 'ilovevolleyball-d1813b'; //,test-705bde
 
+export class SetScore {
+  myScore: number = 0;
+  yourScore: number = 0;
+  score_str: string = "-:-";
+
+  constructor(myScore: number, yourScore: number) {
+    this.myScore = myScore;
+    this.yourScore = yourScore;
+    this.score_str = "" + myScore + ":" + yourScore;
+  }
+}
+
+export class SetScoreHelper {
+  getMirrorSetScore(setScore: SetScore): SetScore {
+    let mirror = new SetScore(setScore.yourScore, setScore.myScore)
+    return mirror;
+  }
+}
+
+export class MatchScore {
+  setScores: SetScore[];
+  winSets: number = 0;
+  looseSets: number = 0;
+  winset_str: string = "-:-";
+  constructor(sets_num: number) {
+    this.setScores = new Array(sets_num);
+    for (let i = 0; i < this.setScores.length; i++) {
+      this.setScores[i] = new SetScore(0, 0);
+    }
+    new MatchScoreHelper().update(this);
+  }
+}
+
+export class MatchScoreHelper {
+  update(matchScore: MatchScore) {
+    matchScore.winSets = 0;
+    matchScore.looseSets = 0;
+    for (let i = 0; i < matchScore.setScores.length; i++) {
+      let setScore = matchScore.setScores[i];
+      if (setScore.myScore > setScore.yourScore) {
+        matchScore.winSets++;
+      } else if (setScore.myScore < setScore.yourScore) {
+        matchScore.looseSets++;
+      } else {
+
+      }
+    }
+    matchScore.winset_str = "" + matchScore.winSets + ":" + matchScore.looseSets;
+  }
+
+  getMirrorMatchScore(matchScore: MatchScore): MatchScore {
+    let mirror = new MatchScore(matchScore.setScores.length);
+    for (let i = 0; i < matchScore.setScores.length; i++) {
+      mirror.setScores.push(new SetScoreHelper().getMirrorSetScore(matchScore.setScores[i]));
+    }
+    new MatchScoreHelper().update(mirror);
+    return mirror;
+  }
+
+}
+
+
 //每个用户创建的所有赛事，全部放在一起，作为一条记录存储在云数据库中
 export class UserEvent {
   _id: string;
@@ -160,47 +222,27 @@ export class EventHelper {
       let win_games = 0;  //胜局数
       let raw_score = 0; //小分
 
-      for (let k = 0; k < m; k++) {
+      for (let k = 0; k < event.teams.length; k++) {
+        if (k == m) continue;
         let td = event.team_matches[0][m][k];
-        if (td.score) {
-          win_games += td.win;
-          win_times += (td.win > td.loose ? 1 : 0)
-          for (let x = 0; x < td.win_scores.length; x++) {
-            raw_score += td.win_scores[x];
+        if (td.setScores) {
+          win_games += td.winSets;
+          win_times += (td.winSets > td.looseSets ? 1 : 0)
+          for (let x = 0; x < td.setScores.length; x++) {
+            raw_score += td.setScores[x].myScore;
           }
 
-          if (td.win - td.loose >= 2) { //3:0 or 3:1
+          if (td.winSets - td.looseSets >= 2) { //3:0 or 3:1
             net_score += 3;
-          } else if (td.win - td.loose >= 1) { // 3:2
+          } else if (td.winSets - td.looseSets >= 1) { // 3:2
             net_score += 2;
-          } else if (td.win - td.loose >= -1) { // 2:3
+          } else if (td.winSets - td.looseSets >= -1) { // 2:3
             net_score += 1;
           } else {
             net_score += 0;
           }
         }
       }
-
-      for (let i = m + 1; i < event.teams.length; i++) {
-        let td = event.team_matches[0][i][m];
-        if (td.score) {
-          win_games += td.loose;
-          win_times += (td.loose > td.win ? 1 : 0)
-          for (let x = 0; x < td.loose_scores.length; x++) {
-            raw_score += td.loose_scores[x];
-          }
-          if (td.loose - td.win >= 2) { //3:0 or 3:1
-            net_score += 3;
-          } else if (td.loose - td.win >= 1) { // 3:2
-            net_score += 2;
-          } else if (td.loose - td.win >= -1) { // 2:3
-            net_score += 1;
-          } else {
-            net_score += 0;
-          }
-        }
-      }
-
       event.teams[m].index = m;
       event.teams[m].net_score = net_score;
       event.teams[m].win_times = win_times;
@@ -238,7 +280,7 @@ export class EventHelper {
 export class EventRepo {
 
   //假设该用户第一次创建赛事
-  createUserEvents(_openid: string, owner:VUser, event:Event, callback: (success: boolean) => void) {
+  createUserEvents(_openid: string, owner: VUser, event: Event, callback: (success: boolean) => void) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
@@ -264,7 +306,7 @@ export class EventRepo {
   };
 
   //在已有的UserEvent上插入一个event
-  insertEvent(_openid: string, event:Event, callback: (sucess: boolean) => void) {
+  insertEvent(_openid: string, event: Event, callback: (sucess: boolean) => void) {
     wx.cloud.callFunction({
       name: 'vevent',
       data: {
@@ -330,15 +372,15 @@ export class EventRepo {
     })
   };
 
-  fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?:FavoriteOpenidRepo) {
+  fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
     return this._fetchUserEvents({}, callback, favoriteOpenidRepo);
   }
 
-  fetchUserEvents(openid:string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?:FavoriteOpenidRepo) {
-    return this._fetchUserEvents({_openid: openid}, callback, favoriteOpenidRepo);
+  fetchUserEvents(openid: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+    return this._fetchUserEvents({ _openid: openid }, callback, favoriteOpenidRepo);
   }
 
-  private _fetchUserEvents(where_clause:{}, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?:FavoriteOpenidRepo) {
+  private _fetchUserEvents(where_clause: {}, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
@@ -379,7 +421,7 @@ export class EventRepo {
     })
   };
 
-  fetchEvent(_openid:string, base_id:number, callback: (success:boolean, event: Event | null) => void) {
+  fetchEvent(_openid: string, base_id: number, callback: (success: boolean, event: Event | null) => void) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })

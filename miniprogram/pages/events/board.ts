@@ -1,6 +1,6 @@
 // pages/matches/scoreboard.ts
 
-import { Event, EventHelper, EventRepo } from "../../bl/EventRepo";
+import { Event, EventHelper, EventRepo, MatchScore, MatchScoreHelper } from "../../bl/EventRepo";
 import { VUser } from "../../bl/TeamRepo";
 
 type Column = Record<string, number | string>
@@ -59,25 +59,28 @@ Page({
   },
 
   onTapTable(e) {
-    let rindex = e.currentTarget.dataset.rindex;
-    let cindex = e.currentTarget.dataset.cindex;
+    this.data.row_edit = e.currentTarget.dataset.rindex;
+    this.data.col_edit = e.currentTarget.dataset.cindex;
     let that = this;
+    let rindex = this.data.row_edit;
+    let cindex = this.data.col_edit;
     console.log("onTapTable", rindex, cindex)
-    if (rindex > cindex) {
+    if (rindex != cindex) {
       wx.navigateTo({
         url: "./round",
         events: {
           updateSetScore: (result) => {
             console.log("updateSetScore triggered", result)
             that.sync_lock = true;
-            that.data.event.team_matches[0][result.row_edit][result.col_edit] = result.score_sets;
-            that.data.event.team_matches[0][result.col_edit][result.row_edit] = result.score_sets;
+            that.data.event.team_matches[0][result.row_edit][result.col_edit] = result.matchScore;
+            that.data.event.team_matches[0][result.col_edit][result.row_edit] = new MatchScoreHelper().getMirrorMatchScore(result.matchScore);
+
             new EventHelper().updateTeamScore(that.data.event);
             new EventRepo().updateEvent(that.data.event_openid, that.data.event, (success) => {
               if (success) {
                 wx.showToast({ "title": "更新成功！" })
               } else {
-                wx.showToast({ "title": "更新失败!" })
+                wx.showToast({ "title": "更新失败!" , icon: "error" })
               }
               that.setData(that.data);
               that.sync_lock = false;
@@ -86,12 +89,12 @@ Page({
         },
 
         success: function (res: any) {
-          let score_sets = that.data.event.team_matches[0][rindex][cindex];
-          if (score_sets == "") {
-            score_sets = { score: "-:-", win: 0, loose: 0, sets: [], win_scores: [], loose_scores: [] };
-          }
+          let matchScore = that.data.event.team_matches[0][rindex][cindex];
+          res.eventChannel.emit('editRound', { team1: that.data.event.teams[rindex].name, team2: that.data.event.teams[cindex].name, row_edit: rindex, col_edit: cindex, matchScore: matchScore, event_openid: that.data.event_openid })
+        }, 
 
-          res.eventChannel.emit('editRound', { row_edit: rindex, col_edit: cindex, score_sets: score_sets })
+        fail: function (res:any) {
+          console.error(res);
         }
       })
     }
@@ -123,6 +126,7 @@ Page({
         that.data.event = event;
         that.data.column_num = that.data.event.teams.length + 4;
         that.data.row_num = that.data.event.teams.length + 1;
+        new EventHelper().updateTeamScore(that.data.event);
         console.log(that.data)
         that.setData(that.data);
       }
@@ -163,6 +167,20 @@ Page({
   onShareAppMessage() {
 
   },
+
+  calMirrorScores(score_set:{}) : {} {
+      let mirror = {};
+      mirror["win"].win = 0;
+      this.data.score_sets.loose = 0;
+      for (let i=0; i<this.data.score_sets.win_scores.length; i++) {
+        if (this.data.score_sets.win_scores[i] > this.data.score_sets.loose_scores[i]) {
+          this.data.score_sets.win++;
+        } else {
+          this.data.score_sets.loose++;
+        }
+      }
+      this.data.score_sets.score = this.data.score_sets.win.toString() + ":" + this.data.score_sets.loose.toString();
+  }
 
 })
 

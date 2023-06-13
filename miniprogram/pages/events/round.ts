@@ -1,3 +1,6 @@
+import { MatchScore, MatchScoreHelper, SetScore } from "../../bl/EventRepo";
+import { VUser } from "../../bl/TeamRepo";
+
 // pages/matches/round.ts
 Page({
 
@@ -10,10 +13,17 @@ Page({
     score_right_edit: "",
     set_index_edit: -1,
 
+    //parameters from caller throw 'editRound'
     row_edit: -1,
     col_edit: -1,
-    
-    score_sets: {},
+    matchScore: new MatchScore(3),
+    event_openid: "",
+    team1: "",
+    team2: "",
+
+    user: new VUser(),
+    hasUserInfo: false,
+    isOwner: false,
   },
 
   /**
@@ -24,7 +34,19 @@ Page({
     const eventChannel = this.getOpenerEventChannel()
     eventChannel.on('editRound', function (data) {
       console.log('editRound', data)
+      if (!data.matchScore.setScores) {
+        data.matchScore = new MatchScore(3);
+      }
       that.data = Object.assign(that.data, data);
+      getApp().getOpenId((openid: string, success: boolean) => {
+        if (success) {
+           that.data.isOwner = (that.data.event_openid == openid);
+        } else {
+          wx.showToast({ title: "获取openid失败！" })
+          wx.stopPullDownRefresh();
+        }
+      });
+
       that.setData(that.data);
       console.log(that.data)
     });
@@ -82,7 +104,7 @@ Page({
   onConfirm() {
     console.log("onConfirm")
     this.getOpenerEventChannel().emit('updateSetScore', {row_edit: this.data.row_edit,
-      col_edit: this.data.col_edit, score_sets: this.data.score_sets});
+      col_edit: this.data.col_edit, matchScore: this.data.matchScore});
     wx.navigateBack();
   },
 
@@ -140,47 +162,26 @@ Page({
     this.setData(this.data);
   },
 
-  calScores() {
-    this.data.score_sets.win = 0;
-    this.data.score_sets.loose = 0;
-    for (let i=0; i<this.data.score_sets.win_scores.length; i++) {
-      if (this.data.score_sets.win_scores[i] > this.data.score_sets.loose_scores[i]) {
-        this.data.score_sets.win++;
-      } else {
-        this.data.score_sets.loose++;
-      }
-    }
-    this.data.score_sets.score = this.data.score_sets.win.toString() + ":" + this.data.score_sets.loose.toString();
-  },
-
   confirmScore() {
-    this.data.score_sets.sets[this.data.set_index_edit] = this.data.score_left_edit + ":" + this.data.score_right_edit;
-    this.data.score_sets.win_scores[this.data.set_index_edit] = Number.parseInt(this.data.score_left_edit);
-    this.data.score_sets.loose_scores[this.data.set_index_edit] = Number.parseInt(this.data.score_right_edit);
-
-    this.calScores();
+    this.data.matchScore.setScores[this.data.set_index_edit] = new SetScore(Number.parseInt(this.data.score_left_edit), Number.parseInt(this.data.score_right_edit));
+    new MatchScoreHelper().update(this.data.matchScore);
     
     this.data.score_left_edit = "";
     this.data.score_right_edit = "";
     this.data.showScoreInput = false;
-
-
     this.setData(this.data);
   },
 
   onNewSet() {
-    this.data.score_sets.sets.push("");
-    this.data.score_sets.win_scores.push(-1);
-    this.data.score_sets.loose_scores.push(-1);
+    this.data.matchScore.setScores.push(new SetScore(0, 0));
+    new MatchScoreHelper().update(this.data.matchScore);
     this.setData(this.data);
   },
 
   deleteSet(e) {
     let index = e.currentTarget.dataset.index;
-    this.data.score_sets.sets.splice(index, 1);
-    this.data.score_sets.win_scores.splice(index, 1);
-    this.data.score_sets.loose_scores.splice(index, 1);
-    this.calScores();
+    this.data.matchScore.setScores.splice(index, 1);
+    new MatchScoreHelper().update(this.data.matchScore);
     this.setData(this.data);
   },
 

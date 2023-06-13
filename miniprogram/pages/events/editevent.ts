@@ -14,6 +14,7 @@ Page({
     openid: "",
     base_id: -1,
     loaded: false,
+    isOwner: false,
   },
 
   /**
@@ -238,9 +239,7 @@ Page({
   },
 
   onClearTeams(e) {
-    for (let i = 0; i < this.data.event.teams.length; i++) {
-      this.data.event.teams[i].name = "";
-    }
+    this.data.event.teams.splice(0, this.data.event.teams.length)
     this.setData(this.data);
   }
 })

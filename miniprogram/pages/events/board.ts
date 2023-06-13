@@ -61,10 +61,17 @@ Page({
   onTapTable(e) {
     this.data.row_edit = e.currentTarget.dataset.rindex;
     this.data.col_edit = e.currentTarget.dataset.cindex;
+    this.setData(this.data);
+    console.log("onTapTable",  this.data.row_edit, this.data.col_edit)
+  },
+
+  onLongTapTable(e) {
+    this.data.row_edit = e.currentTarget.dataset.rindex;
+    this.data.col_edit = e.currentTarget.dataset.cindex;
     let that = this;
     let rindex = this.data.row_edit;
     let cindex = this.data.col_edit;
-    console.log("onTapTable", rindex, cindex)
+    console.log("onLongTapTable", rindex, cindex)
     if (rindex != cindex) {
       wx.navigateTo({
         url: "./round",
@@ -97,6 +104,8 @@ Page({
           console.error(res);
         }
       })
+    } else {
+      wx.showToast({"title": "此处不能编辑", "icon": "error"})
     }
   },
 
@@ -165,7 +174,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    let path = '/pages/events/board?openid=' + this.data.event_openid + "&base_id=" + this.data.base_id;
+    return {
+      title: '赛事组织',
+      path: path,
+    }
   },
 
   calMirrorScores(score_set:{}) : {} {
@@ -180,6 +193,12 @@ Page({
         }
       }
       this.data.score_sets.score = this.data.score_sets.win.toString() + ":" + this.data.score_sets.loose.toString();
+  },
+
+  onTapWindow(e) {
+    this.data.row_edit = -1;
+    this.data.col_edit = -1;
+    this.setData(this.data);
   }
 
 })

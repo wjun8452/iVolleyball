@@ -28,15 +28,6 @@
   border-radius: 0px 0px 10px 0px;
 }
 
-.tool_button {
-  width:30px;
-  height:30px;
-  border: 1px solid #336699;
-  margin: 2px;
-  padding: 5px;
-  border-radius: 5px 5px 5px 5px;
-}
-
 .status_icon {
   width:30px;
   height:30px;

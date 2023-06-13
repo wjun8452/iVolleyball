@@ -25,9 +25,6 @@ class HistoryPage extends BasePage {
    * 生命周期函数--监听页面加载
    */
   onLoad = function (this: HistoryPage) {
-    wx.setNavigationBarTitle({
-      title: '历史记录'
-    })
   }
 
   onShow = function (this: HistoryPage) {

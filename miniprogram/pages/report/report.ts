@@ -43,10 +43,7 @@ class ReportPage extends BasePage {
   }
 
   onLoad = function(this: ReportPage, options:any) {
-    wx.setNavigationBarTitle({
-      title: '统计报告'
-    })
-
+    
     wx.showLoading({
       title: '加载中',
     })

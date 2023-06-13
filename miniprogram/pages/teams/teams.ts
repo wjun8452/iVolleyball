@@ -20,10 +20,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-    wx.setNavigationBarTitle({
-      title: '球队管理',
-    })
-
     const newLocal = wx.getUserProfile;
     if (newLocal) {
       this.setData({

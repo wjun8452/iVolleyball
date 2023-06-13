@@ -74,9 +74,6 @@ class SettingPage extends BasePage {
   }
 
   onLoad = function (this: SettingPage, options: any) {
-    wx.setNavigationBarTitle({
-      title: '场上设置'
-    })
 
     if (options._id) { //from url
       this.data._id = options._id

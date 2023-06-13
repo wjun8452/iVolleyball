@@ -89,10 +89,6 @@ class ScoreBoardPage extends BasePage {
   onLoad = function (this: ScoreBoardPage, options: any) {
     console.log("[score board] onload, options:", options, "this:", this)
 
-    wx.setNavigationBarTitle({
-      title: '大记分牌'
-    })
-
     if (options && options._id) {
       this.option_matchID = options._id;
     }

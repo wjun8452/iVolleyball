@@ -85,7 +85,7 @@ exports.main = async (event, context) => {
   console.log("total news: ", feed.items.length, ", from ", feed.title);
   console.log("collect RSS news end.")
 
-  //await clearDB()
+  // await clearDB()
 
   for (const index in [0]) {
     console.log(feed.items[index].title + ':' + feed.items[index].link)

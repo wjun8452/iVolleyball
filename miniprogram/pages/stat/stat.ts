@@ -102,9 +102,6 @@ class StatPage extends BasePage {
   }
 
   onLoad = function (this: StatPage, options: any) {
-    wx.setNavigationBarTitle({
-      title: '技术统计'
-    })
 
     if (options._id) {
       this._id = options._id;

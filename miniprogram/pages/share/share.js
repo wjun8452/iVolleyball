@@ -19,9 +19,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.setNavigationBarTitle({
-      title: '分享比赛'
-    })
 
     this.data._id = options._id
     this.data.myTeam = options.myTeam

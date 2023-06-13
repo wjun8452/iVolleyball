@@ -23,12 +23,12 @@
 		</navigator>
 
     <navigator class="navigator_container" url="../events/events"> 
-			<image class="navigator_image" src="../../images/team.svg"></image>
+			<image class="navigator_image" src="../../images/event.svg"></image>
 			<view class="navigator_text">赛事组织 </view>
 		</navigator>
 
     <navigator class="navigator_container" url="../news/news"> 
-			<image class="navigator_image" src="../../images/team.svg"></image>
+			<image class="navigator_image" src="../../images/news.svg"></image>
 			<view class="navigator_text"> 排球新闻 </view>
 		</navigator>
 
@@ -38,7 +38,7 @@
 		</navigator>
 
 		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version"> v2023.04.22 </view>
+			<view class="navigator_version"> v2023.06.13 </view>
 		</navigator>
 </view>
 

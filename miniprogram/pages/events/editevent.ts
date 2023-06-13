@@ -109,7 +109,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    let path = '/pages/events/events';
+    return {
+      title: '赛事组织',
+      path: path,
+    }
   },
 
   add() {

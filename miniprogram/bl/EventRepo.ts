@@ -57,7 +57,7 @@ export class MatchScoreHelper {
   getMirrorMatchScore(matchScore: MatchScore): MatchScore {
     let mirror = new MatchScore(matchScore.setScores.length);
     for (let i = 0; i < matchScore.setScores.length; i++) {
-      mirror.setScores.push(new SetScoreHelper().getMirrorSetScore(matchScore.setScores[i]));
+      mirror.setScores[i] = new SetScoreHelper().getMirrorSetScore(matchScore.setScores[i]);
     }
     new MatchScoreHelper().update(mirror);
     return mirror;

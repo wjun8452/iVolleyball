@@ -18,10 +18,7 @@ class UsersPage extends BasePage {
   teamRepo = new TeamRepo();
 
   onLoad = function (this: UsersPage, options: any) {
-    wx.setNavigationBarTitle({
-      title: '球队成员',
-    })
-
+    
     this.loadUserInfo();
 
     if (options.teamId) {

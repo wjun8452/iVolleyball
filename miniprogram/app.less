@@ -5,6 +5,21 @@
 @color_main_yellow: #FFFFCC;
 @color_main_grey: #E5E5E5;
 
+.tool_button {
+  width:30px;
+  height:30px;
+  border: 1px solid #336699;
+  margin: 2px;
+  padding: 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.tool_button_small {
+  width:25px;
+  height:25px;
+}
+
+
 .iconmedium {
   text-align: center;
   font-size: 20px;
@@ -70,12 +85,12 @@
   border-right-style: none;
   border-bottom-style: 1px solid grey;
   border-left-style: none;
+  // border: 1px solid black;
   margin: 10px;
   padding: 5px;
 }
 
 .list-item {
-  width: 100%;
   display: flex;
   flex-direction: row; 
   justify-content: space-between; 
@@ -325,15 +340,31 @@
   border-bottom: 1px solid grey;
   width: 100%;
   height: 100%;
+
+  background-clip: content-box;
+  -webkit-background-clip: content-box;
 }
 
 .th {
   border-top: 1px solid grey;
+  background-clip: content-box;
+  -webkit-background-clip: content-box;
 }
 
 //第一列
 .tc {
   border-left: 1px solid grey;
+  background-clip: content-box;
+  -webkit-background-clip: content-box;
+}
+
+.edit {
+  background-color:#8881b0;
+}
+
+
+.highlight {
+  background-color: #d8e1f1;
 }
 
 //基础的盒子，可以实现内部文字居中
@@ -358,15 +389,6 @@
 
   width: 100%;
   height: 100%;
-}
-
-.edit {
-  // background-color: yellow;
-}
-
-
-.highligh {
-  // background-color: lightblue;
 }
 
 // .th.tc {

@@ -2,7 +2,7 @@
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
 
   <view class="block1">
-		<text style="margin-left: 5px;">v2023.04.22 增加排球新闻（体验版） </text>
+		<text style="margin-left: 5px;">v2023.06.14 增加赛事组织和排球新闻（初版） </text>
   </view>
 
   <view class="block1">

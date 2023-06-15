@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "局分设置"
+  "navigationBarTitleText": "局分设置",
+  "backgroundColor": "#ffffff"
 }

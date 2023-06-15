@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "球队管理"
+  "navigationBarTitleText": "球队管理",
+  "backgroundColor": "#ffffff"
 }

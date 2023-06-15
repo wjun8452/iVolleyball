@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "赛事编辑"
+  "navigationBarTitleText": "赛事编辑",
+  "backgroundColor": "#ffffff"
 }

@@ -1,5 +1,8 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+  <view class="block1">
+		<text style="margin-left: 5px;">v2023.06.15 大记分牌加分操作只需点击屏幕，无需向上滑动 </text>
+  </view>
 
   <view class="block1">
 		<text style="margin-left: 5px;">v2023.06.14 增加赛事组织和排球新闻（初版） </text>
@@ -18,7 +21,7 @@
   </view>
 
   <view class="block1">
-		<text style="margin-left: 5px;">v2023.02.21 在历史记录页面增加新建按钮，方便用户强制开始新的比赛计分</text>
+		<text style="margin-left: 5px;">v2023.02.21 在历史记录页面增加新建按钮，方便用户强制开始新的比赛记分</text>
   </view>
 
   <view class="block1">
@@ -110,7 +113,7 @@
 	</view>
 
 	<view class="block1">
-		<text style="margin-left: 5px;">v3.8.8 (2020/10/11) 修复偶尔无法开始新的计分的问题 </text>
+		<text style="margin-left: 5px;">v3.8.8 (2020/10/11) 修复偶尔无法开始新的记分的问题 </text>
 	</view>
 
 	<view class="block1">
@@ -121,7 +124,7 @@
 		<text style="margin-left: 5px;">v3.8.6 (2020/10/7) 首页增加每日一句名言；统一各页面色系； </text>
 	</view>
 	<view class="block1">
-		<text style="display: flex; margin-left: 5px;">v3.8.5 (2020/7/18) 修复无法开始新的计分牌的问题；局总分可设置；</text>
+		<text style="display: flex; margin-left: 5px;">v3.8.5 (2020/7/18) 修复无法开始新的记分牌的问题；局总分可设置；</text>
 	</view>
 
 	<view class="block1">

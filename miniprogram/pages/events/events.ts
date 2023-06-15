@@ -17,6 +17,7 @@ Page({
     user: new VUser(),
     hasUserInfo: false,
     canIUseGetUserProfile: false,
+    keyword: "", //搜索关键词
   },
 
   /**
@@ -159,6 +160,9 @@ Page({
     if (success && userEvents) {
       this.data.userEvents = userEvents;
       this.setData(this.data);
+      if (this.data.userEvents.length == 0) {
+        wx.showToast({'title':'没有结果', 'icon':'none'})
+      }
     } else {
       wx.showToast({ title: "加载失败！", icon: "error" })
     }
@@ -185,6 +189,19 @@ Page({
     getApp().getOpenId((openid: string, success: boolean) => {
       if (success) {
         new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
+      } else {
+        wx.showToast({ title: "获取openid失败！" , icon: "error" })
+        wx.stopPullDownRefresh();
+      }
+    });
+  },
+
+  loadEventsTab0() {
+    wx.showLoading({ "title": "正在加载..." })
+    const that = this;
+    getApp().getOpenId((openid: string, success: boolean) => {
+      if (success) {
+        new EventRepo().fetchUserEventsByName(that.data.keyword, that._callback, that.favoriteOpenidRepo);
       } else {
         wx.showToast({ title: "获取openid失败！" , icon: "error" })
         wx.stopPullDownRefresh();
@@ -254,5 +271,19 @@ Page({
     this.data.viewAll = false; //collapsed
     this.data.userEvents = [];
     this.setData(this.data);
+  },
+
+  onInputName(e) {
+    this.data.keyword = e.detail.value;
+    console.log(this.data.keyword);
+  },
+
+  searchEvent(e) {
+    if (this.data.keyword == "") {
+      wx.showToast({'title':'名称不能为空', 'icon':'error'})
+      return;
+    }
+    this.loadEventsTab0();
   }
+
 })

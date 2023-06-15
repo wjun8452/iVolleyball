@@ -373,18 +373,31 @@ export class EventRepo {
   };
 
   fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
-    return this._fetchUserEvents({}, callback, favoriteOpenidRepo);
-  }
-
-  fetchUserEvents(openid: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
-    return this._fetchUserEvents({ _openid: openid }, callback, favoriteOpenidRepo);
-  }
-
-  private _fetchUserEvents(where_clause: {}, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
+    return this._fetchUserEvents({}, db, callback, favoriteOpenidRepo);
+  }
 
+  fetchUserEvents(openid: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+    const db = wx.cloud.database({
+      env: CLOUD_ENV
+    })
+    return this._fetchUserEvents({ _openid: openid }, db, callback, favoriteOpenidRepo);
+  }
+
+  fetchUserEventsByName(keyword: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+    const db = wx.cloud.database({
+      env: CLOUD_ENV
+    })
+    let where_clause = {'events.name': db.RegExp({
+      regexp: '.*' + keyword,
+      options: 'i',
+    })}
+    return this._fetchUserEvents(where_clause, db, callback, favoriteOpenidRepo);
+  }
+
+  private _fetchUserEvents(where_clause: {}, db: DB.Database, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
     db.collection("vevent").where(where_clause).orderBy('update_time', 'desc').get({
       success(res) {
         console.log("db.vevent.get", where_clause)

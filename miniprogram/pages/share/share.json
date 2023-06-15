@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "分享比赛"
+  "navigationBarTitleText": "分享比赛",
+  "backgroundColor": "#ffffff"
 }

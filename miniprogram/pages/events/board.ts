@@ -50,6 +50,7 @@ Page({
       this.data.event_openid = options.openid;
       this.data.base_id = Number.parseInt(options.base_id);
     }
+    wx.showToast({'title':'长按可编辑','icon':'none'})
   },
 
 

@@ -2,13 +2,11 @@
 
   <!-- tab headers -->
   <view class="container" style="display:flex; flex-direction: row; justify-content: space-between; ">
-
-    <!-- <view class='{{tab==0 ? "sel" : ""}}' bindtap="onClickTab" data-tab="0"> 搜索 </view> -->
     <!-- <view class='{{tab==1 ? "sel" : ""}}' bindtap="onClickTab" data-tab="1"> 最近 </view> -->
     <view class='{{tab==4 ? "sel" : ""}}' bindtap="onClickTab" data-tab="4"> 管理 </view>
     <view class='{{tab==3 ? "sel" : ""}}' bindtap="onClickTab" data-tab="3"> 收藏 </view>
     <view class='{{tab==2 ? "sel" : ""}}' bindtap="onClickTab" data-tab="2"> 大厅 </view>
-
+    <view class='{{tab==0 ? "sel" : ""}}' bindtap="onClickTab" data-tab="0"> 搜索 </view>
   </view>
 
 
@@ -24,6 +22,12 @@
     <view wx:if="{{tab==4}}">显示可管理的比赛，下拉可刷新</view>
     <view wx:if="{{tab==2}}">显示最近20场比赛，下拉可刷新</view>
     <view wx:if="{{tab==3}}">显示已收藏的比赛，下拉可刷新</view>
+    <view wx:if="{{tab==0}}" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 80%;">
+      <view style="flex: 1">
+        <input placeholder='请输入名称' bindinput="onInputName" bindconfirm="searchEvent" style="color:grey; border: solid 1px grey;"> </input>
+      </view>
+      <view style="flex: 1; margin-left: 10px;" bindtap="searchEvent" style="border-radius: 5px; background-color: #FF9900; color: white; padding: 5px 10px 5px  10px;"> 搜索 </view>
+    </view>
   </view>
 
 
@@ -37,7 +41,7 @@
       </view>
 
       <view>
-        <checkbox-group bindchange="addFavorite" data-openid="{{userEvent._openid}}" wx:if="{{tab==2 || tab==3}}" style="display: flex; flex-direction: row;">
+        <checkbox-group bindchange="addFavorite" data-openid="{{userEvent._openid}}" wx:if="{{tab==2 || tab==3 || tab==0}}" style="display: flex; flex-direction: row;">
           <view> 收藏 </view>
           <checkbox checked="{{userEvent.isFavorite}}"> </checkbox>
         </checkbox-group>

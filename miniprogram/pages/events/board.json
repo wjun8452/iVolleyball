@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "赛事记分表"
+  "navigationBarTitleText": "赛事记分表",
+  "backgroundColor": "#ffffff"
 }

@@ -9,6 +9,8 @@ import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository"
 let globalData: GlobalData = getApp().globalData
 
 class ScoreBoardPageData {
+  /** 横屏还是竖屏 */
+  landscape: boolean = true;
   /** 标题在屏幕左边 */
   titleLeft: boolean = false;
   /** 屏幕能显示的最多的分数个数，显示太多，会影响工具栏 */
@@ -70,7 +72,7 @@ class ScoreBoardPage extends BasePage {
 
     //判断并提示比赛是否结束，并可能走到重置流程
     if (reason == Reason.Update && this.data.court.isMatchOver()) {
-      this.onReset();
+      wx.showToast({"title":"比赛结束?", 'icon': 'error'})
     }
 
     if (reason == Reason.LocalToCloud) {
@@ -212,8 +214,6 @@ class ScoreBoardPage extends BasePage {
     var change_x_abs = Math.abs(changeX);
     var change_y_abs = Math.abs(changeY);
 
-    if (change_x_abs < 50 && change_y_abs < 50) return;
-
     if (!this.data.court) {
       return;
     }
@@ -225,7 +225,14 @@ class ScoreBoardPage extends BasePage {
       return;
     }
 
-    if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右   
+    console.log(this.data.titleLeft, change_x_abs, change_y_abs)
+    console.log(this.data.titleLeft, changeX, changeY)
+    
+    if (change_x_abs < 50 && change_y_abs < 50) 
+    {//默认点击就加分
+      mine ? this.data.court.addScoreRotate() : this.data.court.looseScoreRotate();
+      this.updateMatch();
+    } else if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右   
       if ((this.data.titleLeft && changeX < 0) || (!this.data.titleLeft && changeX > 0) ) { //加分
         mine ? this.data.court.addScoreRotate() : this.data.court.looseScoreRotate();
       } else { //减分

@@ -1,5 +1,7 @@
 <!--pages/score_board/score_board.wxml-->
-<view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate({{titleLeft ? '-90deg' : '90deg'}}); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
+<!-- <view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate({{titleLeft ? '-90deg' : '90deg'}}); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'> 这种旋转屏的方法在某些手机上显示标题栏都显示不全 -->
+  <view style='box-sizing:border-box; overflow: hidden; display:flex;flex-direction:column;border:0px solid;align-items:stretch; {{!landscape ? "" : (!titleLeft ? "transform-origin:top left;transform: rotate(90deg) translateY(-100%);width: 100vh !important; height: 100vw !important;" : "transform-origin:top left;transform: rotate(-90deg) translateX(-100%);width: 100vh !important; height: 100vw !important;")}}' catchtouchmove='stopPageScroll'>
+
 
   <!-- 新手指引　-->
   <view style="opacity:0; border:0px solid green; position:fixed; left: {{globalData.sysInfo.windowHeight/3}}px; top: {{globalData.sysInfo.windowWidth*2/3}}px; z-index: -2; display:flex;flex-direction:row;" id="fresh_guide">
@@ -44,7 +46,6 @@
               </block>
               <view style="line-height:14px; font-size: 14px;"> {{ (court.mode==1 || court.mode==2) ?"气排":"硬排"}} </view>
             </view>
-
 
             <view style="display: flex; flex-direction: column;">
               <view class=''> {{court.status==1?"":"已结束"}} </view>

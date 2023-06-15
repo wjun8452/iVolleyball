@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "排球新闻"
+  "navigationBarTitleText": "排球新闻",
+  "backgroundColor": "#ffffff"
 }

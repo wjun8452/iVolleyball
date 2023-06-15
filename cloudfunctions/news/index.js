@@ -1,7 +1,5 @@
 // 云函数模板
 // 部署：在 cloud-functions/iciba 文件夹右击选择 “上传并部署”
-
-
 const cloud = require('wx-server-sdk')
 const Parser = require('rss-parser');
 const axios = require('axios');
@@ -66,7 +64,7 @@ loadNewsDetail = async function (url) {
       'Sec-Fetch-Site': 'none',
       'Sec-Fetch-User': '?1',
       'Upgrade-Insecure-Requests': '1',
-      'Cookie':'PSTM=1540455931; BIDUPSID=398AA4881C43D4AF47BD6934D04F0651; __yjs_duid=1_9f1d5a4057f322ec5656b59e635a69921622467030641; BAIDUID=193B5E528204DE897E22F3C9C1800F83:FG=1; BAIDUID_BFESS=193B5E528204DE897E22F3C9C1800F83:FG=1; delPer=0; PSINO=5; ZFY=o3yZ3T1qaCHlfYKWcyFM:By0LtU7LSfqC7orPe1zfrO8:C; BCLID=10971825663791878753; BCLID_BFESS=10971825663791878753; BDSFRCVID=gjIOJeC62Ac052Qf8KyG2MQSmXW3FF7TH6aotOatQTtWKUmUlMp1EG0PyU8g0KAbRCCbogKK0eOTHvFF_2uxOjjg8UtVJeC6EG0Ptf8g0f5; BDSFRCVID_BFESS=gjIOJeC62Ac052Qf8KyG2MQSmXW3FF7TH6aotOatQTtWKUmUlMp1EG0PyU8g0KAbRCCbogKK0eOTHvFF_2uxOjjg8UtVJeC6EG0Ptf8g0f5; H_BDCLCKID_SF=JnPtoII2JI-3fP36qR6H24ktbf605C62aKDs2hj2BhcqEIL4QPbiLt4Vb4chaPAHBG6gWCoDW-cUqxbSj4D5qftPQUo2tUCj-ev3QxcIbl5nhMJMXj7JDMP0XftqBRTy523ion5vQpn-slQ3DRoWXPIqbN7P-p5Z5mAqKl0MLPbtbb0xb6_0DTJXjaKJJjKsbKtXQnRtt6rjDnCrbP6zXUI8LNDH34tjJRrI0DncMl0K8fjbhq7RDUKzjnO7ttoybgOKLUjmbU3vSJ6ahMc2DfL1Db38L6vMtg3C3fon0booepvoD-oc3MkBQ4jdJJQOBKQB0KnGbUQkeq8CQft20b0EeMtjKjLEK5r2SC_htII53H; H_BDCLCKID_SF_BFESS=JnPtoII2JI-3fP36qR6H24ktbf605C62aKDs2hj2BhcqEIL4QPbiLt4Vb4chaPAHBG6gWCoDW-cUqxbSj4D5qftPQUo2tUCj-ev3QxcIbl5nhMJMXj7JDMP0XftqBRTy523ion5vQpn-slQ3DRoWXPIqbN7P-p5Z5mAqKl0MLPbtbb0xb6_0DTJXjaKJJjKsbKtXQnRtt6rjDnCrbP6zXUI8LNDH34tjJRrI0DncMl0K8fjbhq7RDUKzjnO7ttoybgOKLUjmbU3vSJ6ahMc2DfL1Db38L6vMtg3C3fon0booepvoD-oc3MkBQ4jdJJQOBKQB0KnGbUQkeq8CQft20b0EeMtjKjLEK5r2SC_htII53H; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; ZD_ENTRY=bing; __bid_n=187853fda60e01c1104207; FPTOKEN=9JfYogGa9B6HYLYIW1gzh/Z1+1Dll60jJ7DL3oxn1IjeurHlgHgj8eDCrHkAH8qYR66Yev6qgFe+pXC6m6mFGOWlTw7xSKW2yJFrR2uYOeYiupn3SE7FIOMGBM9F2/za3WeNbNJOR+vgNf1N3WqCIA8HxJD/MzllzVycE9I/A5ZcMD5wfPvNcMXIeUK9Mo+5BHwFIuLAutBWPpmaiJCc9WcyFUPzYbCm2JhH4BxgY3FLM9bLuaaZcx9nhDWiPA5heyJvX0bmwYu7sqOUV1F5VM00C62yLdS2cSgLGxd00v5o6/wzx/OrdpB5KxewBhRtnMVFxxCOiSwxkspz+v2OYF4PGAfwVQuloDGo4wFZxZd3JX5VVcwYuAZl5JI1SECPKOz76JG23pyD4VI//qpAtg==|spizYqdHd4DwN9RBumqsuRhzptHRmQmVfvEyPO/bg8U=|10|40b81e8c530a31080a9d76e63c89f5fd; BA_HECTOR=24al0h81a5a08h818521ah0j1i4fknf1m; PHPSESSID=6v9ni0h704o3qsmvj5t4s7f2a5; BDRCVFR[C0p6oIjvx-c]=mbxnW11j9Dfmh7GuZR8mvqV; H_PS_PSSID=38516_36560_38469_38345_38468_36805_38485_37930_38530_38356_38542; ab_sr=1.0.1_NThkYTU2MTkyZjBiNTVkYTA4NjJmYjc4ODAxMjg3OGQ3ZDBkOGY1YmVkMWNjODA2YmZkOTVmYzVmODBiOThhMGFjYTZiZWUxNGZhMDE2OGNmYTY4NjJmYTUxODc0MzY1MWRjMDlkZDQwYjRiNzU2MWViYzRhMzI2OWRjMTMzMDg1NTdlMWZmMzFmZWNmMmEyMDE0ZGU4MDI5NGIyN2M3OQ=='
+      'Cookie':''
     },
   })
     .then(function (response) {
@@ -85,14 +83,14 @@ exports.main = async (event, context) => {
   console.log("total news: ", feed.items.length, ", from ", feed.title);
   console.log("collect RSS news end.")
 
-  // await clearDB()
+  await clearDB()
 
-  for (const index in [0]) {
+  for (const index in feed.items) {
     console.log(feed.items[index].title + ':' + feed.items[index].link)
-    //await addNewsToDB(feed.items[index])
-    // item.link = item.link.replace("http:", "https:")
+    await addNewsToDB(feed.items[index])
   }
 
+  //访问摘要的link，爬取新闻的细节
   for (const index in [0]) {
     feed.items[index].link = feed.items[index].link.replace("http:", "https:")
 
@@ -103,7 +101,7 @@ exports.main = async (event, context) => {
     // await loadNewsDetail("https://www.baidu.com/s?rtt=1&bsst=1&cl=2&tn=news&ie=utf-8&word=%E6%8E%92%E7%90%83")
 
     // nok
-    await loadNewsDetail("https://baijiahao.baidu.com/s?id=1764148019204143368&wfr=spider&for=pc")
+    // await loadNewsDetail("https://baijiahao.baidu.com/s?id=1764148019204143368&wfr=spider&for=pc")
 
     //ok
     // await loadNewsDetail("http://news.yongzhou.gov.cn/hzdw/folder1318/2023-04-25/1OV5msFmVIXuasDx.html")

@@ -4,11 +4,11 @@
       <image src="../../images/board.svg" style="width:20px;height:20px"></image>
       <text style="margin-left: 5px;">比赛记分</text>
     </view>
-    <text style="margin-left: 15px;"> 加分 - 手指在屏幕分数向上滑动 </text>
-    <text style="margin-left: 15px;"> 减分 - 手指在屏幕分数向下滑动 </text>
+    <text style="margin-left: 15px;"> 加分 - 手指点击屏幕 </text>
+    <text style="margin-left: 15px;"> 减分 - 手指向下滑动屏幕 </text>
     <text style="margin-left: 15px;"> 分数快速归0 - 手指从左划到右；</text>
-    <text style="margin-left: 15px;"> 分享给好友 - 点击右上角...可以分享页面给好友，分享后好友可以随时查看计分进展</text>
-    <text style="margin-left: 15px;"> 程序自动打开上次的计分，如果想强制开始新的计分，可在历史记录中点击新建按钮 </text>
+    <text style="margin-left: 15px;"> 分享给好友 - 点击右上角...可以分享页面给好友，分享后好友可以随时查看记分进展</text>
+    <text style="margin-left: 15px;"> 程序自动打开上次的记分，如果想强制开始新的记分，可在历史记录中点击新建按钮 </text>
 
   </view>
 

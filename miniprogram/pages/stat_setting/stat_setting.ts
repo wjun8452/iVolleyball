@@ -26,7 +26,6 @@ class SettingPageData {
 
   /** 用户信息 */
   user: VUser = new VUser();
-  hasUserInfo = false;
   canIUseGetUserProfile = false;
 
   /** 分享了哪一个统计员 */
@@ -42,8 +41,13 @@ class SettingPage extends BasePage {
   repo: VolleyRepository | null = null;
 
 
-  onDataChanged = function (this: SettingPage, court: VolleyCourt, reason: Reason, status: Status) {
-    console.log("[Setting] onCourtChange Begins, reason:", reason, "status:", status, "court id:", court._id, "court:", court)
+  onDataChanged = function (this: SettingPage, court: VolleyCourt, reason: Reason, status: Status, success:boolean) {
+    console.log("[Setting] onCourtChange Begins, reason:", reason, ", status:", status, ", court id:", court._id, ", court:", court, ", success:", success)
+
+    if (!success) {
+      wx.showToast({'title':'操作失败！', 'icon': 'error'})
+      return;
+    }
 
     this.data.court = court;
 
@@ -96,8 +100,6 @@ class SettingPage extends BasePage {
     }
 
     console.log(options)
-
-    this.loadUserInfo();
   }
 
   onShow = function (this: SettingPage) {
@@ -105,10 +107,21 @@ class SettingPage extends BasePage {
       title: '加载中',
     })
 
-    getApp().getOpenId((openid: string, success: boolean) => {
-      this.data.globalData = getApp().globalData;
-      this.data.user.openid = openid;
-      this.repo = new VolleyRepository(this.onDataChanged, openid, this.data._id, getApp().globalData.placeInfo);
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
+      wx.hideLoading();
+
+      if (success) {
+        wx.showLoading({
+          title: '加载中',
+        })
+
+        this.data.globalData = getApp().globalData;
+        this.data.user = user;
+        this.repo = new VolleyRepository(this.onDataChanged, user.openid, this.data._id, getApp().globalData.placeInfo, false, false);
+
+      } else {
+        wx.showToast({'title':'id错误', 'icon':'error'})
+      }
     })
 
     console.log("[onShow] data:", this.data)
@@ -410,10 +423,10 @@ class SettingPage extends BasePage {
       title: '正在加载',
     });
 
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       let that = this
       let teamRepo = new TeamRepo();
-      teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam[] | null) => {
+      teamRepo.fetchByOwner(user.openid, (errorCode: number, teams: VTeam[] | null) => {
         wx.hideLoading();
         if (errorCode == 2) {
           if (showError) {
@@ -552,7 +565,7 @@ class SettingPage extends BasePage {
   _setMyselfUmpire = function (this: SettingPage, who: string, user: VUser) {
     if (!this.data.court) return;
 
-    if (!this.data.court?._id) {
+    if (!this.data.court._id) { //更新本地缓存
       if (who === "umpire1") {
         if (user.openid != "" && this.data.court.stat_umpire2.openid == user.openid) {
           wx.showToast({
@@ -577,26 +590,27 @@ class SettingPage extends BasePage {
 
       }
       this.repo?.updateMatch(this.data.court)
-    } else {
-      console.log("------haha------3")
-      if (!this.data.globalData?.openid) {
-        wx.showToast({
-          icon: 'error',
-          title: '请先登录！'
-        })
-        return;
-      }
-
+    } else
+     {//更新云端
       wx.showLoading({
         title: "正在处理"
       })
 
+      const that = this;
       this.repo!.setUmpire(this.data.court?._id, who, user, (errorCode: number) => {
         wx.hideLoading()
         if (errorCode == 0) {
           wx.showToast({
             title: "操作成功"
           })
+          if (that.data.court) {
+            if (who === "umpire1") {
+              that.data.court.stat_umpire1 = user;
+            } else if (who == "umpire2") {
+              that.data.court.stat_umpire2 = user;
+            }
+            that.setData(that.data);
+          }
         } else if (errorCode == 1) {
           wx.showToast({
             icon: 'error',
@@ -641,8 +655,7 @@ class SettingPage extends BasePage {
       success: (res) => {
         console.log("getUserProfile success")
         that.data.user.userInfo = res.userInfo
-        that.data.hasUserInfo = true;
-        getApp().globalData.user.userInfo = that.data.user.userInfo;
+        getApp().saveUserInfo(that.data.user);
         if (that.data.isOwner) {
           if (that.data.court) {
             that.data.court.setChiefUmpire(that.data.user);
@@ -666,7 +679,7 @@ class SettingPage extends BasePage {
         }
 
         that.setData(that.data)
-        that.saveUserInfo();
+        getApp().saveUserInfo(that.data.user);
       }
     })
   }
@@ -680,7 +693,7 @@ class SettingPage extends BasePage {
     console.log("getUserInfo", e);
     let umpire = e.target.dataset.umpire;
     this.data.user.userInfo = e.detail.userInfo;
-    this.data.hasUserInfo = true;
+    this.data.user.userInfo = true;
     getApp().globalData.user.userInfo = this.data.user.userInfo;
 
     if (this.data.isOwner) {
@@ -705,26 +718,7 @@ class SettingPage extends BasePage {
     }
 
     this.setData(this.data);
-    this.saveUserInfo();
-  }
-
-  saveUserInfo = function (this: SettingPage) {
-    wx.setStorageSync("user", this.data.user)
-  }
-
-  loadUserInfo = function (this: SettingPage) {
-    let tmp = wx.getStorageSync("user")
-    if (tmp) {
-      this.data.user = tmp
-      if (this.data.user.userInfo) {
-        this.data.hasUserInfo = true
-        if (this.data.court) {
-          this.data.court.setChiefUmpire(this.data.user);
-          this.repo?.updateMatch(this.data.court)
-        }
-      }
-      this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
-    }
+    getApp().saveUserInfo(this.data.user);
   }
 }
 

@@ -22,7 +22,6 @@ Page({
     team2: "",
 
     user: new VUser(),
-    hasUserInfo: false,
     isOwner: false,
   },
 
@@ -38,9 +37,9 @@ Page({
         data.matchScore = new MatchScore(3);
       }
       that.data = Object.assign(that.data, data);
-      getApp().getOpenId((openid: string, success: boolean) => {
+      getApp().getCurrentUser((user:VUser, success: boolean) => {
         if (success) {
-           that.data.isOwner = (that.data.event_openid == openid);
+           that.data.isOwner = (that.data.event_openid == user.openid);
         } else {
           wx.showToast({ title: "获取openid失败！" })
           wx.stopPullDownRefresh();

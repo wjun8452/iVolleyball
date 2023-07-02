@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "技术统计",
+  "enablePullDownRefresh" : true,
   "backgroundColor": "#ffffff"
 }

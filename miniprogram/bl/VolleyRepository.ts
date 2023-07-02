@@ -14,6 +14,9 @@ export enum Reason {
   Ended,
   /**  caused by reset() */
   Reset,
+
+  /** sync update */
+  SyncUpdate,
 }
 
 export enum Status {
@@ -22,7 +25,7 @@ export enum Status {
 }
 
 export interface CourtDataChanged {
-  (courtData: VolleyCourt, reason: Reason, status: Status): void
+  (courtData: VolleyCourt, reason: Reason, status: Status, success:boolean): void
 }
 
 export class VolleyRepository {
@@ -33,28 +36,95 @@ export class VolleyRepository {
   private cacheKey: string = "stats17";
   private env: string = 'ilovevolleyball-d1813b'; //,test-705bde
   private placeInfo: PlaceInfo | null = null;
+  private useWatcher: boolean = false;
+  private timmerID: number = -1;
 
   /**
    * 除非用户指定比赛的ID，为了自动还原用户上次保存的对象，本类将首先从本地缓存中重构对象，如果发现缓存中的对象来自云端，则会从云端更新该对象
    * 调用者需要使用 updateMatch(), reset() 等方法将对象的状态保存到本地缓存或云端。每次存储动作都会触发 callback 调用以通知使用者，
    * @param callback 接收变化通知的回调方法
    * @param matchID 除非用户指定比赛的ID，为了自动还原用户上次保存的对象，本类将首先从本地缓存中重构对象，如果发现缓存中的对象来自云端，则会从云端更新该对象
-   * @param createNew 是否强制创建一个新的比赛
+   * @param createNew 是否强制创建一个新的本地比赛，发生场景：在历史页面用户点击"new"按钮
+   * @param useWatcher 是否使用腾讯云数据库的watcher技术，useWatcher==false时，使用拉取的方式获取最新数据
    */
-  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?: boolean) {
+  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?: boolean, useWatcher?: boolean) {
     console.log("constructor", userID, matchID, placeInfo, createNew)
     this.callback = callback;
     this.userID = userID;
+
     if (matchID) {
       this.matchID = matchID;
     }
+
     if (placeInfo) {
       this.placeInfo = placeInfo;
     }
+
+    if (useWatcher) {
+      this.useWatcher = useWatcher
+    }
+
     if (createNew) {
-      this.watchMatch(createNew);
+      this.watchMatch(true);
     } else {
       this.watchMatch(false);
+    }
+  }
+
+  private fetchOnlineMatch(init: boolean, localToCloud: boolean, endMatch: boolean, startSync:boolean, frequency:number) {
+    console.log("fetchOnlineMatch, _id:", this.matchID)
+    const db = wx.cloud.database({
+      env: this.env
+    })
+
+    const that = this;
+
+    if (this.matchID) {
+      db.collection("vmatch").doc(this.matchID).get(
+        {
+          success: function (res) {
+            console.log(res)
+            if (res.data) {
+              let court: VolleyCourt = that.newCourtFromCloud(that.matchID, res.data);
+              if (that.userID != court._openid) {
+                let repo = new FriendsCourtRepo();
+                repo.saveCourt(court);
+              }
+
+              wx.setStorageSync(that.cacheKey, court);
+              if (init) {
+                if (endMatch) {
+                  that.callback(court, endMatch ? Reason.Ended : Reason.Init, Status.Cloud, true)
+                } else {
+                  that.callback(court, localToCloud ? Reason.LocalToCloud : Reason.Init, Status.Cloud, true)
+                }
+              } else {
+                that.callback(court, endMatch ? Reason.Ended : (that.timmerID==-1? Reason.Update:Reason.SyncUpdate), Status.Cloud, true)
+              }
+            } else {
+              that.watchLocalMatch(that.newLocalCourt())
+            }
+
+            if (startSync && that.timmerID != -1) {
+              that.timmerID = setTimeout(()=> {
+                that.fetchOnlineMatch(false, false, false, true, frequency);
+              }, frequency);
+            }
+          },
+          fail: function(res) {
+            console.error(res);
+            if (startSync && that.timmerID != -1) {
+              that.timmerID = setTimeout(()=> {
+                that.fetchOnlineMatch(false, false, false, true, frequency);
+              }, frequency);
+            } else {
+              that.watchLocalMatch(that.newLocalCourt())
+            }
+          },
+        }
+      );
+    } else {
+
     }
   }
 
@@ -65,7 +135,11 @@ export class VolleyRepository {
     } else {
       //如果指定了比赛的ID，则直接打开这个比赛，不管它是否在本地缓存内
       if (this.matchID) {
-        this.watchOnlineMatch(false, false)
+        if (this.useWatcher) {
+          this.watchOnlineMatch(false, false)
+        } else {
+          this.fetchOnlineMatch(true, false, false, false, 0);
+        }
       }
       //否则会从本地缓存中加载上次存储的比赛
       else {
@@ -86,6 +160,31 @@ export class VolleyRepository {
     }
   }
 
+  private newCourtFromCloud(userID: string, data: Object): VolleyCourt {
+    let court: VolleyCourt = new VolleyCourt(userID);
+    Object.assign(court, data);
+    court.updateAvailableItems()
+
+    let t = data.create_time
+    if (typeof (t) === "string") {
+      court.create_time = t;
+    }
+    else if (typeof (t) === "object" && t instanceof Date) {
+      court.create_time = parseTime(t);
+    } else {
+      court.create_time = ""
+    }
+
+    if (data.update_time) {
+      if (data.update_time instanceof Date) {
+        let t2: Date = <Date><unknown>(data.update_time)
+        court.update_time = parseTime(t2);
+      }
+    } else {
+      court.update_time = court.create_time;
+    }
+    return court;
+  }
 
   private watchOnlineMatch(localToCloud: boolean, endMatch: boolean) {
     const that = this
@@ -102,28 +201,7 @@ export class VolleyRepository {
           console.log('[db.vmatch.onChange]', that.matchID, snapshot.type, snapshot)
           let data = snapshot.docs[0]
           if (data) {
-            let court: VolleyCourt = new VolleyCourt(that.userID);
-            Object.assign(court, data);
-            court.updateAvailableItems()
-
-            let t = data.create_time
-            if (typeof (t) === "string") {
-              court.create_time = t;
-            }
-            else if (typeof (t) === "object" && t instanceof Date) {
-              court.create_time = parseTime(t);
-            } else {
-              court.create_time = ""
-            }
-
-            if (data.update_time) {
-              if (data.update_time instanceof Date) {
-                let t2: Date = <Date><unknown>(data.update_time)
-                court.update_time = parseTime(t2);
-              }
-            } else {
-              court.update_time = court.create_time;
-            }
+            let court: VolleyCourt = that.newCourtFromCloud(that.userID, data);
 
             if (that.userID != court._openid) {
               let repo = new FriendsCourtRepo();
@@ -133,12 +211,12 @@ export class VolleyRepository {
             wx.setStorageSync(that.cacheKey, court);
             if (snapshot.type === 'init') {
               if (endMatch) {
-                that.callback(court, endMatch ? Reason.Ended : Reason.Init, Status.Cloud)
+                that.callback(court, endMatch ? Reason.Ended : Reason.Init, Status.Cloud, true)
               } else {
-                that.callback(court, localToCloud ? Reason.LocalToCloud : Reason.Init, Status.Cloud)
+                that.callback(court, localToCloud ? Reason.LocalToCloud : Reason.Init, Status.Cloud, true)
               }
             } else {
-              that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud)
+              that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud, true)
             }
           } else {
             console.error("snapshot is empty, matchid:", that.matchID)
@@ -161,7 +239,7 @@ export class VolleyRepository {
 
   private watchLocalMatch(court: VolleyCourt) {
     wx.setStorageSync(this.cacheKey, court);
-    this.callback(court, Reason.Init, Status.Local);
+    this.callback(court, Reason.Init, Status.Local, true);
   }
 
   updateMatch(court: VolleyCourt) {
@@ -230,7 +308,7 @@ export class VolleyRepository {
           stat_items_umpire1: court.stat_items_umpire1,
           stat_umpire1_done: court.stat_umpire1_done
         }
-        this._updateMatchByOthers(who, matchId, data, who_id, callback);
+        this._updateMatchByOthers(who, matchId, data, who_id, court, callback);
       } else if (who == "umpire2") {
         let data = {
           play_items_umpire2: court.play_items_umpire2,
@@ -238,7 +316,7 @@ export class VolleyRepository {
           stat_items_umpire2: court.stat_items_umpire2,
           stat_umpire2_done: court.stat_umpire2_done
         }
-        this._updateMatchByOthers(who, matchId, data, who_id, callback);
+        this._updateMatchByOthers(who, matchId, data, who_id, court, callback);
       } else {
         callback(3)
       }
@@ -252,7 +330,8 @@ export class VolleyRepository {
    * @param who_id the who_id's open id, cloud would check the authority of this id
    * @param callback 0:ok, 1:invalid param, 2:who_id is not authorized, 3: failed
    */
-  private _updateMatchByOthers(who: string, matchId: string | null, matchData: any, who_id: string, callback: (success: number) => void) {
+  private _updateMatchByOthers(who: string, matchId: string | null, matchData: any, who_id: string, court:VolleyCourt,  callback: (success: number) => void) {
+    const that = this;
     wx.cloud.callFunction({
       name: 'vmatch',
       data: {
@@ -266,6 +345,9 @@ export class VolleyRepository {
         console.log('[wx.cloud.vmatch.handleUmpireStats]', res)
         if (res.result.errMsg.indexOf('ok') >= 0) {
           callback(0)
+          if (!that.useWatcher) {
+            that.callback(court, Reason.Update, Status.Cloud, true);
+          }
         } else if (res.result.errMsg.indexOf('invalid param') >= 0) {
           callback(1)
         } else if (res.result.errMsg.indexOf('not authorized') >= 0) {
@@ -296,16 +378,21 @@ export class VolleyRepository {
         data: tempData,
         success: function (res) {
           console.log("[db.vmatch.update]", that.matchID, res);
-          //that.callback(fcourt);
+          if (!that.useWatcher) {
+            that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud, true)
+          } else { //使用了微信云数据库的watch方法，微信框架会进行回调
+
+          }
         },
         fail: function (res) {
           console.error("[db.vmatch.update]", res);
+          that.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Cloud, false)
         }
       })
     } else {
       console.log("update a local match")
       wx.setStorageSync(this.cacheKey, court);
-      this.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Local);
+      this.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Local, true);
     }
   }
 
@@ -324,7 +411,10 @@ export class VolleyRepository {
       court.status = 0;
       let tempData: any = this.updateTempCourt(court, db.serverDate());
 
-      that.close(); //停止监听，少一次更新事件
+      if(that.useWatcher) {
+        that.close(); //停止监听，少一次更新事件
+      }
+
       db.collection('vmatch').doc(this.matchID).update({
         data: tempData,
         success: function (res) {
@@ -373,16 +463,18 @@ export class VolleyRepository {
     this.matchID = null;
     let court: VolleyCourt = this.newLocalCourt();
     wx.setStorageSync(this.cacheKey, court);
-    this.callback(court, Reason.Reset, Status.Local);
+    this.callback(court, Reason.Reset, Status.Local, true);
   }
 
   /** 释放资源 */
   close() {
-    if (this.watcher) {
+    if (this.watcher && this.useWatcher) {
       this.watcher.close();
       this.watcher = null;
       console.log("[Repository] watcher closed.")
-    }
+    } 
+
+    this.stopSync();
   }
 
   private _uploadMatch(court: VolleyCourt, endMatch: boolean) {
@@ -446,6 +538,26 @@ export class VolleyRepository {
       return mode;
     } else {
       return 0;
+    }
+  }
+
+  /**
+   * 
+   * @param frequency miniseconds
+   */
+  startSync(delay:number, frequency: number) {
+    const that = this;
+    if (!this.useWatcher && this.timmerID == -1) {
+      this.timmerID = setTimeout(()=> {
+        that.fetchOnlineMatch(false, false, false, true, frequency);
+      }, delay);
+    }
+  }
+
+  stopSync() {
+    if (this.timmerID != -1) {
+      clearTimeout(this.timmerID);
+      this.timmerID = -1;
     }
   }
 }
@@ -609,10 +721,10 @@ export class FriendsCourtRepo {
     this.sortMatch();
   }
 
-  private compareMatch(match1:VolleyCourt, match2: VolleyCourt) : number {
+  private compareMatch(match1: VolleyCourt, match2: VolleyCourt): number {
     let dateT1 = new Date(match1.create_time);
     let dateT2 = new Date(match2.create_time);
-    return dateT1==dateT2 ? 0 : dateT1 > dateT2 ? -1 : 1;
+    return dateT1 == dateT2 ? 0 : dateT1 > dateT2 ? -1 : 1;
   }
 
   //按创建时间降序排序

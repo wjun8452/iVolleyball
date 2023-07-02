@@ -20,9 +20,10 @@ App({
   globalData: globalData,
   touch: new touch(),
 
-  getOpenId: function (callback: (openid: string, success: boolean) => void) {
-    if (globalData.openid) {
-      callback(globalData.openid, true)
+  getCurrentUser: function (callback: (user: VUser, success: boolean) => void) {
+    if (globalData.user.openid) {
+      console.log('getCurrentUser second time, ', globalData.user)
+      callback(globalData.user, true)
     }
     else {
       wx.cloud.callFunction({
@@ -33,15 +34,20 @@ App({
           if (res.result) {
             globalData.openid = (res.result as LoginInfo).openid;
             globalData.user.openid = globalData.openid;
-            callback(globalData.openid, true)
-            console.log('[wx.cloud.login] openid:', globalData.openid)
+            const userInCache = this._loadUserInfo();
+            if (userInCache.openid == globalData.openid) {
+              globalData.user.userInfo = userInCache.userInfo;
+            }
+            console.log('getCurrentUser first time, ', globalData.user)
+            callback(globalData.user, true)
           } else {
-            callback("", false)
+            callback(new VUser(), false)
+            console.error('getCurrentUser first time, invalid result!')
           }
         },
         fail: err => {
-          callback("", false)
-          console.error('[wx.cloud.login] failed!', err)
+          callback(new VUser(), false)
+          console.error('getCurrentUser first time, failed!', err)
         }
       })
     }
@@ -90,6 +96,23 @@ App({
 
     console.log("globalData:", globalData)
 
+  },
+
+  /**
+   * 
+   */
+  saveUserInfo(user:VUser) {
+    globalData.user = user;
+    wx.setStorageSync("user", user) 
+  },
+
+  _loadUserInfo() : VUser {
+    let tmp = wx.getStorageSync("user")
+    if (tmp && tmp.openid && tmp.userInfo) {
+      return tmp;
+    } else {
+      return new VUser();
+    }
   },
 
 

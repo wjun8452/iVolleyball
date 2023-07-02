@@ -4,11 +4,11 @@ import { TeamRepo, VPlayer, VTeam, VUser } from "../../bl/TeamRepo"
 class UsersPageData {
   team: VTeam | null = null;
   user: VUser = new VUser();
-  hasUserInfo = false;
   canIUseGetUserProfile = false;
   isMyTeam: boolean = true; //当前打开的是否为自己的队伍
   loading: boolean = true;
   canJoin: boolean = false;
+  temp: string = "";
 }
 
 
@@ -18,16 +18,12 @@ class UsersPage extends BasePage {
   teamRepo = new TeamRepo();
 
   onLoad = function (this: UsersPage, options: any) {
-    
-    this.loadUserInfo();
-
     if (options.teamId) {
       if (options.invite == "true") {
         this.data.canJoin = true;
         this.setData({ canJoin: this.data.canJoin });
       }
       this.optionTeamId = options.teamId;
-      this.loadTeamById(options.teamId)
     }
 
     const newLocal = wx.getUserProfile;
@@ -38,7 +34,26 @@ class UsersPage extends BasePage {
     }
   }
 
-  onUnload = function(this:UsersPage) {
+  onShow = function (this: UsersPage, options: any) {
+    wx.showLoading({
+      title: "正在加载"
+    })
+
+    const that = this;
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
+      wx.hideLoading();
+      if (success) {
+        that.data.user = user;
+        that.setData({user: user})
+        that.loadTeamById(that.optionTeamId);
+      } else {
+        wx.showToast({ 'title': '用户id错误', 'icon': 'error' })
+        wx.hideLoading();
+      }
+    });
+  }
+
+  onUnload = function (this: UsersPage) {
     if (this.teamRepo) {
       this.teamRepo.close();
     }
@@ -46,6 +61,7 @@ class UsersPage extends BasePage {
 
   updateIsMyTeam = function (this: UsersPage) {
     if (this.data.team) {
+      console.log("current user:", this.data.user.openid, ", team owner:", this.data.team.owner.openid)
       this.data.isMyTeam = (this.data.user.openid == this.data.team.owner.openid);
       if (this.data.isMyTeam) {
         this.data.canJoin = true;
@@ -55,17 +71,19 @@ class UsersPage extends BasePage {
   }
 
   loadTeamById = function (this: UsersPage, teamId: string) {
+    console.log("loadTeamById:", teamId)
     wx.showLoading({
       title: "正在加载"
     })
-    this.teamRepo.watchTeam(teamId, (team: VTeam | null) => {
-      this.data.loading = false;
-      this.setData({ loading: false })
+    const that = this;
+    this.teamRepo.loadTeamByID(teamId, (team: VTeam | null) => {
+      that.data.loading = false;
+      that.setData({ loading: false })
       wx.hideLoading();
       if (team != null) {
-        this.data.team = team;
-        this.updateIsMyTeam();
-        this.setData({ team: team })
+        that.data.team = team;
+        that.updateIsMyTeam();
+        that.setData({ team: team })
       }
     })
   }
@@ -81,6 +99,7 @@ class UsersPage extends BasePage {
       })
 
       let newPlayer = new VPlayer(player);
+      const that = this;
 
       new TeamRepo().joinTeam(this.data.team._id, newPlayer, (errorCode: number) => {
         wx.hideLoading()
@@ -88,12 +107,17 @@ class UsersPage extends BasePage {
           wx.showToast({
             title: "加入成功！"
           })
+          that.data.team?.players.push(newPlayer);
+          that.setData({temp: ""});
+          that.setData(that.data);
         } else if (errorCode == 1) {
+          that.setData({temp: ""});
           wx.showToast({
             icon: 'error',
             title: "不可重复加入!"
           })
         } else {
+          that.setData({temp: ""});
           wx.showToast({
             icon: 'error',
             title: "加入失败！"
@@ -115,6 +139,8 @@ class UsersPage extends BasePage {
       title: "正在加载"
     })
 
+    const that = this;
+
     if (this.data.team) {
       this.data.team.players.splice(playerIndex, 1);
       new TeamRepo().updateTeam(this.data.team, (success: boolean) => {
@@ -124,6 +150,7 @@ class UsersPage extends BasePage {
             icon: 'success',
             title: '删除成功!'
           })
+          that.setData({ team: that.data.team });
         } else {
           wx.showToast({
             icon: 'error',
@@ -164,15 +191,22 @@ class UsersPage extends BasePage {
       success: (res) => {
         console.log("getUserProfile success")
         this.data.user.userInfo = res.userInfo
-        this.data.hasUserInfo = true;
+        getApp().saveUserInfo(this.data.user);
         if (this.data.team && this.data.isMyTeam) {
           this.data.team.owner.userInfo = this.data.user.userInfo;
-          new TeamRepo().updateTeam(this.data.team, (success:boolean) => {
-
+          const that = this;
+          new TeamRepo().updateTeam(this.data.team, (success: boolean) => {
+            if (success) {
+              that.setData({ team: that.data.team })
+            } else {
+              wx.showToast({
+                icon: 'error',
+                title: '操作失败！'
+              })
+            }
           })
         }
         this.setData(this.data)
-        this.saveUserInfo();
       }
     })
   }
@@ -181,24 +215,8 @@ class UsersPage extends BasePage {
     // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
     console.log("getUserInfo clicked")
     this.data.user.userInfo = e.detail.userInfo;
-    this.data.hasUserInfo = true;
     this.setData(this.data);
-    this.saveUserInfo();
-  }
-
-  saveUserInfo = function (this: UsersPage) {
-    wx.setStorageSync("user", this.data.user)
-  }
-
-  loadUserInfo = function (this: UsersPage) {
-    let tmp = wx.getStorageSync("user")
-    if (tmp) {
-      this.data.user = tmp
-      if (this.data.user.userInfo) {
-        this.data.hasUserInfo = true
-      }
-      this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
-    }
+    getApp().saveUserInfo(this.data.user);
   }
 
   onEditTeamName = function (this: UsersPage, e: any) {
@@ -211,10 +229,11 @@ class UsersPage extends BasePage {
 
       if (this.data.team) {
         this.data.team.name = teamName;
+        const that = this;
         new TeamRepo().updateTeam(this.data.team, (success: boolean) => {
           wx.hideLoading();
           if (success) {
-            this.setData({ team: this.data.team });
+            that.setData({ team: that.data.team });
           } else {
             wx.showToast({
               icon: 'error',
@@ -232,7 +251,7 @@ class UsersPage extends BasePage {
   }
 
   onAddMySelf = function (this: UsersPage, e: any) {
-    if (!this.data.hasUserInfo) {
+    if (!this.data.user.userInfo) {
       wx.showToast({
         icon: 'error',
         title: '请先登录！'
@@ -248,12 +267,15 @@ class UsersPage extends BasePage {
     newPlayer.user = this.data.user;
 
     if (this.data.team) {
+      const that = this;
       new TeamRepo().joinTeam(this.data.team._id, newPlayer, (errorCode: number) => {
         wx.hideLoading()
         if (errorCode == 0) {
           wx.showToast({
             title: "加入成功！"
           })
+          that.data.team?.players.push(newPlayer);
+          that.setData({ team: that.data.team });
         } else if (errorCode == 1) {
           wx.showToast({
             icon: 'error',
@@ -267,6 +289,10 @@ class UsersPage extends BasePage {
         }
       })
     }
+  }
+
+  onPullDownRefresh = function( this:UsersPage, e:any) {
+    this.onShow(null);
   }
 }
 

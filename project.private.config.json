@@ -18,7 +18,7 @@
         {
           "name": "pages/score_board/score_board",
           "pathName": "pages/score_board/score_board",
-          "query": "_id=0122a5876428270c06ff9b8b2194855e",
+          "query": "_id=4745161864a0bd870001463c6d733b64",
           "launchMode": "default",
           "scene": null
         },
@@ -72,9 +72,9 @@
           "scene": null
         },
         {
-          "name": "team_invite",
+          "name": "邀请加入球队",
           "pathName": "pages/team/team",
-          "query": "teamId=16db756f6272809b0112acf4137fbc54&invite=true",
+          "query": "teamId=0122a58764447e6e0998e83905cda65c&invite=true",
           "launchMode": "default",
           "scene": null
         },

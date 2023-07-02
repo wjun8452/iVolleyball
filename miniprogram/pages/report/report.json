@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "统计报告",
+  "enablePullDownRefresh" : true,
   "backgroundColor": "#ffffff"
 }

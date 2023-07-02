@@ -12,7 +12,6 @@ Page({
     myteams: [],
     jointTeams: [],
     user: new VUser(),
-    hasUserInfo: false,
     canIUseGetUserProfile: false,
   },
 
@@ -29,7 +28,7 @@ Page({
   },
 
   onClickCreateNewTeam(e: any) {
-    if (!this.data.hasUserInfo) {
+    if (!this.data.user.userInfo) {
       wx.showToast({ icon: "error", title: "请先登录" });
       return;
     }
@@ -54,9 +53,8 @@ Page({
       desc: '用于完善球队的信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: (res) => {
         this.data.user.userInfo = res.userInfo
-        this.data.hasUserInfo = true;
         this.setData(this.data)
-        this.saveUserInfo();
+        getApp().saveUserInfo(this.data.user);
       }
     })
   },
@@ -64,29 +62,12 @@ Page({
   getUserInfo(e: any) {
     // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
     this.data.user.userInfo = e.detail.userInfo
-    this.data.user.userInfo = e.detail.userInfo,
-      this.data.hasUserInfo = true
     this.setData(this.data)
-    this.saveUserInfo();
-  },
-
-  saveUserInfo() {
-    wx.setStorageSync("user", this.data.user)
-  },
-
-  loadUserInfo() {
-    let tmp = wx.getStorageSync("user")
-    if (tmp) {
-      this.data.user = tmp
-      if (this.data.user.userInfo) {
-        this.data.hasUserInfo = true
-      }
-      this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
-    }
+    getApp().saveUserInfo(this.data.user);
   },
 
   onDeleteTeam(e: any) {
-    if (!this.data.hasUserInfo) {
+    if (!this.data.user.userInfo) {
       wx.showToast({ icon: "error", title: "请先登录" });
       return;
     }
@@ -131,27 +112,38 @@ Page({
       title: "正在加载"
     })
 
-    getApp().getOpenId((openid: string, success: boolean) => {
-      this.data.user.openid = openid;
-
-      this.loadUserInfo();
-
-      let teamRepo = new TeamRepo();
-
-      console.log("load teams by owner: ", openid)
-
-      teamRepo.fetchByOwner(openid, (errorCode: number, teams: VTeam[] | null) => {
-        this.data.myteams = teams;
-        this.setData({ myteams: teams })
-      });
-
-
-      teamRepo.fetchJointTeams(openid, ((errorCode: number, teams: VTeam[]) => {
+    const that2 = this;
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
+      if (success) {
+        that2.data.user = user;
+        that2.setData({user:user})
+        let teamRepo = new TeamRepo();
+        console.log("load teams by owner: ", this.data.user.openid)
+        const that = that2;
+        teamRepo.fetchByOwner(user.openid, (errorCode: number, teams: VTeam[] | null) => {
+          if (errorCode == 0) {
+            that.data.myteams = teams;
+            that.setData({ myteams: teams })
+          } else {
+            wx.showToast({'title':'加载失败!', 'icon':'error'})
+          }
+          wx.hideLoading();
+        });
+  
+  
+        teamRepo.fetchJointTeams(user.openid, ((errorCode: number, teams: VTeam[]) => {
+          if (errorCode == 0) {
+            that.data.jointTeams = teams;
+            that.setData({ jointTeams: teams })
+          } else {
+            wx.showToast({'title':'加载失败!', 'icon':'error'})
+          }
+          wx.hideLoading();
+        }));
+      } else {
+        wx.showToast({'title': '错误', 'icon':'error'})
         wx.hideLoading();
-        this.data.jointTeams = teams;
-        this.setData({ jointTeams: teams })
-      }));
-
+      }
     });
   },
 

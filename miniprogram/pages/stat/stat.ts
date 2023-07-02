@@ -36,9 +36,17 @@ class StatPage extends BasePage {
   data: StatPageData = new StatPageData();
   repo: VolleyRepository | null = null;
 
-  onCourtChange = function (this: StatPage, court: VolleyCourt, reason: Reason, status: Status): void {
+  onCourtChange = function (this: StatPage, court: VolleyCourt, reason: Reason, status: Status, success: boolean): void {
 
-    console.log("[Stat] onCourtChange Begins, reason:", reason, "status:", status, "court id:", court._id, "court:", court)
+    console.log("[Stat] onCourtChange Begins, reason:", reason, ", status:", status, ", court id:", court._id, ", court:", court, ", success:", success)
+
+    if (!success) {
+      wx.showToast({ 'title': '操作失败！', 'icon': 'error' })
+      return;
+    }
+
+    //是否有可能等待其他人更新比赛数据
+    let waitingForOthers: boolean = false;
 
     /** 更新核心数据 */
     this.data.court = court;
@@ -75,13 +83,52 @@ class StatPage extends BasePage {
 
       //update canRevertUmpire
       this.data.canRevertUmpire = this.data.isUmpire1 ? this.data.court.canRevertUmpireStat(1) : this.data.isUmpire2 ? this.data.court.canRevertUmpireStat(2) : false;
+
+      //如果等候其他人操作，则需告知Repo启动主动拉取云端数据
+      if (this.data.isUmpire1 && this.data.court.stat_umpire1_done && (this.data.court.stat_umpire2.openid == "" || this.data.court.stat_umpire2_done) && (!this.data.isOwner)) {
+        //等候主裁判分
+        waitingForOthers = true;
+      }
+
+      if (this.data.isUmpire1 && this.data.court.stat_umpire1_done && this.data.court.stat_umpire2.openid != "" && !this.data.court.stat_umpire2_done && this.data.court.stat_umpire1.openid != this.data.court.stat_umpire2.openid) {
+        //等待第二个统计员
+        waitingForOthers = true;
+      }
+
+      if (this.data.isUmpire2 && this.data.court.stat_umpire2_done && (this.data.court.stat_umpire1.openid == "" || this.data.court.stat_umpire1_done) && (!this.data.isOwner)) {
+        //等待主裁判
+        waitingForOthers = true;
+      }
+
+      if (this.data.isUmpire2 && this.data.court.stat_umpire2_done && this.data.court.stat_umpire1.openid != "" && !this.data.court.stat_umpire1_done && this.data.court.stat_umpire1.openid != this.data.court.stat_umpire2.openid) {
+        //等待第1个统计员
+        waitingForOthers = true;
+      }
+    }
+
+    if (!this.data.isOwner && this.data.court.status == GameStatus.OnGoing) {
+      waitingForOthers = true;
+    }
+
+    let isReadOnly = (!this.data.isOwner && !this.data.isUmpire1 && !this.data.isUmpire2)
+
+    if (this.repo) {
+      if (isReadOnly) {
+        this.repo.startSync(5000, 5000);
+      } else {
+        if (waitingForOthers) {
+          this.repo.startSync(0, 2000);
+        } else {
+          this.repo.stopSync();
+        }
+      }
     }
 
 
     //更新界面
     this.setData(this.data)
 
-    if (reason != Reason.Init) {
+    if (reason != Reason.Init && reason != Reason.SyncUpdate) {
       wx.vibrateShort({ type: 'medium' });
     }
 
@@ -114,9 +161,9 @@ class StatPage extends BasePage {
     wx.showLoading({
       title: "加载中"
     })
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       this.data.globalData = getApp().globalData;
-      this.repo = new VolleyRepository(this.onCourtChange, openid, this._id, globalData.placeInfo);
+      this.repo = new VolleyRepository(this.onCourtChange, user.openid, this._id, globalData.placeInfo, false, false);
     });
   }
 

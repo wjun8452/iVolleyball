@@ -3,11 +3,11 @@
 	<view class="color3 bgcolor2">
 
 		<view wx:if='{{target=="stat_setting"}}' style="margin: 10px">
-			邀请好友成为统计员
+			邀请好友成为统计员，好友需要点击“成为统计员”，之后您可以重新进入设置或统计页面查看。
     </view>
     
     <view wx:if='{{!target}}' style="margin: 10px">
-      邀请好友关注本场比赛
+      邀请好友关注本场比赛，好友的记分牌页面将会定时刷新分数
     </view>
 
 		<view style="margin: 10px">

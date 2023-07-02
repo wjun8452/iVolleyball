@@ -2,6 +2,7 @@
 
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
+import { VUser } from "../../bl/TeamRepo";
 import { VolleyCourt } from "../../bl/VolleyCourt";
 import { FriendsCourtRepo, JointVolleyRepository } from "../../bl/VolleyRepository";
 
@@ -45,10 +46,10 @@ class HistoryPage extends BasePage {
     this.data.shared_matches = friendsRepo.getCourts();
 
     //加载云端的比赛
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
-        this.data.openid = openid;
-        this.fetchCloudMatches(openid);
+        this.data.openid = user.openid;
+        this.fetchCloudMatches(user.openid);
       } else {
         wx.hideLoading();
         wx.showToast({

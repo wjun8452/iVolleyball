@@ -25,9 +25,14 @@ class ReportPage extends BasePage {
   data: ReportData = new ReportData();
   repo: VolleyRepository | null = null;
 
-  onCourtChange = function (this: ReportPage, court: VolleyCourt, reason: Reason, status: Status): void {
+  onCourtChange = function (this: ReportPage, court: VolleyCourt, reason: Reason, status: Status, success:boolean): void {
 
-    console.log("[Report] onCourtChange Begins, reason:", reason, "status:", status, "court id:", court._id, "court:", court)
+    console.log("[Report] onCourtChange Begins, reason:", reason, ", status:", status, ", court id:", court._id, ", court:", court, ", success:", success)
+
+    if (!success) {
+      wx.showToast({'title':'操作失败！', 'icon': 'error'})
+      return;
+    }
 
     /** 更新核心数据 */
     this.data.court = court;
@@ -43,7 +48,7 @@ class ReportPage extends BasePage {
   }
 
   onLoad = function(this: ReportPage, options:any) {
-    
+
     wx.showLoading({
       title: '加载中',
     })
@@ -52,7 +57,7 @@ class ReportPage extends BasePage {
 
     this.data.globalData = getApp().globalData;
 
-    this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData?.openid!, this.data.matchID, this.data.globalData!.placeInfo);
+    this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData?.openid!, this.data.matchID, this.data.globalData!.placeInfo, false, false);
 
     //页面加载量小，广告收益又低，暂时屏蔽该广告
     // 在页面onLoad回调事件中创建激励视频广告实例
@@ -493,11 +498,11 @@ class ReportPage extends BasePage {
     return summary
   }
 
-  gotoHome = function() { 
-    wx.navigateTo({ 
-      url: '../index/index', 
-    }) 
-  }
+  // gotoHome = function() { 
+  //   wx.navigateTo({ 
+  //     url: '../index/index', 
+  //   }) 
+  // }
 }
 
 Page(new ReportPage())

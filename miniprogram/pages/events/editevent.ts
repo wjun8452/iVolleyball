@@ -7,7 +7,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    hasUserInfo: false,
     user: new VUser(),
     event: new Event(0, "", new VUser(), 0, []),
     type: "new",
@@ -21,12 +20,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.loadUserInfo();
-
-    if (this.data.hasUserInfo) {
-      this.data.event = new Event(0, "", this.data.user, 0, []);
-    }
-
     for (let i = 0; i < 4; i++) {
       this.add();
     }
@@ -138,10 +131,10 @@ Page({
     console.log(this.data)
     let that = this;
     wx.showLoading({ title: "正在创建..." })
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
         if (that.data.type == "new") {
-          new EventRepo().createUserEvents(openid, that.data.user, that.data.event, (success: boolean) => {
+          new EventRepo().createUserEvents(user.openid, that.data.user, that.data.event, (success: boolean) => {
             wx.hideLoading();
             if (success) {
               wx.showToast({
@@ -150,7 +143,7 @@ Page({
 
               //此处不能使用微信的event channel来传递参数了
               wx.redirectTo({
-                url: "board?openid=" + openid + "&base_id=0",
+                url: "board?openid=" + user.openid + "&base_id=0",
               })
             } else {
               wx.showToast({
@@ -162,7 +155,7 @@ Page({
           })
         } else if (that.data.type == "insert") {
           that.data.event.base_id = that.data.base_id;
-          new EventRepo().insertEvent(openid, that.data.event, (success: boolean) => {
+          new EventRepo().insertEvent(user.openid, that.data.event, (success: boolean) => {
             wx.hideLoading();
             if (success) {
               wx.showToast({
@@ -171,7 +164,7 @@ Page({
 
               //此处不能使用微信的event channel来传递参数了
               wx.redirectTo({
-                url: "board?openid=" + openid + "&base_id=" + that.data.event.base_id,
+                url: "board?openid=" + user.openid + "&base_id=" + that.data.event.base_id,
               })
             } else {
               wx.showToast({
@@ -216,17 +209,6 @@ Page({
         })
       }
     })
-  },
-
-  loadUserInfo() {
-    let tmp = wx.getStorageSync("user")
-    if (tmp) {
-      this.data.user = tmp
-      if (this.data.user.userInfo) {
-        this.data.hasUserInfo = true
-      }
-      this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
-    }
   },
 
   onEditName (e) {

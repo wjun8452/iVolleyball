@@ -35,10 +35,10 @@ Page({
    */
   onShow() {
     let that = this;
-    getApp().getOpenId((openid: string, success: boolean) => {
-      that.data.isOwner = openid == "oHxEZ0fcvotOBudda695zijW3NkY";
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
+      that.data.isOwner = user.openid == "oHxEZ0fcvotOBudda695zijW3NkY";
       that.setData({ isOwner: that.data.isOwner })
-      console.log(openid, success)
+      console.log(user.openid, success)
 
       that.getData()
     });

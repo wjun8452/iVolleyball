@@ -2,7 +2,7 @@
 
 import { GlobalData } from "../../bl/GlobalData";
 import { BasePage } from '../../bl/BasePage';
-import { VolleyCourt } from "../../bl/VolleyCourt";
+import { GameStatus, VolleyCourt } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository"
 
 
@@ -44,9 +44,14 @@ class ScoreBoardPage extends BasePage {
     super()
   }
 
-  onCourtChange = function (this: ScoreBoardPage, court: VolleyCourt, reason: Reason, status: Status): void {
+  onCourtChange = function (this: ScoreBoardPage, court: VolleyCourt, reason: Reason, status: Status, success:boolean): void {
 
-    console.log("[ScoreBoard] onCourtChange Begins, reason:", reason, "status:", status, "court id:", court._id, "court:", court)
+    console.log("[ScoreBoard] onCourtChange Begins, reason:", reason, ", status:", status, ", court id:", court._id, ", court:", court, ", success:", success )
+
+    if (!success) {
+      wx.showToast({'title':'操作失败！', 'icon': 'error'})
+      return;
+    }
 
     /** 更新核心数据 */
     this.data.court = court;
@@ -62,7 +67,7 @@ class ScoreBoardPage extends BasePage {
     this.setData(this.data)
     wx.hideLoading();
 
-    if (reason != Reason.Init) {
+    if (reason != Reason.Init && reason != Reason.SyncUpdate) {
       wx.vibrateShort({ type: 'medium' });
     }
 
@@ -74,6 +79,7 @@ class ScoreBoardPage extends BasePage {
     if (reason == Reason.Update && this.data.court.isMatchOver()) {
       wx.showToast({"title":"比赛结束?", 'icon': 'error'})
     }
+    
 
     if (reason == Reason.LocalToCloud) {
       let url: string = '../share/share?_id=' + this.data.court._id + "&myTeam=" + this.data.court.myTeam + "&yourTeam=" + this.data.court.yourTeam
@@ -83,6 +89,11 @@ class ScoreBoardPage extends BasePage {
       wx.navigateTo({
         url: url
       })
+    }
+
+    //判断是否需要开启后台sync
+    if (!this.data.isOwner && this.data.court.status == GameStatus.OnGoing && this.repo) {
+      this.repo.startSync(5000, 5000);
     }
 
     console.log("[ScoreBoard] onCourtChange ends, this:", this)
@@ -125,15 +136,15 @@ class ScoreBoardPage extends BasePage {
     wx.showLoading({
       title: "正在加载"
     })
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
         this.data.globalData = getApp().globalData;
-        this.repo = new VolleyRepository(this.onCourtChange, openid, this.option_matchID, this.data.globalData.placeInfo, this.option_createNew)
+        this.repo = new VolleyRepository(this.onCourtChange, user.openid, this.option_matchID, this.data.globalData.placeInfo, this.option_createNew, false)
         this.option_createNew = false;
       } else {
         wx.hideLoading()
         wx.reportEvent && wx.reportEvent("wxdata_perf_monitor", {
-          "wxdata_perf_monitor_id": "getOpenId",
+          "wxdata_perf_monitor_id": "getCurrentUser",
           "wxdata_perf_monitor_level": 1,
           "wxdata_perf_error_code": 1,
           "wxdata_perf_error_msg": "登录失败",

@@ -15,7 +15,6 @@ Page({
     tab: 4, //0-搜索，1-最近，2-大厅，3-收藏，4-管理
     userEvents: [], //multiple Events of mulitple owners
     user: new VUser(),
-    hasUserInfo: false,
     canIUseGetUserProfile: false,
     keyword: "", //搜索关键词
   },
@@ -32,8 +31,6 @@ Page({
         canIUseGetUserProfile: true
       })
     }
-
-    this.loadUserInfo();
   },
 
   /**
@@ -89,7 +86,7 @@ Page({
   },
 
   createEvents() {
-    if (this.data.hasUserInfo) {
+    if (this.data.user.userInfo) {
       if (this.data.userEvents.length == 0) { //首次创建
         wx.navigateTo({
           url: "editevent?type=new"
@@ -145,7 +142,7 @@ Page({
   loadEventsTab2() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
         new EventRepo().fetchAllUserEvents(that._callback, this.favoriteOpenidRepo);
       } else {
@@ -173,9 +170,9 @@ Page({
   loadEventsTab4() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
-        new EventRepo().fetchUserEvents(openid, that._callback);
+        new EventRepo().fetchUserEvents(user.openid, that._callback);
       } else {
         wx.showToast({ title: "获取openid失败！" , icon: "error" })
         wx.stopPullDownRefresh();
@@ -186,7 +183,7 @@ Page({
   loadEventsTab3() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
         new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
       } else {
@@ -199,7 +196,7 @@ Page({
   loadEventsTab0() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getOpenId((openid: string, success: boolean) => {
+    getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
         new EventRepo().fetchUserEventsByName(that.data.keyword, that._callback, that.favoriteOpenidRepo);
       } else {
@@ -236,9 +233,8 @@ Page({
       success: (res) => {
         console.log("getUserProfile success")
         that.data.user.userInfo = res.userInfo
-        that.data.hasUserInfo = true;
         that.setData(that.data)
-        that.saveUserInfo();
+        getApp().saveUserInfo(that.data.user);
       }
     })
   },
@@ -247,24 +243,8 @@ Page({
     // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
     console.log("getUserInfo clicked")
     this.data.user.userInfo = e.detail.userInfo;
-    this.data.hasUserInfo = true;
     this.setData(this.data);
-    this.saveUserInfo();
-  },
-
-  saveUserInfo() {
-    wx.setStorageSync("user", this.data.user)
-  },
-
-  loadUserInfo() {
-    let tmp = wx.getStorageSync("user")
-    if (tmp) {
-      this.data.user = tmp
-      if (this.data.user.userInfo) {
-        this.data.hasUserInfo = true
-      }
-      this.setData({ user: tmp, hasUserInfo: this.data.hasUserInfo })
-    }
+    getApp().saveUserInfo(this.data.user);
   },
 
   showInitData() {

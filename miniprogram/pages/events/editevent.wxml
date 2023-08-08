@@ -18,6 +18,24 @@
           <radio checked="{{event.mode==0}}" value="0"> 单循环赛 </radio>
         </radio-group>
       </view>
+      <view class="tips">
+          采用贝格尔法编排场次
+      </view>
+      <view class="teamblock_row">
+        <radio-group class='teamblock_title'>
+          <radio checked="{{event.win3of5==0}}" value="0"> 5局3胜制 </radio>
+          <radio checked="{{event.win3of5==1}}" value="1"> 3局2胜制 </radio>
+        </radio-group>
+      </view>
+      <view class="tips"> 
+        依次按照胜场数、积分、局分、小分、胜负关系排定名次；
+      </view>
+      <view class="tips"> 
+        5局3胜制：3：0或3：1胜队积3分，负队积0分；3：2胜队积2分，负队积1分
+      </view>
+      <view class="tips"> 
+        3局2胜制：2：0胜队积3分，负队积0分；2：1胜队积2分，负队积1分
+      </view>
     </view>
   </view>
 

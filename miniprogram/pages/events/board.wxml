@@ -1,35 +1,48 @@
+<wxs module="utils" src="../../utils/util.wxs"></wxs>
+
 <view style='{{landscape ? "transform-origin:top left;transform: rotate(90deg) translateY(-100%);width: 100vh !important; height: 100vw !important; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center;" : "width: 100vw !important; height: 100vh !important; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center;" }}' bindtap="onTapWindow">
 
   <!-- 标题和工具栏 -->
   <view style="display: flex; flex-direction: row; justify-content: space-around; width: 100%;">
-    <view>
+    <!-- <view>
       <image src="../../images/rotate.svg" class="tool_button_small" bindtap='onLandscape'></image>
-    </view>
+    </view> -->
 
     <view class="mytext_view" style="font-size: large;"> {{event.name}} </view>
     <!-- <view style="flex:2" class="mytext_view"> 剩余</view> -->
   </view>
 
-  <view class="table" style="margin: 2px">
+  <view class="table" style="margin: 2px; font-size: {{font_size}}px;">
     <view class="tr">
       <view style="width: {{100/column_num}}%;" class="th tc"></view>
-      <view style="width: {{100/column_num}}%;" wx:for="{{event.teams}}" wx:for-item="team" wx:for-index="cindex" class='th {{col_edit==cindex?"highlight":""}}'> {{team.name == "" ? cindex+1 : team.name}} </view>
+      <view style="width: {{100/column_num}}%;" wx:for="{{event.teams}}" wx:for-item="team" wx:for-index="cindex" class='th {{col_edit==cindex?"highlight":""}}'>
+        <view style="display:flex; flex-direction: row; justify-content: space-between;">
+          <view style="color: gray;"> #{{cindex+1}} </view>
+        </view>
+        <view> {{team.name == "" ? cindex+1 : team.name}} </view>
+      </view>
       <view style="width: {{100/column_num}}%;" class="th"> 胜场 </view>
       <view style="width: {{100/column_num}}% " class="th"> 积分 </view>
-      <!-- <view style="width: {{100/column_num}}% " class="th"> 胜局 </view>
-      <view style="width: {{100/column_num}}% " class="th"> 小分 </view> -->
+      <view wx:if="{{event.equal_times >= 3}}" style="width: {{100/column_num}}% " class="th"> 局分 </view>
+      <view wx:if="{{event.equal_times >= 4}}" style="width: {{100/column_num}}% " class="th"> 小分 </view>
       <view style="width: {{100/column_num}}%; font-weight: bold;" class="th"> 排名 </view>
     </view>
 
     <view wx:for="{{event.team_matches[0]}}" wx:for-item="row" wx:for-index="rindex" class='tr {{(row_edit==-1 && col_edit==-1 && rindex%2==0) || (row_edit==rindex) ?"highlight":""}}'>
-      <view class='tc' style="width: {{100/column_num}}%;"> {{event.teams[rindex].name == "" ? rindex+1 : event.teams[rindex].name}} </view>
+      <view class='tc' style="width: {{100/column_num}}%;">
+        <view style="display:flex; flex-direction: row; justify-content: space-between; width:90%; color: gray;">
+          <view> #{{rindex+1}} </view>
+          <view> {{event.teams[rindex].rank}} </view>
+        </view>
+        <view> {{event.teams[rindex].name == "" ? rindex+1 : event.teams[rindex].name}} </view>
+      </view>
       <block wx:for="{{row}}" wx:for-item="item" wx:for-index="cindex">
         <view style="width: {{100/column_num}}%;" class='td {{(col_edit==cindex && row_edit==rindex)?"edit":(col_edit==cindex?"highlight":"")}} ' catchtap="onTapTable" catchlongpress="onLongTapTable" data-rindex="{{rindex}}" data-cindex="{{cindex}}"> {{ item.winset_str ? item.winset_str : item }} </view>
       </block>
       <view style="width: {{100/column_num}}% " class="td">{{event.teams[rindex].win_times}} </view>
       <view style="width: {{100/column_num}}% " class="td">{{event.teams[rindex].net_score}} </view>
-      <!-- <view style="width: {{100/column_num}}% " class="td">{{event.teams[rindex].win_games}}  </view>
-      <view style="width: {{100/column_num}}% " class="td">{{event.teams[rindex].raw_score}}  </view> -->
+      <view wx:if="{{event.equal_times >= 3}}" style="width: {{100/column_num}}% " class="td">{{utils.toFixed(event.teams[rindex].win_games, 2)}} </view>
+      <view wx:if="{{event.equal_times >= 4}}" style="width: {{100/column_num}}% " class="td">{{utils.toFixed(event.teams[rindex].raw_score, 2)}} </view>
       <view style="width: {{100/column_num}}% " class="td"> {{event.teams[rindex].rank}} </view>
     </view>
   </view>

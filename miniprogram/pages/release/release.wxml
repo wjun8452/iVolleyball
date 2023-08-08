@@ -1,6 +1,10 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v2023.08.08 优化赛事组织相关页面的显示效果 </text>
+  </view>
+
+  <view class="block1">
 		<text style="margin-left: 5px;">v2023.07.02 提高稳定性，解决偶发的无法加载的问题 </text>
   </view>
 

@@ -110,6 +110,10 @@ Page({
   },
 
   add() {
+    if (this.data.event.teams.length >=10) {
+      wx.showToast({"title" : "最多10个队伍", "icon":"error"})
+      return;
+    }
     let team = new VTeam();
     team.name = "队伍" + (this.data.event.teams.length + 1);
     this.data.event.teams.push(team);
@@ -120,6 +124,10 @@ Page({
   },
 
   delete(e: any) {
+    if (this.data.event.teams.length <=2) {
+      wx.showToast({"title" : "至少2个队伍", "icon":"error"})
+      return;
+    }
     this.data.event.teams.splice(e.target.dataset.index, 1)
     this.data.event.team_matches[0].splice(e.target.dataset.index, 1)
     new EventHelper().initTeamMatches(this.data.event);
@@ -187,6 +195,10 @@ Page({
   },
 
   onInput(e: any) {
+    if (e.detail.value.length > 5) {
+      wx.showToast({"title" : "最长5个汉字!", "icon":"error"})
+      return;
+    }
     this.data.event.teams[e.target.dataset.index].name = e.detail.value;
   },
 

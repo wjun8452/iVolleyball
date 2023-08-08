@@ -22,13 +22,13 @@
     </view>
   </view>
   <view class="teamblock_row">
-    <button size="mini" bindtap="onNewSet" disabled="{{!isOwner}}"> 添加1局 </button>
+    <button wx:if="{{!showScoreInput}}" size="mini" bindtap="onNewSet" disabled="{{!isOwner}}"> 添加1局 </button>
   </view>
 </view>
 
 <view class="teamblock">
   <view class="teamblock_row">
-    <button style="width: 50%;" size="default" bindtap="onConfirm" disabled="{{!isOwner}}"> 确定 </button>
+    <button wx:if="{{!showScoreInput}}" style="width: 50%;" size="default" bindtap="onConfirm" disabled="{{!isOwner}}"> 确定 </button>
   </view>
 </view>
 

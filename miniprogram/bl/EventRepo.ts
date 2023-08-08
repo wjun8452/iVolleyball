@@ -89,15 +89,23 @@ export class Event {
   base_id: number; //自增的id
   name: string;
   mode: number; //0 循环赛
+  win3of5: number; //0：5局3胜，1：3局2胜
+  equal_times: number; //表示最多通过比较了几个变量（胜场、积分、局分、小分）决定了排名
   teams: VTeam[];
   team_matches: any[][][]; //数组外层是几个小组，里头是每个小组的循环赛对阵情况string，
   create_time: string;
 
-  public constructor(base_id: number, name: string, owner: VUser, mode: number, teams: VTeam[]) {
+  public constructor(base_id: number, name: string, owner: VUser, mode: number, teams: VTeam[], win3of5?: number | null) {
     this.name = name;
     this.mode = mode;
     this.teams = teams;
     this.base_id = base_id;
+
+    if (win3of5) {
+      this.win3of5 = win3of5;
+    } else {
+      this.win3of5 = 1;
+    }
 
     if (this.name == "") {
       this.name = parseDate(new Date()) + " " + owner.userInfo.nickName + " 创建的比赛"
@@ -219,24 +227,28 @@ export class EventHelper {
     for (let m = 0; m < event.teams.length; m++) {
       let net_score = 0;
       let win_times = 0; //胜场
-      let win_games = 0;  //胜局数
-      let raw_score = 0; //小分
+      let win_games = 0;  //胜局数，用于计算局分=胜局数/负局数
+      let loose_games = 0; //负局数，用于计算局分=胜局数/负局数
+      let raw_win_score = 0; //总得分，用于计算小分=总得分/总负分
+      let raw_loose_score = 0; //总失分，用于计算小分=总得分/总负分
 
       for (let k = 0; k < event.teams.length; k++) {
         if (k == m) continue;
         let td = event.team_matches[0][m][k];
         if (td.setScores) {
           win_games += td.winSets;
+          loose_games += td.looseSets;
           win_times += (td.winSets > td.looseSets ? 1 : 0)
           for (let x = 0; x < td.setScores.length; x++) {
-            raw_score += td.setScores[x].myScore;
+            raw_win_score += td.setScores[x].myScore;
+            raw_loose_score += td.setScores[x].yourScore;
           }
 
-          if (td.winSets - td.looseSets >= 2) { //3:0 or 3:1
+          if (td.winSets - td.looseSets >= 2) { //五局三胜（3:0 or 3:1） or 三局两胜 （2：0） 
             net_score += 3;
-          } else if (td.winSets - td.looseSets >= 1) { // 3:2
+          } else if (td.winSets - td.looseSets >= 1) { // 五局三胜（3:2） or 三局两胜 （2：1）
             net_score += 2;
-          } else if (td.winSets - td.looseSets >= -1) { // 2:3
+          } else if (td.winSets - td.looseSets >= -1) { // 五局三胜（2:3）or 三局两胜 （1：2）
             net_score += 1;
           } else {
             net_score += 0;
@@ -244,18 +256,18 @@ export class EventHelper {
         }
       }
       event.teams[m].index = m;
-      event.teams[m].net_score = net_score;
-      event.teams[m].win_times = win_times;
-      event.teams[m].win_games = win_games;
-      event.teams[m].raw_score = raw_score;
+      event.teams[m].net_score = net_score; //积分
+      event.teams[m].win_times = win_times; //胜场
+      event.teams[m].win_games = win_games / loose_games; //局分
+      event.teams[m].raw_score = raw_win_score / raw_loose_score; //小分
     }
 
     //
     event.teams.sort(function (a, b) {
-      if (a.win_times == b.win_times) {
-        if (b.net_score == a.net_score) {
-          if (b.win_games == a.win_games) {
-            return b.raw_score == a.raw_score;
+      if (a.win_times == b.win_times) { //胜场
+        if (b.net_score == a.net_score) { //积分
+          if (b.win_games == a.win_games) { //胜局数
+            return b.raw_score == a.raw_score; //小分
           } else {
             return b.win_games - a.win_games;
           }
@@ -269,9 +281,40 @@ export class EventHelper {
     for (let i = 0; i < event.teams.length; i++) {
       event.teams[i].rank = i + 1;
     }
+
+    let equal_times = 1;
+    for (let m = 0; m < event.teams.length - 1; m++) {
+      let n = m + 1;
+      let e1 = event.teams[m];
+      let e2 = event.teams[n];
+      if (e1.win_times == e2.win_times && e1.net_score == e2.net_score &&
+        e1.win_games.toFixed(5) == e2.win_games.toFixed(5)) {
+        if (equal_times < 4) {
+          equal_times = 4;
+        }
+      }
+
+      if (e1.win_times == e2.win_times && e1.net_score == e2.net_score) {
+        if (equal_times < 3) {
+          equal_times = 3;
+        }
+      }
+
+      if (e1.win_times == e2.win_times) {
+        if (equal_times < 2) {
+          equal_times = 2;
+        }
+      }
+
+      console.log("m=",m, "  equal_times=", equal_times, " win_times:", e1.win_times, e2.win_times, " net_score:", e1.net_score, e2.net_score, " win_games:", e1.win_games.toFixed(5), e2.win_games.toFixed(5))
+    }
+
     event.teams.sort(function (a, b) {
       return a.index - b.index;
     })
+
+    event.equal_times = equal_times;
+    console.log("event.equal_times: ", event.equal_times)
   }
 }
 
@@ -390,10 +433,12 @@ export class EventRepo {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
-    let where_clause = {'events.name': db.RegExp({
-      regexp: '.*' + keyword,
-      options: 'i',
-    })}
+    let where_clause = {
+      'events.name': db.RegExp({
+        regexp: '.*' + keyword,
+        options: 'i',
+      })
+    }
     return this._fetchUserEvents(where_clause, db, callback, favoriteOpenidRepo);
   }
 
@@ -454,6 +499,9 @@ export class EventRepo {
           let userEvent = userEvents[k];
           for (let i = 0; i < userEvent.events.length; i++) {
             let event = userEvent.events[i];
+            if (!event.hasOwnProperty("win3of5")) { //小程序升级新增了字段，兼容服务器旧数据
+              event["win3of5"] = 1;
+            }
             if (event.base_id == base_id) {
               target_event = event;
               let t = event.create_time;

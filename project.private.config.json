@@ -123,7 +123,7 @@
         {
           "name": "",
           "pathName": "pages/events/editevent",
-          "query": "",
+          "query": "type=update&base_id=0&openid=oHxEZ0fcvotOBudda695zijW3NkY",
           "launchMode": "default",
           "scene": null
         },

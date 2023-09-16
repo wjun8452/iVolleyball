@@ -223,6 +223,8 @@ export class EventHelper {
     return event.team_matches;
   }
 
+
+  //小组循环赛排序方法
   public updateTeamScore(event: Event) {
     for (let m = 0; m < event.teams.length; m++) {
       let net_score = 0;
@@ -267,7 +269,7 @@ export class EventHelper {
       if (a.win_times == b.win_times) { //胜场
         if (b.net_score == a.net_score) { //积分
           if (b.win_games == a.win_games) { //胜局数
-            return b.raw_score == a.raw_score; //小分
+            return b.raw_score - a.raw_score; //小分
           } else {
             return b.win_games - a.win_games;
           }

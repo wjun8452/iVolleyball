@@ -62,7 +62,7 @@
           </block>
           <image src="../../images/share.svg" class='tool_button' bindtap='onShare'> </image>
           <image src="../../images/stat.svg" class="tool_button" bindtap='onStat'></image>
-          <image src="../../images/mirror.svg" class="tool_button" bindtap='onRotate'></image>
+          <image src="../../images/setting.svg" class="tool_button" bindtap='onSetting'></image>
         </view>
 
 

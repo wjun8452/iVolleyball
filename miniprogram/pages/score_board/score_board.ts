@@ -13,6 +13,8 @@ class ScoreBoardPageData {
   landscape: boolean = true;
   /** 标题在屏幕左边 */
   titleLeft: boolean = false;
+  /** 滑动加分 还是 点击加分 */
+  pan: boolean = true;
   /** 屏幕能显示的最多的分数个数，显示太多，会影响工具栏 */
   maxStatItem: number = 16;
   /** true：人面对屏幕，屏幕左边显示我方得分。team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量  */
@@ -126,7 +128,15 @@ class ScoreBoardPage extends BasePage {
         this.data.titleLeft = true;
       }
 
-      this.setData({firstTimeUse: this.data.firstTimeUse, titleLeft: this.data.titleLeft})
+      value = wx.getStorageSync("scoreBoard.pan")
+      console.log("scoreBoard.pan", value)
+      if (value === "false") {
+        this.data.pan = false;
+      } else {
+        this.data.pan = true;
+      }
+
+      this.setData({firstTimeUse: this.data.firstTimeUse, titleLeft: this.data.titleLeft, pan: this.data.pan})
     } catch (e) {
       console.error(e)
     }
@@ -239,11 +249,12 @@ class ScoreBoardPage extends BasePage {
     console.log(this.data.titleLeft, change_x_abs, change_y_abs)
     console.log(this.data.titleLeft, changeX, changeY)
     
-    if (change_x_abs < 50 && change_y_abs < 50) 
+    if (!this.data.pan && change_x_abs < 50 && change_y_abs < 50) 
     {//默认点击就加分
       mine ? this.data.court.addScoreRotate() : this.data.court.looseScoreRotate();
       this.updateMatch();
-    } else if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右   
+    }
+    else if (change_y_abs < change_x_abs) { //上下滑动幅度大于左右   
       if ((this.data.titleLeft && changeX < 0) || (!this.data.titleLeft && changeX > 0) ) { //加分
         mine ? this.data.court.addScoreRotate() : this.data.court.looseScoreRotate();
       } else { //减分
@@ -360,11 +371,33 @@ class ScoreBoardPage extends BasePage {
     }
   }
 
-  onRotate = function (this: ScoreBoardPage) {
-    this.data.titleLeft = !this.data.titleLeft;
-    this.setData({titleLeft: this.data.titleLeft})
-    wx.setStorageSync("scoreBoard.titleLeft", this.data.titleLeft.toString())
-    console.log("save", this.data.titleLeft.toString())
+  onSetting = function (this: ScoreBoardPage) {
+    wx.navigateTo({
+      url: '../score_board/setting?titleLeft='+ (this.data.titleLeft?"true":"false") + "&pan=" + (this.data.pan?"true":"false"),
+      events: {
+        settingUpdated: (result) => {
+          console.log("settingUpdated", result)
+          this.data.titleLeft = result.titleLeft;
+          wx.setStorageSync("scoreBoard.titleLeft", this.data.titleLeft.toString()) 
+        },
+        panUpdated: (result) => {
+          console.log("panUpdated", result)
+          this.data.pan = result.pan;
+          wx.setStorageSync("scoreBoard.pan", this.data.pan.toString()) 
+        }}
+      })
+  }
+
+  onPan = function (this: ScoreBoardPage) {
+    wx.navigateTo({
+      url: '../score_board/setting?titleLeft='+ (this.data.titleLeft?"true":"false") + "&pan=" + (this.data.pan?"true":"false") ,
+      events: {
+        settingUpdated: (result) => {
+          console.log("panUpdated", result)
+          this.data.pan = result.pan;
+          wx.setStorageSync("scoreBoard.pan", this.data.pan.toString()) 
+        }}
+      })
   }
 
   onShareAppMessage = function (this: ScoreBoardPage) {

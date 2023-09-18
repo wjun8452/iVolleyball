@@ -1,0 +1,22 @@
+
+<view class="color3" style="display: flex; flex-direction: column;">
+  <view class="teamblock">
+    <view class="teamblock_title">记分牌旋转</view>
+    <view class="teamblock_row">
+      <radio-group class="radio-group" bindchange="onRotate">
+        <radio value="true" checked="{{titleLeft}}" /> 分数靠右
+        <radio value="false" checked="{{!titleLeft}}" /> 分数靠左
+      </radio-group>
+    </view>
+  </view>
+
+  <view class="teamblock">
+    <view class="teamblock_title">滑动加分</view>
+    <view class="teamblock_row">
+      <radio-group class="radio-group" bindchange="onPan">
+        <radio value="true" checked="{{pan}}" /> 滑动加分
+        <radio value="false" checked="{{!pan}}" /> 单击加分
+      </radio-group>
+    </view>
+  </view>
+</view>

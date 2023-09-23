@@ -16,6 +16,7 @@ class HistoryPageData {
   globalData: GlobalData | null = null;
   isLoading: boolean = false; //节流阀，防止重复下拉
   openid: string = ""; //当前微信用户id
+  editMode: boolean = false; //是否显示删除按钮
 }
 
 class HistoryPage extends BasePage {
@@ -46,7 +47,7 @@ class HistoryPage extends BasePage {
     this.data.shared_matches = friendsRepo.getCourts();
 
     //加载云端的比赛
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         this.data.openid = user.openid;
         this.fetchCloudMatches(user.openid);
@@ -107,17 +108,26 @@ class HistoryPage extends BasePage {
   onDeleteMatch = function (this: HistoryPage, e: any) {
     //console.log("delet match", e)
     let that = this
-    let _id: string = e.currentTarget.dataset.matchid;
-    if (_id) {
-      this.repo.deleteMatch(_id, (errorCode: number) => {
-        if (errorCode == 0) {
-          wx.showToast({ icon: "success", title: "删除成功" })
-          that.fetchCloudMatches(getApp().globalData.openid);
-        } else {
-          wx.showToast({ icon: "error", title: "删除失败" })
-        }
-      })
-    }
+    wx.showModal({
+      title: '确定删除?',
+      content: '删除后资料不可恢复',
+      showCancel: true,
+      success: function (res) {
+        if (res.confirm) {
+          let _id: string = e.currentTarget.dataset.matchid;
+          if (_id) {
+            that.repo.deleteMatch(_id, (errorCode: number) => {
+              if (errorCode == 0) {
+                wx.showToast({ icon: "success", title: "删除成功" })
+                that.fetchCloudMatches(getApp().globalData.openid);
+              } else {
+                wx.showToast({ icon: "error", title: "删除失败" })
+              }
+            })
+          }
+        } else if (res.cancel) { }
+      }
+    })
   }
 
   touchstart = function (this: HistoryPage, e: any) {

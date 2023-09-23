@@ -20,6 +20,7 @@
     <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
       <view> 我创建的队伍 </view>
       <view><button size="mini" bindtap="onClickCreateNewTeam">创建</button></view>
+      <view style="font-size: 12px; color: gray;"> 左滑可删除 </view>
     </view>
 
     <block wx:for="{{myteams}}" wx:key="_id" wx:for-item="team" wx:for-index="index">

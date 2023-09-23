@@ -73,18 +73,27 @@ Page({
     }
 
     let that = this
-    let teamId = e.target.dataset.teamid;
-    wx.showLoading({ title: "正在加载" })
-    new TeamRepo().deleteTeamByOwner(teamId, (errorCode: number) => {
-      wx.hideLoading();
-      if (errorCode == 0) {
-        console.log(that.data.user.openid)
-        new TeamRepo().fetchByOwner(that.data.user.openid, (errorCode: number, teams: VTeam[] | null) => {
-          that.data.myteams = teams;
-          that.setData({ myteams: teams })
-        });
-      } else {
-        wx.showToast({ icon: "error", title: "删除失败" })
+    wx.showModal({
+      title: '确定删除?',
+      content: '删除后资料不可恢复',
+      showCancel: true,
+      success: function (res) {
+        if (res.confirm) {
+          let teamId = e.target.dataset.teamid;
+          wx.showLoading({ title: "正在加载" })
+          new TeamRepo().deleteTeamByOwner(teamId, (errorCode: number) => {
+            wx.hideLoading();
+            if (errorCode == 0) {
+              console.log(that.data.user.openid)
+              new TeamRepo().fetchByOwner(that.data.user.openid, (errorCode: number, teams: VTeam[] | null) => {
+                that.data.myteams = teams;
+                that.setData({ myteams: teams })
+              });
+            } else {
+              wx.showToast({ icon: "error", title: "删除失败" })
+            }
+          })
+        } else if (res.cancel) { }
       }
     })
   },

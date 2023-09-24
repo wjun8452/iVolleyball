@@ -221,6 +221,11 @@ Page({
       });
     }
     return length;
+  },
+
+  sortTeam:function() {
+    this.data.event.sort_team_by_score ? new EventHelper().sortTeams(false, this.data.event) : new EventHelper().sortTeams(true, this.data.event);
+    this.setData(this.data);
   }
 
 })

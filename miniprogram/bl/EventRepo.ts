@@ -94,12 +94,14 @@ export class Event {
   teams: VTeam[];
   team_matches: any[][][]; //数组外层是几个小组，里头是每个小组的循环赛对阵情况string，
   create_time: string;
+  sort_team_by_score: boolean; //teams数组已经按成绩排序
 
   public constructor(base_id: number, name: string, owner: VUser, mode: number, teams: VTeam[], win3of5?: number | null) {
     this.name = name;
     this.mode = mode;
     this.teams = teams;
     this.base_id = base_id;
+    this.sort_team_by_score = false;
 
     if (win3of5) {
       this.win3of5 = win3of5;
@@ -223,6 +225,22 @@ export class EventHelper {
     return event.team_matches;
   }
 
+  //排序
+  public sortTeams(byScore: boolean, event:Event) {
+    if (byScore) {
+      event.teams.sort(function (a, b) {
+        return a.rank - b.rank;
+      })
+      event.sort_team_by_score = true;
+    } else {
+      //重新按照原始编号排序
+      event.teams.sort(function (a, b) {
+        return a.index - b.index;
+      })
+      event.sort_team_by_score = false;
+    }
+  }
+
 
   //小组循环赛排序方法
   public updateTeamScore(event: Event) {
@@ -257,6 +275,7 @@ export class EventHelper {
           }
         }
       }
+      //给VTeam创建了新属性
       event.teams[m].index = m;
       event.teams[m].net_score = net_score; //积分
       event.teams[m].win_times = win_times; //胜场
@@ -264,7 +283,7 @@ export class EventHelper {
       event.teams[m].raw_score = raw_win_score / raw_loose_score; //小分
     }
 
-    //
+    //按成绩排序，并记录rank
     event.teams.sort(function (a, b) {
       if (a.win_times == b.win_times) { //胜场
         if (b.net_score == a.net_score) { //积分
@@ -308,12 +327,14 @@ export class EventHelper {
         }
       }
 
-      console.log("m=",m, "  equal_times=", equal_times, " win_times:", e1.win_times, e2.win_times, " net_score:", e1.net_score, e2.net_score, " win_games:", e1.win_games.toFixed(5), e2.win_games.toFixed(5))
+      console.log("m=", m, "  equal_times=", equal_times, " win_times:", e1.win_times, e2.win_times, " net_score:", e1.net_score, e2.net_score, " win_games:", e1.win_games.toFixed(5), e2.win_games.toFixed(5))
     }
 
+    //重新按照原始编号排序
     event.teams.sort(function (a, b) {
       return a.index - b.index;
     })
+    event.sort_team_by_score = false;
 
     event.equal_times = equal_times;
     console.log("event.equal_times: ", event.equal_times)

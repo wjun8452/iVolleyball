@@ -120,7 +120,11 @@ var util = {
 
   //小数转换成保留几位的字符串
   toFixed: function (num, reserved_width) {
-    return num.toFixed(reserved_width);
+    if (typeof(num) == "number") {
+      return num.toFixed(reserved_width);
+    } else {
+      return "";
+    }
   }
 }
 // 导出对外暴露的属性

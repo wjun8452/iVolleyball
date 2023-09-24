@@ -4,9 +4,9 @@
 
   <!-- 标题和工具栏 -->
   <view style="display: flex; flex-direction: row; justify-content: space-around; width: 100%;">
-    <!-- <view>
-      <image src="../../images/rotate.svg" class="tool_button_small" bindtap='onLandscape'></image>
-    </view> -->
+    <view style="margin-left: 5px;">
+      <image src="../../images/sort.svg" class="tool_button_small" bindtap='sortTeam'></image>
+    </view>
 
     <view class="mytext_view" style="font-size: large;"> {{event.name}} </view>
     <!-- <view style="flex:2" class="mytext_view"> 剩余</view> -->
@@ -17,9 +17,9 @@
       <view style="width: {{100/column_num}}%;" class="th tc"></view>
       <view style="width: {{100/column_num}}%;" wx:for="{{event.teams}}" wx:for-item="team" wx:for-index="cindex" class='th {{col_edit==cindex?"highlight":""}}'>
         <view style="display:flex; flex-direction: row; justify-content: space-between;">
-          <view style="color: gray;"> #{{cindex+1}} </view>
+          <view style="color: gray;"> #{{team.index+1}} </view>
         </view>
-        <view> {{team.name == "" ? cindex+1 : team.name}} </view>
+        <view> {{team.name == "" ? team.index+1 : team.name}} </view>
       </view>
       <view style="width: {{100/column_num}}%;" class="th"> 胜场 </view>
       <view style="width: {{100/column_num}}% " class="th"> 积分 </view>
@@ -31,10 +31,10 @@
     <view wx:for="{{event.team_matches[0]}}" wx:for-item="row" wx:for-index="rindex" class='tr {{(row_edit==-1 && col_edit==-1 && rindex%2==0) || (row_edit==rindex) ?"highlight":""}}'>
       <view class='tc' style="width: {{100/column_num}}%;">
         <view style="display:flex; flex-direction: row; justify-content: space-between; width:90%; color: gray;">
-          <view> #{{rindex+1}} </view>
+          <view> #{{event.teams[rindex].index + 1}} </view>
           <view> {{event.teams[rindex].rank}} </view>
         </view>
-        <view> {{event.teams[rindex].name == "" ? rindex+1 : event.teams[rindex].name}} </view>
+        <view> {{event.teams[rindex].name == "" ? event.teams[rindex].index+1 : event.teams[rindex].name}} </view>
       </view>
       <block wx:for="{{row}}" wx:for-item="item" wx:for-index="cindex">
         <view style="width: {{100/column_num}}%;" class='td {{(col_edit==cindex && row_edit==rindex)?"edit":(col_edit==cindex?"highlight":"")}} ' catchtap="onTapTable" catchlongpress="onLongTapTable" data-rindex="{{rindex}}" data-cindex="{{cindex}}"> {{ item.winset_str ? item.winset_str : item }} </view>

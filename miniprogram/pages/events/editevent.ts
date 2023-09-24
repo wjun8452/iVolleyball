@@ -1,5 +1,6 @@
 import { Event, EventHelper, EventRepo, UserEvent } from "../../bl/EventRepo"
 import { VTeam, VUser } from "../../bl/TeamRepo";
+import {getUUID} from "../../utils/Util"
 
 Page({
 
@@ -11,7 +12,7 @@ Page({
     event: new Event(0, "", new VUser(), 0, []),
     type: "new",
     openid: "",
-    base_id: -1,
+    base_id: "",
     loaded: false,
     isOwner: false,
   },
@@ -28,7 +29,7 @@ Page({
     if (options && options.type) { //new, insert, update
       this.data.type = options.type;
       if (options.base_id) {
-        this.data.base_id = Number.parseInt(options.base_id);
+        this.data.base_id = options.base_id;
       }
 
       if (options.openid) {
@@ -163,7 +164,7 @@ Page({
             that.setData(that.data);
           })
         } else if (that.data.type == "insert") {
-          that.data.event.base_id = that.data.base_id;
+          that.data.event.base_id = getUUID();
           new EventRepo().insertEvent(user.openid, that.data.event, (success: boolean) => {
             wx.hideLoading();
             if (success) {
@@ -240,5 +241,21 @@ Page({
   onClearTeams(e) {
     this.data.event.teams.splice(0, this.data.event.teams.length)
     this.setData(this.data);
+  },
+
+  delete() {
+    console.log("delete", this.data.event)
+    new EventRepo().deleteEvent(this.data.openid, this.data.event, (success: boolean) => {
+      if (success) {
+        wx.showToast({
+          "title": "删除成功！"
+        })
+        wx.navigateBack();
+      } else {
+        wx.showToast({
+          "title": "删除失败!"
+        })
+      }
+    })
   }
 })

@@ -92,7 +92,7 @@ Page({
           url: "editevent?type=new"
         })
       } else {
-        wx.navigateTo({ //在给定位置添加
+        wx.navigateTo({ //数组尾部添加一个新的
           url: "editevent?type=insert&base_id="+ (this.data.userEvents[0].base_id+1),
         })
       } 

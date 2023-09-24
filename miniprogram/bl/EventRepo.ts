@@ -74,7 +74,7 @@ export class UserEvent {
   events: Event[];
   update_time: DB.ServerDate;
   create_time: DB.ServerDate;
-  base_id: number; //自增的基础id，后续新增的event就用这个base_id
+  base_id: number; //赛事数组最后一个元素的下标，即赛事数组的长度-1
 
   constructor() {
     this._id = "";
@@ -86,7 +86,7 @@ export class UserEvent {
 }
 
 export class Event {
-  base_id: number; //自增的id
+  base_id: string; //UUID
   name: string;
   mode: number; //0 循环赛
   win3of5: number; //0：5局3胜，1：3局2胜
@@ -96,7 +96,7 @@ export class Event {
   create_time: string;
   sort_team_by_score: boolean; //teams数组已经按成绩排序
 
-  public constructor(base_id: number, name: string, owner: VUser, mode: number, teams: VTeam[], win3of5?: number | null) {
+  public constructor(base_id: string, name: string, owner: VUser, mode: number, teams: VTeam[], win3of5?: number | null) {
     this.name = name;
     this.mode = mode;
     this.teams = teams;
@@ -438,6 +438,29 @@ export class EventRepo {
     })
   };
 
+  deleteEvent(_openid: string, event: Event, callback: (success: boolean) => void) {
+    wx.cloud.callFunction({
+      name: 'vevent',
+      data: {
+        action: 'delete',
+        _openid: _openid,
+        event: event,
+      },
+      success: (res: any) => {
+        console.log('[wx.cloud.event.update.delete]', res)
+        if (res.errMsg.indexOf('ok') >= 0) {
+          callback(true)
+        } else {
+          callback(false)
+        }
+      },
+      fail: err => {
+        console.error('[wx.cloud.event.update.delete] failed!', err)
+        callback(false)
+      }
+    })
+  };
+
   fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
@@ -502,7 +525,7 @@ export class EventRepo {
     })
   };
 
-  fetchEvent(_openid: string, base_id: number, callback: (success: boolean, event: Event | null) => void) {
+  fetchEvent(_openid: string, base_id: string, callback: (success: boolean, event: Event | null) => void) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })

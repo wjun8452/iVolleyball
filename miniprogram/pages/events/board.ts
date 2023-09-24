@@ -39,7 +39,7 @@ Page({
     group_num: 1,
     event: new Event(0, "", new VUser(), 0, []),
     event_openid: "",
-    base_id: 0,
+    base_id: "",
   },
 
   /**
@@ -49,7 +49,7 @@ Page({
     console.log(options)
     if (options && options.openid && options.base_id) {
       this.data.event_openid = options.openid;
-      this.data.base_id = Number.parseInt(options.base_id);
+      this.data.base_id = options.base_id;
     }
     wx.showToast({ 'title': '长按可编辑', 'icon': 'none' })
   },

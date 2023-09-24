@@ -1,4 +1,4 @@
-<view wx:if="{{loaded}}" class="main">
+<view wx:if="{{loaded}}" class="main" style="margin: 5px">
 
   <view>
     <view class="teamblock">
@@ -72,5 +72,6 @@
 
   <button wx:if='{{type=="new" || type=="insert"}}' type="primary" bindtap="create"> 创建 </button>
   <button wx:if='{{type=="update"}}' type="primary" bindtap="update"> 更新 </button>
+  <button wx:if='{{type=="update"}}' type="warn" bindtap="delete" style="margin-top: 5px;"> 删除 </button>
 
 </view>

@@ -35,7 +35,7 @@ App({
             globalData.openid = (res.result as LoginInfo).openid;
             globalData.user.openid = globalData.openid;
             const userInCache = this._loadUserInfo();
-            if (userInCache.openid == globalData.openid) {
+            if (userInCache.openid == globalData.openid && userInCache.userInfo.avatarUrl != "") {
               globalData.user.userInfo = userInCache.userInfo;
             }
             console.log('getCurrentUser first time, ', globalData.user)
@@ -104,10 +104,12 @@ App({
   saveUserInfo(user:VUser) {
     globalData.user = user;
     wx.setStorageSync("user", user) 
+    console.log("save user:", user);
   },
 
   _loadUserInfo() : VUser {
     let tmp = wx.getStorageSync("user")
+    console.log("load user:", tmp);
     if (tmp && tmp.openid && tmp.userInfo) {
       return tmp;
     } else {

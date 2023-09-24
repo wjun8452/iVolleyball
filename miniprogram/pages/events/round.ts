@@ -37,9 +37,10 @@ Page({
         data.matchScore = new MatchScore(3);
       }
       that.data = Object.assign(that.data, data);
-      getApp().getCurrentUser((user:VUser, success: boolean) => {
+      getApp().getCurrentUser((user: VUser, success: boolean) => {
         if (success) {
-           that.data.isOwner = (that.data.event_openid == user.openid);
+          that.data.user = user;
+          that.data.isOwner = (that.data.event_openid == user.openid);
         } else {
           wx.showToast({ title: "获取openid失败！" })
           wx.stopPullDownRefresh();
@@ -106,8 +107,10 @@ Page({
 
   onConfirm() {
     console.log("onConfirm")
-    this.getOpenerEventChannel().emit('updateSetScore', {row_edit: this.data.row_edit,
-      col_edit: this.data.col_edit, matchScore: this.data.matchScore});
+    this.getOpenerEventChannel().emit('updateSetScore', {
+      row_edit: this.data.row_edit,
+      col_edit: this.data.col_edit, matchScore: this.data.matchScore
+    });
     wx.navigateBack();
   },
 
@@ -168,7 +171,7 @@ Page({
   confirmScore() {
     this.data.matchScore.setScores[this.data.set_index_edit] = new SetScore(Number.parseInt(this.data.score_left_edit), Number.parseInt(this.data.score_right_edit));
     new MatchScoreHelper().update(this.data.matchScore);
-    
+
     this.data.score_left_edit = "";
     this.data.score_right_edit = "";
     this.data.showScoreInput = false;

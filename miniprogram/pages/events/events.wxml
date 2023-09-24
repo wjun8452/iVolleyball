@@ -11,17 +11,22 @@
 
 
   <view style="display:flex; flex-direction: column; align-items: center; margin-top: 10px; margin-bottom: 10px;">
-    <view style="display: flex; flex-direction: row; justify-content: space-around; align-items: center; width: 100%;">
-      <view wx:if="{{!user.userInfo}}" class="avartar_container" bindtap="getUserProfile">
-        <image class="avartar" src='{{user.userInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+    <view wx:if="{{tab==4}}"  style="display: flex; flex-direction: row; justify-content: space-around; align-items: center; width: 100%; margin-bottom: 5px;">
+      <view wx:if='{{user.userInfo.avatarUrl==""}}' class="avartar_container" bindtap="getUserProfile">
+        <image class="avartar" src="../../images/avartar.svg" mode="cover"></image>
+        <view style="color: #FF9900;"> 点击登录后才能创建赛事</view>
       </view>
 
-      <view wx:if="{{tab==4}}" bindtap="createEvents" style="border-radius: 10px; background-color: #FF9900; color: white; padding: 5px 10px 5px  10px;"> 快速创建 </view>
+      <view wx:if='{{user.userInfo.avatarUrl!=""}}' class="avartar_container" bindtap="getUserProfile">
+        <image class="avartar" src="{{user.userInfo.avatarUrl}}" mode="cover"></image>
+      </view>
+
+      <view bindtap="createEvents" style="border-radius: 10px; background-color: #FF9900; color: white; padding: 5px 10px 5px  10px;"> 快速创建 </view>
     </view>
 
-    <view wx:if="{{tab==4}}">显示可管理的比赛，下拉可刷新</view>
-    <view wx:if="{{tab==2}}">显示最近20场比赛，下拉可刷新</view>
-    <view wx:if="{{tab==3}}">显示已收藏的比赛，下拉可刷新</view>
+    <view wx:if="{{tab==4}}" style="color: gray;">显示可管理的赛事，下拉可刷新</view>
+    <view wx:if="{{tab==2}}" style="color: gray;">显示最近20场赛事，下拉可刷新</view>
+    <view wx:if="{{tab==3}}" style="color: gray;">显示已收藏的赛事，下拉可刷新</view>
     <view wx:if="{{tab==0}}" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 80%;">
       <view style="flex: 1">
         <input placeholder='请输入名称' bindinput="onInputName" bindconfirm="searchEvent" style="color:grey; border: solid 1px grey;"> </input>

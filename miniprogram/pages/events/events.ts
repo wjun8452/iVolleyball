@@ -86,7 +86,7 @@ Page({
   },
 
   createEvents() {
-    if (this.data.user.userInfo) {
+    if (this.data.user.userInfo.avatarUrl != "") {
       if (this.data.userEvents.length == 0) { //首次创建
         wx.navigateTo({
           url: "editevent?type=new"
@@ -99,7 +99,7 @@ Page({
     } else {
       wx.showToast({
         icon: 'error',
-        title: '点击头像登录',
+        title: '登录后才能创建',
       })
     }
    
@@ -144,7 +144,8 @@ Page({
     const that = this;
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
-        new EventRepo().fetchAllUserEvents(that._callback, this.favoriteOpenidRepo);
+        that.data.user = user;
+        new EventRepo().fetchAllUserEvents(that._callback, that.favoriteOpenidRepo);
       } else {
         wx.showToast({ title: "获取openid失败！" })
         wx.stopPullDownRefresh();
@@ -172,6 +173,7 @@ Page({
     const that = this;
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
+        that.data.user = user;
         new EventRepo().fetchUserEvents(user.openid, that._callback);
       } else {
         wx.showToast({ title: "获取openid失败！" , icon: "error" })
@@ -185,6 +187,7 @@ Page({
     const that = this;
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
+        that.data.user = user;
         new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
       } else {
         wx.showToast({ title: "获取openid失败！" , icon: "error" })
@@ -198,6 +201,7 @@ Page({
     const that = this;
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
+        that.data.user = user;
         new EventRepo().fetchUserEventsByName(that.data.keyword, that._callback, that.favoriteOpenidRepo);
       } else {
         wx.showToast({ title: "获取openid失败！" , icon: "error" })

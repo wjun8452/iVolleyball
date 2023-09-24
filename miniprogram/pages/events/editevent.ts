@@ -141,6 +141,7 @@ Page({
     wx.showLoading({ title: "正在创建..." })
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
+        that.data.user = user;
         if (that.data.type == "new") {
           new EventRepo().createUserEvents(user.openid, that.data.user, that.data.event, (success: boolean) => {
             wx.hideLoading();

@@ -1,7 +1,7 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
-		<text style="margin-left: 5px;">v2023.09.24 登录后才能创建赛事，以及其他一些优化 </text>
+		<text style="margin-left: 5px;">v2023.09.24 创建赛事需先授权头像，优化了赛事组织、历史记录、球队管理等页面 </text>
   </view>
 
   <view class="block1">

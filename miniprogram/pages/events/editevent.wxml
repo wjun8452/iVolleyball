@@ -63,7 +63,7 @@
           </view>
         </view>
         <view class='teamblock_value' style="flex: 1">
-          <button size="mini" bindtap="delete" data-index="{{index}}"> - </button>
+          <button size="mini" bindtap="deleteTeam" data-index="{{index}}"> - </button>
         </view>
       </view>
     </block>
@@ -72,6 +72,6 @@
 
   <button wx:if='{{type=="new" || type=="insert"}}' type="primary" bindtap="create"> 创建 </button>
   <button wx:if='{{type=="update"}}' type="primary" bindtap="update"> 更新 </button>
-  <button wx:if='{{type=="update"}}' type="warn" bindtap="delete" style="margin-top: 5px;"> 删除 </button>
+  <button wx:if='{{type=="update"}}' type="warn" bindtap="deleteEvent" style="margin-top: 5px;"> 删除 </button>
 
 </view>

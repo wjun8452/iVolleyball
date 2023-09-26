@@ -124,7 +124,7 @@ Page({
     this.setData(this.data)
   },
 
-  delete(e: any) {
+  deleteTeam(e: any) {
     if (this.data.event.teams.length <=2) {
       wx.showToast({"title" : "至少2个队伍", "icon":"error"})
       return;
@@ -243,7 +243,7 @@ Page({
     this.setData(this.data);
   },
 
-  delete() {
+  deleteEvent() {
     console.log("delete", this.data.event)
     new EventRepo().deleteEvent(this.data.openid, this.data.event, (success: boolean) => {
       if (success) {

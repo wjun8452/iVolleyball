@@ -1,6 +1,6 @@
 import { Event, EventHelper, EventRepo, UserEvent } from "../../bl/EventRepo"
 import { VTeam, VUser } from "../../bl/TeamRepo";
-import {getUUID} from "../../utils/Util"
+import { getUUID } from "../../utils/Util"
 
 Page({
 
@@ -111,8 +111,8 @@ Page({
   },
 
   add() {
-    if (this.data.event.teams.length >=10) {
-      wx.showToast({"title" : "最多10个队伍", "icon":"error"})
+    if (this.data.event.teams.length >= 10) {
+      wx.showToast({ "title": "最多10个队伍", "icon": "error" })
       return;
     }
     let team = new VTeam();
@@ -125,8 +125,8 @@ Page({
   },
 
   deleteTeam(e: any) {
-    if (this.data.event.teams.length <=2) {
-      wx.showToast({"title" : "至少2个队伍", "icon":"error"})
+    if (this.data.event.teams.length <= 2) {
+      wx.showToast({ "title": "至少2个队伍", "icon": "error" })
       return;
     }
     this.data.event.teams.splice(e.target.dataset.index, 1)
@@ -140,7 +140,7 @@ Page({
     console.log(this.data)
     let that = this;
     wx.showLoading({ title: "正在创建..." })
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
         if (that.data.type == "new") {
@@ -198,7 +198,7 @@ Page({
 
   onInput(e: any) {
     if (e.detail.value.length > 5) {
-      wx.showToast({"title" : "最长5个汉字!", "icon":"error"})
+      wx.showToast({ "title": "最长5个汉字!", "icon": "error" })
       return;
     }
     this.data.event.teams[e.target.dataset.index].name = e.detail.value;
@@ -225,7 +225,7 @@ Page({
     })
   },
 
-  onEditName (e) {
+  onEditName(e) {
     let name = e.detail.value
     name = name.replace(/^\s*|\s*$/g, "");
     if (name.length > 0) {
@@ -245,16 +245,26 @@ Page({
 
   deleteEvent() {
     console.log("delete", this.data.event)
-    new EventRepo().deleteEvent(this.data.openid, this.data.event, (success: boolean) => {
-      if (success) {
-        wx.showToast({
-          "title": "删除成功！"
-        })
-        wx.navigateBack();
-      } else {
-        wx.showToast({
-          "title": "删除失败!"
-        })
+    let that = this
+    wx.showModal({
+      title: '确定删除?',
+      content: '删除后资料不可恢复',
+      showCancel: true,
+      success: function (res) {
+        if (res.confirm) {
+          new EventRepo().deleteEvent(that.data.openid, that.data.event, (success: boolean) => {
+            if (success) {
+              wx.showToast({
+                "title": "删除成功！"
+              })
+              wx.navigateBack();
+            } else {
+              wx.showToast({
+                "title": "删除失败!"
+              })
+            }
+          })
+        } else if (res.cancel) { }
       }
     })
   }

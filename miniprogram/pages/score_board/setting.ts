@@ -7,6 +7,7 @@ Page({
   data: {
     titleLeft: true,
     pan: true,
+    system_font: true,
   },
 
   /**
@@ -27,6 +28,15 @@ Page({
         this.data.pan = true;
       } else {
         this.data.pan = false;
+      }
+      this.setData(this.data);
+    }
+
+    if(options && options.system_font) {
+      if (options.system_font == "true") {
+        this.data.system_font = true;
+      } else {
+        this.data.system_font = false;
       }
       this.setData(this.data);
     }
@@ -82,16 +92,24 @@ Page({
   },
 
   onRotate(e) {
-    let titleLeft = e.detail.value=="true"; 
+    let titleLeft:boolean = e.detail.value=="true"; 
     this.data.titleLeft = titleLeft;
     this.setData({titleLeft: this.data.titleLeft})
     this.getOpenerEventChannel().emit('settingUpdated', {titleLeft: this.data.titleLeft});
   },
 
   onPan(e) {
-    let pan = e.detail.value=="true"; 
+    let pan:boolean = e.detail.value=="true"; 
     this.data.pan = pan;
     this.setData({pan: this.data.pan})
     this.getOpenerEventChannel().emit('panUpdated', {pan: this.data.pan});
+  },
+
+  onFont(e) {
+    console.log(e)
+    let system_font:boolean = e.detail.value=="true"; 
+    this.data.system_font = system_font;
+    this.setData({system_font: this.data.system_font})
+    this.getOpenerEventChannel().emit('fontUpdated', {system_font: this.data.system_font});
   }
 })

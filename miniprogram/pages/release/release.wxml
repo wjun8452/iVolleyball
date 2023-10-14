@@ -1,6 +1,9 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v2023.10.14 大记分牌的字体可以设置为固定字体从而不跟随系统 </text>
+  </view>
+  <view class="block1">
 		<text style="margin-left: 5px;">v2023.09.26 解决赛事编辑页面误删赛事的问题 </text>
   </view>
   <view class="block1">

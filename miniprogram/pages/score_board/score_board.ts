@@ -15,6 +15,8 @@ class ScoreBoardPageData {
   titleLeft: boolean = false;
   /** 滑动加分 还是 点击加分 */
   pan: boolean = true;
+  /** 使用系统默认字体显示分数 */
+  system_font: boolean = true;
   /** 屏幕能显示的最多的分数个数，显示太多，会影响工具栏 */
   maxStatItem: number = 16;
   /** true：人面对屏幕，屏幕左边显示我方得分。team_name[0]是我方，冗余变量，跟team_name的顺序始终保持一致, 技术统计页面只统计我方的得分情况，记分牌要考虑两队相对左右方位，因此引入此变量  */
@@ -134,6 +136,14 @@ class ScoreBoardPage extends BasePage {
         this.data.pan = false;
       } else {
         this.data.pan = true;
+      }
+
+      value = wx.getStorageSync("scoreBoard.system_font")
+      console.log("scoreBoard.system_font", value)
+      if (value === "false") {
+        this.data.system_font = false;
+      } else {
+        this.data.system_font = true;
       }
 
       this.setData({firstTimeUse: this.data.firstTimeUse, titleLeft: this.data.titleLeft, pan: this.data.pan})
@@ -373,7 +383,7 @@ class ScoreBoardPage extends BasePage {
 
   onSetting = function (this: ScoreBoardPage) {
     wx.navigateTo({
-      url: '../score_board/setting?titleLeft='+ (this.data.titleLeft?"true":"false") + "&pan=" + (this.data.pan?"true":"false"),
+      url: '../score_board/setting?titleLeft='+ (this.data.titleLeft?"true":"false") + "&pan=" + (this.data.pan?"true":"false") + "&system_font=" + (this.data.system_font?"true":"false"),
       events: {
         settingUpdated: (result) => {
           console.log("settingUpdated", result)
@@ -384,18 +394,11 @@ class ScoreBoardPage extends BasePage {
           console.log("panUpdated", result)
           this.data.pan = result.pan;
           wx.setStorageSync("scoreBoard.pan", this.data.pan.toString()) 
-        }}
-      })
-  }
-
-  onPan = function (this: ScoreBoardPage) {
-    wx.navigateTo({
-      url: '../score_board/setting?titleLeft='+ (this.data.titleLeft?"true":"false") + "&pan=" + (this.data.pan?"true":"false") ,
-      events: {
-        settingUpdated: (result) => {
-          console.log("panUpdated", result)
-          this.data.pan = result.pan;
-          wx.setStorageSync("scoreBoard.pan", this.data.pan.toString()) 
+        },
+        fontUpdated: (result) => {
+          console.log("fontUpdated", result)
+          this.data.system_font = result.system_font;
+          wx.setStorageSync("scoreBoard.system_font", this.data.system_font.toString()) 
         }}
       })
   }

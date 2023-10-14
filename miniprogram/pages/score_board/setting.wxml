@@ -19,4 +19,14 @@
       </radio-group>
     </view>
   </view>
+
+  <view class="teamblock">
+    <view class="teamblock_title">记分牌上显示分数的字体</view>
+    <view class="teamblock_row">
+      <radio-group class="radio-group" bindchange="onFont">
+        <radio value="true" checked="{{system_font}}" /> 跟随系统
+        <radio value="false" checked="{{!system_font}}" /> 固定字体
+      </radio-group>
+    </view>
+  </view>
 </view>

@@ -60,5 +60,17 @@ Page({
     wx.previewImage({
       urls: ["cloud://ilovevolleyball-d1813b.696c-ilovevolleyball-d1813b-1253572757/mywxcode.jpg"],
     })
+  },
+
+  onComment: function() {
+    var plugin = requirePlugin("wxacommentplugin");
+    plugin.openComment({
+      success: (res)=>{
+        console.log('plugin.openComment success', res)
+      },
+      fail: (res) =>{
+        console.log('plugin.openComment fail', res)
+      }
+    })
   }
 })

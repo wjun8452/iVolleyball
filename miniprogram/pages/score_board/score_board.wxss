@@ -1,4 +1,8 @@
 /* pages/score_board/score_board.wxss */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("https://696c-ilovevolleyball-d1813b-1253572757.tcb.qcloud.la/font/OpenSans-Medium.ttf?sign=a450a7b41a7b9099d1f9644edb51963c&t=1698239485")
+}
 
 .score_history_top {
   padding: 1px;

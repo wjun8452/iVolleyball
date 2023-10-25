@@ -1,5 +1,6 @@
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
+import { VUser } from "../../bl/TeamRepo";
 import { GameStatus, VolleyCourt, PlayerStatRecord } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
@@ -163,7 +164,7 @@ class StatPage extends BasePage {
     })
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       this.data.globalData = getApp().globalData;
-      this.repo = new VolleyRepository(this.onCourtChange, user.openid, this._id, globalData.placeInfo, false, false);
+      this.repo = new VolleyRepository(this.onCourtChange, user.openid, user, this._id, globalData.placeInfo, false, false);
     });
   }
 

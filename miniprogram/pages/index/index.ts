@@ -29,6 +29,7 @@ Page({
   },
 
   onShow: function () {
+    console.log("onShow", this.data.globalData)
   },
 
   stopPageScroll: function () {

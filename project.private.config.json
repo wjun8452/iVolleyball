@@ -4,6 +4,20 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/score_board/score_board",
+          "pathName": "pages/score_board/score_board",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/myprofile/myprofile",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "db guide",
           "pathName": "pages/databaseGuide/databaseGuide",
           "query": ""
@@ -14,13 +28,6 @@
           "query": "_id=42d70ff05e80c3ee00204af22ae0d7d0&_openid=oHxEZ0TgTN5RyaQvq1UYUAy-6rXM",
           "launchMode": "default",
           "scene": 1008
-        },
-        {
-          "name": "pages/score_board/score_board",
-          "pathName": "pages/score_board/score_board",
-          "query": "_id=4745161864a0bd870001463c6d733b64",
-          "launchMode": "default",
-          "scene": null
         },
         {
           "name": "他人分享来的比赛",

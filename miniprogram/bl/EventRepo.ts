@@ -438,6 +438,29 @@ export class EventRepo {
     })
   };
 
+  updateAvatar(_openid: string, owner: VUser, callback: (success: boolean) => void) {
+    wx.cloud.callFunction({
+      name: 'vevent',
+      data: {
+        action: 'updateAvatar',
+        _openid: _openid,
+        event: owner,
+      },
+      success: (res: any) => {
+        console.log('[wx.cloud.event.update]', res)
+        if (res.result.errMsg.indexOf('ok') >= 0) {
+          callback(true)
+        } else {
+          callback(false)
+        }
+      },
+      fail: err => {
+        console.error('[wx.cloud.event.update] failed!', err)
+        callback(false)
+      }
+    })
+  };
+
   deleteEvent(_openid: string, event: Event, callback: (success: boolean) => void) {
     wx.cloud.callFunction({
       name: 'vevent',
@@ -565,6 +588,33 @@ export class EventRepo {
       fail(res) {
         console.error("db.vevent.get", where_clause)
         callback(false, null);
+      }
+    })
+  }
+
+
+  fetchOwnerAvatar(_openid: string, callback: (success: boolean, owner: VUser) => void) {
+    const db = wx.cloud.database({
+      env: CLOUD_ENV
+    })
+
+    let where_clause = {
+      _openid: _openid
+    }
+
+    db.collection("vevent").where(where_clause).field(
+      {
+        owner: true
+      }
+    ).get({
+      success(res) {
+        console.log("db.vevent.get", where_clause)
+        console.log(res)
+        callback(true, res.data[0].owner);
+      },
+      fail(res) {
+        console.error("db.vevent.get", where_clause)
+        callback(false, new VUser());
       }
     })
   }

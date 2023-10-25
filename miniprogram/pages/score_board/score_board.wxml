@@ -72,15 +72,15 @@
 
     <view style="z-index:-1; display:flex;flex-direction:row;align-items:stretch; border:0px solid; height:{{globalData.sysInfo.windowWidth-60-5}}px; line-height:{{globalData.sysInfo.windowWidth-60-5}}px" id="score_board">
       <block wx:if="{{(globalData.sysInfo.windowWidth-60-5)/1.6*4>globalData.sysInfo.windowHeight}}">
-        <!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况
+        <!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况  
         如果用户选择固定字体，则从列举的几个字体中匹配 !-->
-        <view bindtouchstart="touchStart1" bindtouchend="touchEnd1" style='flex:1; color:RED; font-weight:bold; {{system_font? "":"font-family: PingFang SC, Droid Sans, Arial,ui-monospace;"}} font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center; border:0px solid blue;padding:0; '> {{ leftMode ? court.myScore : court.yourScore }} </view>
-        <view bindtouchstart="touchStart2" bindtouchend="touchEnd2" style='flex:1;color:RED; font-weight:bold; {{system_font? "":"font-family: PingFang SC, Droid Sans, Arial,ui-monospace;"}} font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center;border:0px solid blue;padding:0;'> {{leftMode ? court.yourScore : court.myScore}} </view>
+        <view bindtouchstart="touchStart1" bindtouchend="touchEnd1" style='flex:1; color:RED; font-weight:bold; {{system_font? "" : "font-family: Open Sans;"}}; font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center; border:0px solid blue;padding:0; '> {{ leftMode ? court.myScore : court.yourScore }} </view>
+        <view bindtouchstart="touchStart2" bindtouchend="touchEnd2" style='flex:1;color:RED; font-weight:bold; {{system_font? "" : "font-family: Open Sans;"}}; font-size: {{globalData.sysInfo.windowHeight/4*1.6}}px; text-align:center;border:0px solid blue;padding:0;'> {{leftMode ? court.yourScore : court.myScore}} </view>
       </block>
       <block wx:if="{{(globalData.sysInfo.windowWidth-60-5)/1.6*4<=globalData.sysInfo.windowHeight}}">
         <!-- 如果屏幕宽度是短板，则以宽度来设置字体大小 !-->
-        <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style='flex:1; color:RED; font-weight:bold;  {{system_font? "":"font-family: PingFang SC, Droid Sans, Arial,ui-monospace;"}} font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center; border:0px solid;padding:0; '> {{ leftMode ? court.myScore : court.yourScore }} </text>
-        <text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style='flex:1;color:RED; font-weight:bold;  {{system_font? "":"font-family: PingFang SC, Droid Sans, Arial,ui-monospace;"}} font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center;border:0px solid;padding:0;'> {{leftMode ? court.yourScore : court.myScore}} </text>
+        <text bindtouchstart="touchStart1" bindtouchend="touchEnd1" style='flex:1; color:RED; font-weight:bold;  {{system_font? "":"font-family: Open Sans;"}} font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center; border:0px solid;padding:0; '> {{ leftMode ? court.myScore : court.yourScore }} </text>
+        <text bindtouchstart="touchStart2" bindtouchend="touchEnd2" style='flex:1;color:RED; font-weight:bold;  {{system_font? "":"font-family: Open Sans;"}} font-size: {{globalData.sysInfo.windowWidth-60-5}}px; text-align:center;border:0px solid;padding:0;'> {{leftMode ? court.yourScore : court.myScore}} </text>
       </block>
     </view>
 

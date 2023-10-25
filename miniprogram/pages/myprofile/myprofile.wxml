@@ -1,0 +1,13 @@
+<view style="margin-left: 10px; margin-right: 10px;">
+  <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+    <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+  </button>
+  <view class='teamblock_row'>
+    <view class="teamblock_title">昵称</view>
+    <view class="teamblock_value">
+      <input type="nickname" bindinput='onEditName' placeholder='请输入昵称' value="{{userInfo.nickName}}" />
+    </view>
+  </view>
+  <view style="color: grey; font-size: small;"> 你的修改只会影响以后的比赛记录 </view>
+  <button bind:tap="onConfirm" type="primary" style="margin-top: 10px;"> 确定 </button>
+</view>

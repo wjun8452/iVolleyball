@@ -41,11 +41,11 @@ class SettingPage extends BasePage {
   repo: VolleyRepository | null = null;
 
 
-  onDataChanged = function (this: SettingPage, court: VolleyCourt, reason: Reason, status: Status, success:boolean) {
+  onDataChanged = function (this: SettingPage, court: VolleyCourt, reason: Reason, status: Status, success: boolean) {
     console.log("[Setting] onCourtChange Begins, reason:", reason, ", status:", status, ", court id:", court._id, ", court:", court, ", success:", success)
 
     if (!success) {
-      wx.showToast({'title':'操作失败！', 'icon': 'error'})
+      wx.showToast({ 'title': '操作失败！', 'icon': 'error' })
       return;
     }
 
@@ -58,6 +58,14 @@ class SettingPage extends BasePage {
       this.data.isUmpire2 = this.data.court.stat_umpire2.openid != "" ? (this.data.globalData.openid == this.data.court.stat_umpire2.openid) : false;
     }
 
+    // if (reason == Reason.Init) {//onshow之后，从app拿到最新头像，更新到界面
+    //   if (this.data.isUmpire1) {
+    //     this.setMyselfUmpire1(this);
+    //   } else if (this.data.isUmpire2) {
+    //     this.setMyselfUmpire2(this);
+    //   }
+    // }
+    
     this.setData(this.data);
 
     if (reason == Reason.Init) {
@@ -107,7 +115,7 @@ class SettingPage extends BasePage {
       title: '加载中',
     })
 
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       wx.hideLoading();
 
       if (success) {
@@ -117,14 +125,14 @@ class SettingPage extends BasePage {
 
         this.data.globalData = getApp().globalData;
         this.data.user = user;
-        this.repo = new VolleyRepository(this.onDataChanged, user.openid, this.data._id, getApp().globalData.placeInfo, false, false);
+        this.repo = new VolleyRepository(this.onDataChanged, user.openid, user, this.data._id, getApp().globalData.placeInfo, false, false);
 
       } else {
-        wx.showToast({'title':'id错误', 'icon':'error'})
+        wx.showToast({ 'title': 'id错误', 'icon': 'error' })
       }
-    })
 
-    console.log("[onShow] data:", this.data)
+      console.log("[onShow] data:", this.data)
+    })
   }
 
 
@@ -306,7 +314,6 @@ class SettingPage extends BasePage {
 
   onCheckAllowedStatCatUmpire2 = function (this: SettingPage, e: any) {
     if (!this.data.court) return;
-
     let cat_allowed = e.detail.value;
     console.log(cat_allowed)
     if (!this._checkDuplicated(cat_allowed, this.data.court?.cat_allowed_umpire1)) {
@@ -423,7 +430,7 @@ class SettingPage extends BasePage {
       title: '正在加载',
     });
 
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       let that = this
       let teamRepo = new TeamRepo();
       teamRepo.fetchByOwner(user.openid, (errorCode: number, teams: VTeam[] | null) => {
@@ -590,8 +597,7 @@ class SettingPage extends BasePage {
 
       }
       this.repo?.updateMatch(this.data.court)
-    } else
-     {//更新云端
+    } else {//更新云端
       wx.showLoading({
         title: "正在处理"
       })
@@ -643,82 +649,53 @@ class SettingPage extends BasePage {
     })
   }
 
-  getUserProfile = function (this: SettingPage, e: any) {
-    console.log("getUserProfile", e);
-    let umpire = e.target.dataset.umpire;
-    const that = this;
-
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认
-    // 开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '用于完善统计员信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        console.log("getUserProfile success")
-        that.data.user.userInfo = res.userInfo
-        getApp().saveUserInfo(that.data.user);
-        if (that.data.isOwner) {
-          if (that.data.court) {
-            that.data.court.setChiefUmpire(that.data.user);
-            that.repo?.updateMatch(that.data.court)
-          }
-        }
-
-        //更新头像
-        if (that.data.isUmpire1) {
-          that.setMyselfUmpire1(that);
-        }
-        if (that.data.isUmpire2) {
-          that.setMyselfUmpire2(that);
-        }
-
-        //可能被设置成另一个umpire
-        if (umpire == "1" && !that.data.isUmpire1) {
-          that.setMyselfUmpire1(that);
-        } else if (umpire == "2" && !that.data.isUmpire2) {
-          that.setMyselfUmpire2(that);
-        }
-
-        that.setData(that.data)
-        getApp().saveUserInfo(that.data.user);
-      }
-    })
-  }
-
-  getUserInfo = function (this: SettingPage, e: any) {
-    // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
-    wx.showToast({
-      title:"getUserInfo"
-    })
-
-    console.log("getUserInfo", e);
-    let umpire = e.target.dataset.umpire;
-    this.data.user.userInfo = e.detail.userInfo;
-    this.data.user.userInfo = true;
-    getApp().globalData.user.userInfo = this.data.user.userInfo;
-
+  setOwnerAsChiefUmpire = function (this: SettingPage) {
     if (this.data.isOwner) {
       if (this.data.court) {
         this.data.court.setChiefUmpire(this.data.user);
         this.repo?.updateMatch(this.data.court)
       }
     }
+  }
 
-    if (this.data.isUmpire1) {
-      this.setMyselfUmpire1(this);
+  setAsUmpire = function (this: SettingPage, e: any) {
+    console.log("setAsUmpire", e);
+    let umpire = e.target.dataset.umpire;
+    const that = this
+    // if (that.data.isUmpire1) {
+    //   that.setMyselfUmpire1(that);
+    // }
+    // if (that.data.isUmpire2) {
+    //   that.setMyselfUmpire2(that);
+    // }
+
+    //可能被设置成另一个umpire
+    if (umpire == "1" && !that.data.isUmpire1) {
+      that.setMyselfUmpire1(that);
+    } else if (umpire == "2" && !that.data.isUmpire2) {
+      that.setMyselfUmpire2(that);
     }
 
-    if (this.data.isUmpire2) {
-      this.setMyselfUmpire2(this);
-    }
+    that.setData(that.data)
+  }
 
-    if (umpire == "1" || !this.data.isUmpire1) {
-      this.setMyselfUmpire1(this);
-    } else if (umpire == "2" || !this.data.isUmpire2) {
-      this.setMyselfUmpire2(this);
-    }
-
-    this.setData(this.data);
-    getApp().saveUserInfo(this.data.user);
+  gotoMyprofile = function(this: SettingPage, e: any) {
+    const that = this;
+    wx.navigateTo({
+      url : "../myprofile/myprofile",
+      events: {
+        updateAvartar: (result) => {
+          console.log("updateAvartar event received: ", result)
+          const userInfo:VUser = result;
+          that.data.court?.updateOwnerAvartar(userInfo);
+          that.repo?.updateMatch(that.data.court);
+        },
+        success: function (res) {
+        },
+        fail: function(res) {
+        }
+      }
+    })
   }
 }
 

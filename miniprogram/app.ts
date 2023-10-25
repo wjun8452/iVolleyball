@@ -22,6 +22,10 @@ App({
 
   getCurrentUser: function (callback: (user: VUser, success: boolean) => void) {
     if (globalData.user.openid) {
+      const cachedUser:VUser = this._loadUser();
+      if (cachedUser.openid == globalData.user.openid) {
+        globalData.user.userInfo = cachedUser.userInfo;
+      }
       console.log('getCurrentUser second time, ', globalData.user)
       callback(globalData.user, true)
     }
@@ -34,8 +38,8 @@ App({
           if (res.result) {
             globalData.openid = (res.result as LoginInfo).openid;
             globalData.user.openid = globalData.openid;
-            const userInCache = this._loadUserInfo();
-            if (userInCache.openid == globalData.openid && userInCache.userInfo.avatarUrl != "") {
+            const userInCache = this._loadUser();
+            if (userInCache.openid == globalData.openid) {
               globalData.user.userInfo = userInCache.userInfo;
             }
             console.log('getCurrentUser first time, ', globalData.user)
@@ -82,7 +86,7 @@ App({
         traceUser: true
       })
 
-      this._fetchOpenId(globalData)
+      //this._fetchOpenId(globalData)
 
       // this.initLocation(globalData)
 
@@ -107,7 +111,14 @@ App({
     console.log("save user:", user);
   },
 
-  _loadUserInfo() : VUser {
+  saveAvatarUrlAndNickName (avatarUrl:string, nickName: string) {
+    globalData.user.userInfo.nickName = nickName;
+    globalData.user.userInfo.avatarUrl = avatarUrl;
+    wx.setStorageSync("user", globalData.user) 
+    console.log("save user:", globalData.user);
+  },
+  
+  _loadUser() : VUser {
     let tmp = wx.getStorageSync("user")
     console.log("load user:", tmp);
     if (tmp && tmp.openid && tmp.userInfo) {

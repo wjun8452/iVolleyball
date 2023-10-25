@@ -117,7 +117,7 @@ export class VolleyCourt {
   cat_allowed_umpire2: StatCat[] = [];
   /** 得分失分的历史 */
   stat_items: StatItem[] = [];
-  /** 主裁判 */
+  /** 主裁判，即Owner */
   chief_umpire:  VUser = {openid:"", userInfo: {avatarUrl: "",city: "", country: "",gender: 0,  language: 'zh_CN',nickName: "", province: ""
   }};
   /** 技术统计的裁判员，裁判员1或2，和owner可以是同一个人 */
@@ -145,7 +145,7 @@ export class VolleyCourt {
   myTeam: string = "我方";
   /** 对方队伍名称 */
   yourTeam: string = "对方";
-  /** 创建比赛的用户openid */
+  /** 创建比赛的用户openid，必须和主裁判的id一致 */
   _openid: string | null = null; //owner's open id
   /** 比赛在数据库中的存储id */
   _id: string | null = null; //match's id
@@ -167,18 +167,24 @@ export class VolleyCourt {
   myteamId: string = ""; //我方的teamId
   yourteamId: string = ""; //对方的teamId
 
-  /** mode: 硬排还是气排 */
-  constructor(userID: string, mode?: number, placeInfo?: PlaceInfo, chief_umpire?:VUser) {
+  /** mode: 硬排还是气排，默认硬排 */
+  /*** 
+   * userID: owner的openid
+   * userInfo: 比赛owner的头像信息
+  */
+  constructor(userID: string, userInfo?:VUser, mode?: number, placeInfo?: PlaceInfo) {
     this._openid = userID
 
-    if (chief_umpire) {
-      this.chief_umpire = chief_umpire;
-    } else {
-      this.chief_umpire.openid = userID;
+    if (userInfo) {
+      if (userInfo.openid != userID) {
+        console.error("ID not match!!!")
+      } else {
+        this.chief_umpire = userInfo;
+      }
     }
 
-    if (this.stat_umpire1) {
-      this.stat_umpire1.openid = userID;
+    if (this.stat_umpire1.openid == "") {
+      this.stat_umpire1 = this.chief_umpire;
     }
     
     if (mode) {
@@ -1214,7 +1220,17 @@ export class VolleyCourt {
     }
   }
 
-  setChiefUmpire(user:VUser) {
-    this.chief_umpire = user;
+  updateOwnerAvartar(user:VUser) {
+    if (this.chief_umpire.openid == user.openid) {
+      this.chief_umpire = user;
+    }
+
+    if (this.stat_umpire1.openid == user.openid) {
+      this.stat_umpire1 = user;
+    }
+
+    if (this.stat_umpire2.openid == user.openid) {
+      this.stat_umpire2 = user;
+    }
   }
 }

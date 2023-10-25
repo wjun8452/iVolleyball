@@ -1,18 +1,12 @@
 <view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column; overflow: hidden;">
 
-  <view class='container' style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+  <view class='container' style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;" bind:tap="gotoMyprofile">
     <view class='first_item' style="font-size: 20px; text-align: left; "> 我的信息 </view>
     <view style="display: flex; flex-direction: row; justify-content: space-between;">
-      <view class="avartar_container" bindtap="getUserProfile">
+      <view class="avartar_container">
         <image class="avartar" src='{{user.userInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
         <text class="nickName">{{user.userInfo.nickName}}</text>
       </view>
-      <block wx:if="{{!user.userInfo}}">
-        <view>
-          <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" size="mini"> 登录（获取头像昵称） </button>
-          <button wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini"> 登录（获取头像昵称） </button>
-        </view>
-      </block>
     </view>
   </view>
 

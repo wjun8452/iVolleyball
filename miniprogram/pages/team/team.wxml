@@ -1,20 +1,4 @@
 <view class="color3" style="display: flex; flex-direction: column;">
-  <view class="teamblock">
-    <view class='teamblock_row'>
-      <view> 我的信息: </view>
-      <view class="avartar_container" bindtap="getUserProfile">
-        <image class="avartar" src='{{user.userInfo? user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
-        <text class="nickName">{{user.userInfo.nickName}}</text>
-      </view>
-      <block wx:if="{{!user.userInfo}}">
-        <view>
-          <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" size="mini"> 登录（获取头像昵称） </button>
-          <button wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini"> 登录（获取头像昵称） </button>
-        </view>
-      </block>
-    </view>
-  </view>
-
   <view wx:if="{{team}}" class="teamblock">
     <view class="teamblock_row">
       <view> 球队名称: </view>

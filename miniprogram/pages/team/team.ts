@@ -183,42 +183,6 @@ class UsersPage extends BasePage {
     }
   }
 
-  getUserProfile = function (this: UsersPage, e: any) {
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认
-    // 开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '用于完善球队的信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        console.log("getUserProfile success")
-        this.data.user.userInfo = res.userInfo
-        getApp().saveUserInfo(this.data.user);
-        if (this.data.team && this.data.isMyTeam) {
-          this.data.team.owner.userInfo = this.data.user.userInfo;
-          const that = this;
-          new TeamRepo().updateTeam(this.data.team, (success: boolean) => {
-            if (success) {
-              that.setData({ team: that.data.team })
-            } else {
-              wx.showToast({
-                icon: 'error',
-                title: '操作失败！'
-              })
-            }
-          })
-        }
-        this.setData(this.data)
-      }
-    })
-  }
-
-  getUserInfo = function (this: UsersPage, e: any) {
-    // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
-    console.log("getUserInfo clicked")
-    this.data.user.userInfo = e.detail.userInfo;
-    this.setData(this.data);
-    getApp().saveUserInfo(this.data.user);
-  }
-
   onEditTeamName = function (this: UsersPage, e: any) {
     let teamName = e.detail.value
     teamName = teamName.replace(/^\s*|\s*$/g, "");

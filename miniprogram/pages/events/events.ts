@@ -44,7 +44,47 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.loadByTab();
+    const that = this;
+    wx.showLoading({
+      'title': '正在加载'
+    })
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
+      if (success) {
+        that.data.user = user;
+        if (user.userInfo.avatarUrl != "" && user.userInfo.nickName != "") {
+          //如果Event的Owner更新了Profile，就更新Event数据库
+          new EventRepo().fetchOwnerAvatar(user.openid, (success: boolean, owner: VUser) => {
+            if (success) {
+              if (owner.userInfo.avatarUrl != user.userInfo.avatarUrl || owner.userInfo.nickName != user.userInfo.nickName) {
+                new EventRepo().updateAvatar(user.openid, user, (success: boolean) => {
+                  if (success) {
+                    wx.hideLoading();
+                    that.loadByTab();
+                  }
+                  else {
+                    wx.hideLoading();
+                    that.loadByTab();
+                  }
+                })
+              } else {
+                wx.hideLoading();
+                that.loadByTab();
+              }
+            } else {
+              wx.hideLoading();
+              that.loadByTab();
+            }
+          })
+        } else {
+          wx.hideLoading();
+          that.loadByTab();
+        }
+
+      } else {
+        wx.hideLoading();
+        that.loadByTab();
+      }
+    })
   },
 
   /**
@@ -93,16 +133,24 @@ Page({
         })
       } else {
         wx.navigateTo({ //数组尾部添加一个新的
-          url: "editevent?type=insert&base_id="+ (this.data.userEvents[0].base_id+1),
+          url: "editevent?type=insert&base_id=" + (this.data.userEvents[0].base_id + 1),
         })
-      } 
+      }
     } else {
       wx.showToast({
         icon: 'error',
-        title: '登录后才能创建',
+        title: '完善资料后才能创建',
+        duration: 2000,
+        complete: function () {
+          //不延时的话，Toast很快就消失了
+          setTimeout ( function () {
+            wx.navigateTo({
+              url: "../myprofile/myprofile"
+            })
+          }, 1500)
+        }
       })
     }
-   
   },
 
   viewEvent(e) {
@@ -118,7 +166,7 @@ Page({
     const openid = e.currentTarget.dataset.openid;
     wx.navigateTo({
       url: "editevent?type=update&base_id=" + base_id + "&openid=" + openid,
-    }) 
+    })
   },
 
   onClickTab(e) {
@@ -142,7 +190,7 @@ Page({
   loadEventsTab2() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
         new EventRepo().fetchAllUserEvents(that._callback, that.favoriteOpenidRepo);
@@ -159,7 +207,7 @@ Page({
       this.data.userEvents = userEvents;
       this.setData(this.data);
       if (this.data.userEvents.length == 0) {
-        wx.showToast({'title':'没有结果', 'icon':'none'})
+        wx.showToast({ 'title': '没有结果', 'icon': 'none' })
       }
     } else {
       wx.showToast({ title: "加载失败！", icon: "error" })
@@ -171,12 +219,12 @@ Page({
   loadEventsTab4() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
         new EventRepo().fetchUserEvents(user.openid, that._callback);
       } else {
-        wx.showToast({ title: "获取openid失败！" , icon: "error" })
+        wx.showToast({ title: "获取openid失败！", icon: "error" })
         wx.stopPullDownRefresh();
       }
     });
@@ -185,12 +233,12 @@ Page({
   loadEventsTab3() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
         new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
       } else {
-        wx.showToast({ title: "获取openid失败！" , icon: "error" })
+        wx.showToast({ title: "获取openid失败！", icon: "error" })
         wx.stopPullDownRefresh();
       }
     });
@@ -199,12 +247,12 @@ Page({
   loadEventsTab0() {
     wx.showLoading({ "title": "正在加载..." })
     const that = this;
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
         new EventRepo().fetchUserEventsByName(that.data.keyword, that._callback, that.favoriteOpenidRepo);
       } else {
-        wx.showToast({ title: "获取openid失败！" , icon: "error" })
+        wx.showToast({ title: "获取openid失败！", icon: "error" })
         wx.stopPullDownRefresh();
       }
     });
@@ -228,29 +276,6 @@ Page({
     }
   },
 
-  getUserProfile(e: any) {
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认
-    // 开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    let that = this;
-    wx.getUserProfile({
-      desc: '用于完善球队的信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        console.log("getUserProfile success")
-        that.data.user.userInfo = res.userInfo
-        that.setData(that.data)
-        getApp().saveUserInfo(that.data.user);
-      }
-    })
-  },
-
-  getUserInfo(e: any) {
-    // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
-    console.log("getUserInfo clicked")
-    this.data.user.userInfo = e.detail.userInfo;
-    this.setData(this.data);
-    getApp().saveUserInfo(this.data.user);
-  },
-
   showInitData() {
     this.data.viewAll = false; //collapsed
     this.data.userEvents = [];
@@ -264,7 +289,7 @@ Page({
 
   searchEvent(e) {
     if (this.data.keyword == "") {
-      wx.showToast({'title':'名称不能为空', 'icon':'error'})
+      wx.showToast({ 'title': '名称不能为空', 'icon': 'error' })
       return;
     }
     this.loadEventsTab0();

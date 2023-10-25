@@ -46,24 +46,23 @@ Page({
     }
   },
 
-  getUserProfile() {
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认
-    // 开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '用于完善球队的信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        this.data.user.userInfo = res.userInfo
-        this.setData(this.data)
-        getApp().saveUserInfo(this.data.user);
+  gotoMyprofile (e:any) {
+    const that = this;
+    wx.navigateTo({
+      url : "../myprofile/myprofile",
+      events: {
+        updateAvartar: (result) => {
+          console.log("updateAvartar event received: ", result)
+          const userInfo:VUser = result;
+          that.data.user = userInfo;
+          that.setData(that.data)
+        },
+        success: function (res) {
+        },
+        fail: function(res) {
+        }
       }
     })
-  },
-
-  getUserInfo(e: any) {
-    // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
-    this.data.user.userInfo = e.detail.userInfo
-    this.setData(this.data)
-    getApp().saveUserInfo(this.data.user);
   },
 
   onDeleteTeam(e: any) {

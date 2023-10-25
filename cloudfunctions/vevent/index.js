@@ -14,7 +14,7 @@ exports.main = async (event, context) => {
   console.log("cloud function vevent: ", event)
   let action = event.action;
   let _openid = event._openid;
-  let event_data = event.event;
+  let event_data = event.event; //如果action是updateAvatar，则event是VUser对象
   // let _id = event._id;
 
   if (!_openid) {
@@ -106,6 +106,25 @@ exports.main = async (event, context) => {
         }
       );
       console.log("remove one of multi-events:", result)
+      return result;
+    } catch (e) {
+      console.error(e)
+    }
+  } else if (action == 'updateAvatar') {
+    try {
+      const _ = db.command
+      let result = await db.collection('vevent').where({
+        '_openid': _openid
+      })
+        .update(
+          {
+            data: {
+              'owner': event_data,
+              'update_time': db.serverDate(),
+            }
+          }
+        );
+      console.log(result)
       return result;
     } catch (e) {
       console.error(e)

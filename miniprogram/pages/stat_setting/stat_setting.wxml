@@ -393,8 +393,7 @@
           <text class="nickName">{{court.chief_umpire.userInfo.nickName}}</text>
         </view>
         <view wx:if='{{court.chief_umpire.userInfo.avatarUrl =="" && isOwner && !inviteAsUmpire1 && !inviteAsUmpire2}}'>
-          <button disabled="{{court.status==0}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" size="mini" data-umpire="0"> 获取头像昵称 </button>
-          <button disabled="{{court.status==0}}" wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini" data-umpire="0"> 获取头像昵称 </button>
+          <button disabled="{{court.status==0}}" bindtap="gotoMyprofile" size="mini" data-umpire="0"> 获取头像昵称 </button>
         </view>
       </view>
     </view>
@@ -411,8 +410,7 @@
           <text class="nickName">{{court.stat_umpire1.userInfo.nickName}}</text>
         </view>
         <view wx:if='{{isUmpire1 && court.stat_umpire1.userInfo.avatarUrl==""}}'>
-          <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="1" size="mini"> 获取头像昵称 </button>
-          <button wx:else open-type="getUserInfo" data-umpire="1" bindgetuserinfo="getUserInfo" size="mini"> 获取头像昵称 </button>
+          <button bindtap="gotoMyprofile" data-umpire="1" size="mini"> 获取头像昵称 </button>
         </view>
       </view>
     </view>
@@ -426,8 +424,7 @@
         <button disabled="{{court.status==0 || isUmpire1}}" bindtap="setMyselfUmpire1" size="mini"> 成为统计员 </button>
       </view>
       <view wx:else>
-        <button disabled="{{court.status==0 || isUmpire1}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="1" size="mini"> 成为统计员 </button>
-        <button disabled="{{court.status==0 || isUmpire1}}" wx:else open-type="getUserInfo" data-umpire="1" bindgetuserinfo="getUserInfo" size="mini"> 成为统计员 </button>
+        <button disabled="{{court.status==0 || isUmpire1}}" bindtap="setAsUmpire" data-umpire="1" size="mini"> 成为统计员 </button>
       </view>
       <view>
         <button disabled='{{court.stat_umpire1.openid=="" || court.status==0}}' size="mini" bindtap="clearUmpire1">删除统计员</button>
@@ -456,8 +453,7 @@
           <text class="nickName">{{court.stat_umpire2.userInfo.nickName}}</text>
         </view>
         <view wx:if='{{isUmpire2 && court.stat_umpire2.userInfo.avatarUrl==""}}'>
-          <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="2" size="mini"> 获取头像昵称 </button>
-          <button wx:else open-type="getUserInfo" data-umpire="2" bindgetuserinfo="getUserInfo" size="mini"> 获取头像昵称 </button>
+          <button bindtap="gotoMyprofile" data-umpire="2" size="mini"> 获取头像昵称 </button>
         </view>
       </view>
     </view>
@@ -469,8 +465,7 @@
         <button disabled="{{court.status==0 || isUmpire2}}" bindtap="setMyselfUmpire2" size="mini"> 成为统计员 </button>
       </view>
       <view wx:else>
-        <button disabled="{{court.status==0 || isUmpire2}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="2" size="mini"> 成为统计员 </button>
-        <button disabled="{{court.status==0 || isUmpire2}}" wx:else open-type="getUserInfo" data-umpire="2" bindgetuserinfo="getUserInfo" size="mini"> 成为统计员 </button>
+        <button disabled="{{court.status==0 || isUmpire2}}" bindtap="setAsUmpire" data-umpire="2" size="mini"> 成为统计员 </button>
       </view>
       <view>
         <button disabled='{{court.stat_umpire2.openid=="" || court.status==0}}' size="mini" bindtap="clearUmpire2">删除统计员</button>
@@ -493,14 +488,14 @@
   <view wx:if="{{inviteAsUmpire1 || inviteAsUmpire2}}" class="teamblock">
     <view class="teamblock_row">
       <view wx:if="{{!user.userInfo && inviteAsUmpire1}}">
-        <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="1"> 成为统计员 </button>
+        <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="setAsUmpire" data-umpire="1"> 成为统计员 </button>
         <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" data-umpire="1" bindgetuserinfo="getUserInfo"> 成为统计员 </button>
       </view>
       <view wx:if="{{user.userInfo && inviteAsUmpire1}}">
         <button disabled="{{court.status==0}}" bindtap="setMyselfUmpire1">成为统计员</button>
       </view>
       <view wx:if="{{!user.userInfo && inviteAsUmpire2}}">
-        <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile" data-umpire="2"> 成为统计员 </button>
+        <button disabled="{{court.status==0 && isOwner}}" wx:if="{{canIUseGetUserProfile}}" bindtap="setAsUmpire" data-umpire="2"> 成为统计员 </button>
         <button disabled="{{court.status==0 && isOwner}}" wx:else open-type="getUserInfo" data-umpire="2" bindgetuserinfo="getUserInfo"> 成为统计员 </button>
       </view>
       <view wx:if="{{user.userInfo && inviteAsUmpire2}}">

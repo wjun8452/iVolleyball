@@ -1,6 +1,6 @@
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
-import { VPlayer } from "../../bl/TeamRepo";
+import { VPlayer, VUser } from "../../bl/TeamRepo";
 import { StatItem, StatName, VolleyCourt } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
@@ -57,7 +57,11 @@ class ReportPage extends BasePage {
 
     this.data.globalData = getApp().globalData;
 
-    this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData?.openid!, this.data.matchID, this.data.globalData!.placeInfo, false, false);
+    const user = new VUser();
+    if (this.data.globalData?.user.openid) {
+      user.openid = this.data.globalData?.user.openid;
+    }
+    this.repo = new VolleyRepository(this.onCourtChange, this.data.globalData?.openid!, user, this.data.matchID, this.data.globalData!.placeInfo, false, false);
 
     //页面加载量小，广告收益又低，暂时屏蔽该广告
     // 在页面onLoad回调事件中创建激励视频广告实例

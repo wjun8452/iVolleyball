@@ -159,7 +159,7 @@ class ScoreBoardPage extends BasePage {
     getApp().getCurrentUser((user:VUser, success: boolean) => {
       if (success) {
         this.data.globalData = getApp().globalData;
-        this.repo = new VolleyRepository(this.onCourtChange, user.openid, this.option_matchID, this.data.globalData.placeInfo, this.option_createNew, false)
+        this.repo = new VolleyRepository(this.onCourtChange, user.openid, user, this.option_matchID, this.data.globalData.placeInfo, this.option_createNew, false)
         this.option_createNew = false;
       } else {
         wx.hideLoading()

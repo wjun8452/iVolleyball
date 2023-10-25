@@ -31,13 +31,14 @@ export interface CourtDataChanged {
 export class VolleyRepository {
   private callback: CourtDataChanged;
   private matchID: string | null = null;
-  private userID: string;
+  private userID: string; //当前用户的 openid
   private watcher: any = null;
   private cacheKey: string = "stats17";
   private env: string = 'ilovevolleyball-d1813b'; //,test-705bde
   private placeInfo: PlaceInfo | null = null;
   private useWatcher: boolean = false;
   private timmerID: number = -1;
+  private userInfo : VUser = new VUser; // 当前用户的完整信息
 
   /**
    * 除非用户指定比赛的ID，为了自动还原用户上次保存的对象，本类将首先从本地缓存中重构对象，如果发现缓存中的对象来自云端，则会从云端更新该对象
@@ -47,10 +48,18 @@ export class VolleyRepository {
    * @param createNew 是否强制创建一个新的本地比赛，发生场景：在历史页面用户点击"new"按钮
    * @param useWatcher 是否使用腾讯云数据库的watcher技术，useWatcher==false时，使用拉取的方式获取最新数据
    */
-  constructor(callback: CourtDataChanged, userID: string, matchID?: string | null, placeInfo?: PlaceInfo, createNew?: boolean, useWatcher?: boolean) {
-    console.log("constructor", userID, matchID, placeInfo, createNew)
+  constructor(callback: CourtDataChanged, userID: string, userInfo?: VUser, matchID?: string | null, placeInfo?: PlaceInfo, createNew?: boolean, useWatcher?: boolean) {
+    console.log("new VolleyRepo", userID, userInfo, matchID, placeInfo, createNew, useWatcher)
     this.callback = callback;
     this.userID = userID;
+
+    if (userInfo) {
+      if (userID != userInfo?.openid) {
+        console.error("ID not match", userID, userInfo?.openid) 
+      } else {
+        this.userInfo = userInfo;
+      }
+    }
 
     if (matchID) {
       this.matchID = matchID;
@@ -85,7 +94,7 @@ export class VolleyRepository {
           success: function (res) {
             console.log(res)
             if (res.data) {
-              let court: VolleyCourt = that.newCourtFromCloud(that.matchID, res.data);
+              let court: VolleyCourt = that.newCourtFromCloud(res.data);
               if (that.userID != court._openid) {
                 let repo = new FriendsCourtRepo();
                 repo.saveCourt(court);
@@ -160,9 +169,17 @@ export class VolleyRepository {
     }
   }
 
-  private newCourtFromCloud(userID: string, data: Object): VolleyCourt {
-    let court: VolleyCourt = new VolleyCourt(userID);
+  private newCourtFromCloud(data: Object): VolleyCourt {
+    let court: VolleyCourt = new VolleyCourt(this.userID, this.userInfo);
+
+    //cloud对象覆盖本地
     Object.assign(court, data);
+
+    //todo: 是否需要根据当前用户授权的情况，更新cloud数据呢？譬如头像和昵称
+    // if (court._openid == this.userID) {
+    //   court.updateOwnerAvartar(this.userInfo);
+    // }
+
     court.updateAvailableItems()
 
     let t = data.create_time
@@ -201,7 +218,7 @@ export class VolleyRepository {
           console.log('[db.vmatch.onChange]', that.matchID, snapshot.type, snapshot)
           let data = snapshot.docs[0]
           if (data) {
-            let court: VolleyCourt = that.newCourtFromCloud(that.userID, data);
+            let court: VolleyCourt = that.newCourtFromCloud(data);
 
             if (that.userID != court._openid) {
               let repo = new FriendsCourtRepo();
@@ -231,8 +248,9 @@ export class VolleyRepository {
   }
 
   private loadFromLocal(): VolleyCourt {
-    let court = new VolleyCourt(this.userID);
+    let court = new VolleyCourt(this.userID, this.userInfo);
     let saved = wx.getStorageSync(this.cacheKey);
+    //缓存对象覆盖
     Object.assign(court, saved);
     return court;
   }
@@ -455,7 +473,7 @@ export class VolleyRepository {
 
   private newLocalCourt(): VolleyCourt {
     let mode = this.getUserPreferenceCourtMode();
-    let court = this.placeInfo ? new VolleyCourt(this.userID, mode, this.placeInfo) : new VolleyCourt(this.userID, mode);
+    let court = this.placeInfo ? new VolleyCourt(this.userID,this.userInfo, mode, this.placeInfo) : new VolleyCourt(this.userID, this.userInfo, mode);
     return court;
   }
 
@@ -653,6 +671,8 @@ export class JointVolleyRepository {
 
   fetchMatches(openid: string, maxcount: number, callback: (matches: VolleyCourt[], success: boolean) => void) {
 
+    const that = this;
+
     const db = wx.cloud.database({
       env: this.env
     })
@@ -699,6 +719,7 @@ export class JointVolleyRepository {
             } else {
               res.data[i].update_time = res.data[i].create_time;
             }
+            //todo: 当前用户avatar可能比历史存储的更新，是否要用用户最新的头像更新？
             matches.push(res.data[i])
           }
           callback(matches, true)

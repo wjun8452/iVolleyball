@@ -16,7 +16,8 @@
     "pages/events/editevent",
     "pages/events/board",
     "pages/events/round",
-    "pages/score_board/setting"
+    "pages/score_board/setting",
+    "pages/myprofile/myprofile"
   ],
   "window": {
     "backgroundTextStyle": "light",

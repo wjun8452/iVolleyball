@@ -38,7 +38,7 @@
 		</navigator>
 
 		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version">v2023.10.25</view>
+			<view class="navigator_version">v2023.10.26</view>
 		</navigator>
 </view>
 

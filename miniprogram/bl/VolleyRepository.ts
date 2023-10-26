@@ -157,7 +157,11 @@ export class VolleyRepository {
         if (court._openid === this.userID && court.status == GameStatus.OnGoing) {
           if (court._id) { //打开一个网络比赛
             this.matchID = court._id;
-            this.watchOnlineMatch(false, false);
+            if (this.useWatcher) {
+              this.watchOnlineMatch(false, false);
+            } else {
+              this.fetchOnlineMatch(true, false, false, false, 0);
+            }
           }
           else { //不是网络比赛，那么就继续在本地操作
             this.watchLocalMatch(court);
@@ -519,7 +523,11 @@ export class VolleyRepository {
         court._openid = that.userID;
         //同时要存储到本
         wx.setStorageSync(that.cacheKey, court);
-        that.watchOnlineMatch(true, endMatch);
+        if (that.useWatcher) {
+          that.watchOnlineMatch(true, endMatch)
+        } else {
+          that.fetchOnlineMatch(true, true, endMatch, false, 0);
+        }
       },
       fail: function (res) {
         console.error("[db.vmatch.create]", res);

@@ -1,52 +1,53 @@
 <!--index.wxml-->
 
-<view style="box-sizing:border-box; height:{{globalData.sysInfo.windowHeight}}px; width: {{globalData.sysInfo.windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; "  class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
+<view style="box-sizing:border-box; height:{{globalData.sysInfo.windowHeight}}px; width: {{globalData.sysInfo.windowWidth}}px; display:flex; flex-direction:column; justify-content:space-between; align-items: center; " class="color3 iconfont iconmedium" catchtouchmove='stopPageScroll'>
 
-	<view style="display:flex; flex-direction:column; align-items: center; margin-top: 25px; margin-bottom:25px; border:0px solid red;">
-		<image style="width:64px; height:64px;" src="../../images/volleyball.png" background-size="cover"></image>
-	</view>
+  <!-- <view style="display:flex; flex-direction:column; align-items: center; margin-top: 25px; margin-bottom:25px; border:0px solid red;"> -->
+  <!-- <image style="width:64px; height:64px;" src="../../images/volleyball.png" background-size="cover"></image> -->
+  <canvas style="width: {{globalData.sysInfo.windowWidth}}px; height: {{globalData.sysInfo.windowHeight/5}}px;" type="2d" id="myCanvas"></canvas>
+  <!-- </view> -->
 
-	<view style="width:100%; height:40%; display:flex; flex-direction:column; justify-content: space-around;">
-		<navigator class="navigator_container" url='../score_board/score_board'>
-			<image class="navigator_image_big" src="../../images/board.svg"></image>
-				<view class="navigator_text"> 比赛记分 </view>
-		</navigator>
+  <view style="width:100%; height:40%; display:flex; flex-direction:column; justify-content: space-around;">
+    <navigator class="navigator_container" url='../score_board/score_board'>
+      <image class="navigator_image_big" src="../../images/board.svg"></image>
+      <view class="navigator_text"> 比赛记分 </view>
+    </navigator>
 
-		<navigator class="navigator_container" url="../history/history">
-			<image class="navigator_image" src="../../images/history.svg"></image>
-			<view class="navigator_text">历史记录 </view>
-		</navigator>
+    <navigator class="navigator_container" url="../history/history">
+      <image class="navigator_image" src="../../images/history.svg"></image>
+      <view class="navigator_text">历史记录 </view>
+    </navigator>
 
-		<navigator class="navigator_container" url="../teams/teams"> 
-			<image class="navigator_image" src="../../images/team.svg"></image>
-			<view class="navigator_text">球队管理 </view>
-		</navigator>
+    <navigator class="navigator_container" url="../teams/teams">
+      <image class="navigator_image" src="../../images/team.svg"></image>
+      <view class="navigator_text">球队管理 </view>
+    </navigator>
 
-    <navigator class="navigator_container" url="../events/events"> 
-			<image class="navigator_image" src="../../images/event.svg"></image>
-			<view class="navigator_text">赛事组织 </view>
-		</navigator>
+    <navigator class="navigator_container" url="../events/events">
+      <image class="navigator_image" src="../../images/event.svg"></image>
+      <view class="navigator_text">赛事组织 </view>
+    </navigator>
 
-    <navigator class="navigator_container" url="../news/news"> 
-			<image class="navigator_image" src="../../images/news.svg"></image>
-			<view class="navigator_text"> 排球新闻 </view>
-		</navigator>
+    <navigator class="navigator_container" url="../news/news">
+      <image class="navigator_image" src="../../images/news.svg"></image>
+      <view class="navigator_text"> 排球新闻 </view>
+    </navigator>
 
-		<navigator class="navigator_container" url="../help/help"> 
-			<image class="navigator_image" src="../../images/help.svg"></image>
-			<view class="navigator_text">使用帮助 </view>
-		</navigator>
+    <navigator class="navigator_container" url="../help/help">
+      <image class="navigator_image" src="../../images/help.svg"></image>
+      <view class="navigator_text">使用帮助 </view>
+    </navigator>
 
-		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version">v2023.10.26</view>
-		</navigator>
-</view>
+    <navigator class="navigator_container" url="../release/release">
+      <view class="navigator_version">v2023.10.26</view>
+    </navigator>
+  </view>
 
-	<view style="font-style:italic; font-size:small; margin-bottom: 5px" class="color1">
-		<text style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ">{{iciba}}</text>
-	</view>
+  <view style="font-style:italic; font-size:small; margin-bottom: 5px" class="color1">
+    <text style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ">{{iciba}}</text>
+  </view>
 
-	<view style="width:100%;">
-		<ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>
-	</view>
+  <view style="width:100%;">
+    <ad unit-id="adunit-4a2ed0e0c1f0ae60"></ad>
+  </view>
 </view>

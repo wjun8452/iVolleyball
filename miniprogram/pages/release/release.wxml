@@ -1,7 +1,7 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
-		<text style="margin-left: 5px;">v2024.5.18 球队管理中可通过微信分享球队并收藏，比赛记分和赛事组织中可导入收藏的队伍 </text>
+		<text style="margin-left: 5px;">v2024.5.18 球队管理中可通过微信分享球队并收藏，比赛记分和赛事组织中可导入收藏的队伍 </text>
   </view>
   <view class="block1">
 		<text style="margin-left: 5px;">v2023.10.26 大记分牌的字体可以设置为固定字体从而不跟随系统, 增加用户评价功能，解决不显示微信头像和昵称的问题 </text>

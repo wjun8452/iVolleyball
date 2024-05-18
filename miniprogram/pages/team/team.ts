@@ -1,4 +1,5 @@
 import { BasePage } from "../../bl/BasePage"
+import { FavoriteTeamIdRepo } from "../../bl/FavoriteTeamIdRepo";
 import { TeamRepo, VPlayer, VTeam, VUser } from "../../bl/TeamRepo"
 
 class UsersPageData {
@@ -8,7 +9,9 @@ class UsersPageData {
   isMyTeam: boolean = true; //当前打开的是否为自己的队伍
   loading: boolean = true;
   canJoin: boolean = false;
+  isTeamMember: boolean = false; //当前打开的team是不是我加入过了
   temp: string = "";
+  isFavorite: boolean = false; //是否添加为收藏
 }
 
 
@@ -59,14 +62,18 @@ class UsersPage extends BasePage {
     }
   }
 
-  updateIsMyTeam = function (this: UsersPage) {
+  updateUIdata = function (this: UsersPage) {
     if (this.data.team) {
       console.log("current user:", this.data.user.openid, ", team owner:", this.data.team.owner.openid)
       this.data.isMyTeam = (this.data.user.openid == this.data.team.owner.openid);
       if (this.data.isMyTeam) {
         this.data.canJoin = true;
       }
-      this.setData({ isMyTeam: this.data.isMyTeam, canJoin: this.data.canJoin });
+
+      //判断收藏状态
+      this.data.isFavorite = new FavoriteTeamIdRepo().isFavorite(this.data.team._id);
+
+      this.setData({ isMyTeam: this.data.isMyTeam, canJoin: this.data.canJoin, isFavorite: this.data.isFavorite });
     }
   }
 
@@ -82,7 +89,7 @@ class UsersPage extends BasePage {
       wx.hideLoading();
       if (team != null) {
         that.data.team = team;
-        that.updateIsMyTeam();
+        that.updateUIdata();
         that.setData({ team: team })
       }
     })
@@ -161,23 +168,44 @@ class UsersPage extends BasePage {
     }
   }
 
-  onShareAppMessage = function (this: UsersPage) {
+  onShareAppMessage = function (this: UsersPage, e:any) {
+    console.log(e);
+    let type = 1; //share
+    if (e.target.dataset.msg == "invite") {
+      type = 0; 
+    } else {
+      type = 1;
+    }
+
     if (this.data.team && this.data.team._id && this.data.isMyTeam) {
-      return this.gotoInvitePage(this.data.team);
+      return this.gotoInvitePage(this.data.team, type);
     } else {
       return {};
     }
   }
 
-  gotoInvitePage = function (this: UsersPage, team: VTeam) {
-    let path = '/pages/team/team?teamId=' + team._id + "&invite=true";
+  gotoInvitePage = function (this: UsersPage, team: VTeam, type:number) {
+    let path = '/pages/team/team?teamId=' + team._id;
+    if (type == 0) { //invite
+      path += "&invite=true";
+    } else if (type == 1) { //share
+      path += "&share=true";
+    }
+
+    let title = "";
+    if (type == 0) { //invite
+      title += "邀请加入队伍";
+    } else if (type == 1) { //share
+      path += "分享队伍信息";
+    }
+
     console.log("share path=" + path)
     return {
-      title: '好友邀请你加入队伍',
+      title: title,
       path: path,
       fail: function (res: any) {
         wx.showToast({
-          title: '邀请失败',
+          title: '分享失败',
         })
       }
     }
@@ -257,6 +285,22 @@ class UsersPage extends BasePage {
 
   onPullDownRefresh = function( this:UsersPage, e:any) {
     this.onShow(null);
+  }
+
+  onAddFavorite = function(this:UsersPage, e:any) {
+    if (this.data.team) {
+      new FavoriteTeamIdRepo().add(this.data.team._id);
+      this.data.isFavorite = true;
+      this.setData({isFavorite: this.data.isFavorite})
+    }
+  }
+
+  onRemoveFavorite = function(this:UsersPage, e:any) {
+    if (this.data.team) {
+      new FavoriteTeamIdRepo().remove(this.data.team._id);
+      this.data.isFavorite = false;
+      this.setData({isFavorite: this.data.isFavorite})
+    }
   }
 }
 

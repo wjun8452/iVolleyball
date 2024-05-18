@@ -15,7 +15,7 @@
   <view class="table" style="margin: 2px; font-size: {{font_size}}px;">
     <view class="tr">
       <view style="width: {{100/column_num}}%;" class="th tc"></view>
-      <view style="width: {{100/column_num}}%;" wx:for="{{event.teams}}" wx:for-item="team" wx:for-index="cindex" class='th {{col_edit==cindex?"highlight":""}}'>
+      <view style="width: {{100/column_num}}%;" wx:for="{{event.teams}}" wx:for-item="team" wx:for-index="cindex" class='th {{col_edit==cindex?"highlight":""}}' wx:key="*this">
         <view style="display:flex; flex-direction: row; justify-content: space-between;">
           <view style="color: gray;"> #{{team.index+1}} </view>
         </view>
@@ -28,7 +28,7 @@
       <view style="width: {{100/column_num}}%; font-weight: bold;" class="th"> 排名 </view>
     </view>
 
-    <view wx:for="{{event.team_matches[0]}}" wx:for-item="row" wx:for-index="rindex" class='tr {{(row_edit==-1 && col_edit==-1 && rindex%2==0) || (row_edit==rindex) ?"highlight":""}}'>
+    <view wx:for="{{event.team_matches[0]}}" wx:for-item="row" wx:for-index="rindex" class='tr {{(row_edit==-1 && col_edit==-1 && rindex%2==0) || (row_edit==rindex) ?"highlight":""}}' wx:key="*this">
       <view class='tc' style="width: {{100/column_num}}%;">
         <view style="display:flex; flex-direction: row; justify-content: space-between; width:90%; color: gray;">
           <view> #{{event.teams[rindex].index + 1}} </view>
@@ -36,7 +36,7 @@
         </view>
         <view> {{event.teams[rindex].name == "" ? event.teams[rindex].index+1 : event.teams[rindex].name}} </view>
       </view>
-      <block wx:for="{{row}}" wx:for-item="item" wx:for-index="cindex">
+      <block wx:for="{{row}}" wx:for-item="item" wx:for-index="cindex" wx:key="*this">
         <view style="width: {{100/column_num}}%;" class='td {{(col_edit==cindex && row_edit==rindex)?"edit":(col_edit==cindex?"highlight":"")}} ' catchtap="onTapTable" catchlongpress="onLongTapTable" data-rindex="{{rindex}}" data-cindex="{{cindex}}"> {{ item.winset_str ? item.winset_str : item }} </view>
       </block>
       <view style="width: {{100/column_num}}% " class="td">{{event.teams[rindex].win_times}} </view>

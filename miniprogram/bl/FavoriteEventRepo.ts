@@ -1,14 +1,14 @@
 import { parseTime } from "../utils/Util";
 import { UserEvent } from "./EventRepo";
-import { FavoriteOpenidRepo } from "./FavoriteOpenidRepo";
+import { FavoriteOpenIdRepo } from "./FavoriteOpenIdRepo";
 
 const CLOUD_ENV: string = 'ilovevolleyball-d1813b'; //,test-705bde
 
+//favorite are saved in local storage only
+
 export class FavoriteEventRepo {
 
-
-
-  fetchUserEvents(openIdRepo: FavoriteOpenidRepo, callback: (success: boolean, userEvents: UserEvent[]) => void) {
+  fetchUserEvents(openIdRepo: FavoriteOpenIdRepo, callback: (success: boolean, userEvents: UserEvent[]) => void) {
     let openids: string[] = openIdRepo.get();
 
     if (openids.length == 0) {

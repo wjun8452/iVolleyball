@@ -1,5 +1,7 @@
 import { Event, EventHelper, EventRepo, UserEvent } from "../../bl/EventRepo"
-import { VTeam, VUser } from "../../bl/TeamRepo";
+import { FavoriteTeamIdRepo } from "../../bl/FavoriteTeamIdRepo";
+import { FavoriteTeamRepo } from "../../bl/FavoriteTeamRepo";
+import { deDupTeams, TeamRepo, VTeam, VUser } from "../../bl/TeamRepo";
 import { getUUID } from "../../utils/Util"
 
 Page({
@@ -15,12 +17,16 @@ Page({
     base_id: "",
     loaded: false,
     isOwner: false,
+    pikerTeamIndex: -1, //UI data
+    myteams: [], //球队
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    this.loadMyTeams(false); //开始加载球队信息，不block UI刷新
+
     for (let i = 0; i < 4; i++) {
       this.add();
     }
@@ -136,6 +142,49 @@ Page({
     this.setData(this.data);
   },
 
+  onImportTeam(e: any) {
+    const index = e.target.dataset.index;
+    console.log('被导入的队伍序号:', e.detail.value, ". 目标队伍序号: ", index)
+    
+    this.data.pikerTeamIndex = e.detail.value;
+    this.setData({ pikerTeamIndex: this.data.pikerTeamIndex });
+    if (this.data.pikerTeamIndex < 0) return;
+
+    let team:VTeam = this.data.myteams[this.data.pikerTeamIndex];
+    this.data.event.teams[index] = team;
+    this.setData(this.data)
+  },
+
+  loadMyTeams(showError:boolean) {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
+      let that = this
+      let teamRepo = new TeamRepo();
+      teamRepo.fetchByOwner(user.openid, (errorCode: number, teams: VTeam[] | null) => {
+        if (teams != null) {
+          that.data.myteams = teams;
+          that.setData(that.data);
+        }
+
+        teamRepo.fetchJointTeams(user.openid, (errorCode: number, teams: VTeamp[]) => {
+          if (teams != null) {
+            that.data.myteams = that.data.myteams.concat(teams);
+            that.setData(that.data);
+          }
+
+          new FavoriteTeamRepo().fetchFavoriteTeams(new FavoriteTeamIdRepo(), (success: boolean, teams: VTeam[]) => {
+              if (teams != null) {
+                that.data.myteams = that.data.myteams.concat(teams);
+                that.setData(that.data);
+              }
+              deDupTeams(that.data.myteams)
+              that.setData(that.data);
+          })
+
+        })
+      })
+    });
+  },
+
   create() {
     console.log(this.data)
     let that = this;
@@ -207,6 +256,10 @@ Page({
   update() {
     let that = this;
     console.log("update", this.data.event)
+    if (this.data.event.teams.length <= 2) {
+      wx.showToast({ "title": "至少2个队伍", "icon": "error" })
+      return;
+    }
     new EventRepo().updateEvent(this.data.openid, this.data.event, (success: boolean) => {
       if (success) {
         wx.showToast({
@@ -238,8 +291,15 @@ Page({
     }
   },
 
-  onClearTeams(e) {
-    this.data.event.teams.splice(0, this.data.event.teams.length)
+  onDeleteTail(e) {
+    if (this.data.event.teams.length <= 2) {
+      wx.showToast({ "title": "至少2个队伍", "icon": "error" })
+      return;
+    }
+    this.data.event.teams.splice(this.data.event.teams.length - 1, 1)
+    this.data.event.team_matches[0].splice(this.data.event.teams.length - 1, 1)
+    new EventHelper().initTeamMatches(this.data.event);
+    new EventHelper().updateTeamScore(this.data.event);
     this.setData(this.data);
   },
 

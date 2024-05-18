@@ -1,11 +1,11 @@
 // pages/matches/matches.ts
-import { Event, EventRepo, UserEvent } from "../../bl/EventRepo"
+import { EventRepo, UserEvent } from "../../bl/EventRepo"
 import { FavoriteEventRepo } from "../../bl/FavoriteEventRepo";
-import { FavoriteOpenidRepo } from "../../bl/FavoriteOpenidRepo";
+import { FavoriteOpenIdRepo } from "../../bl/FavoriteOpenIdRepo";
 import { VUser } from "../../bl/TeamRepo";
 
 Page({
-  favoriteOpenidRepo: new FavoriteOpenidRepo(),
+  favoriteOpenIdRepo: new FavoriteOpenIdRepo(),
 
   /**
    * 页面的初始数据
@@ -23,7 +23,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-    this.favoriteOpenidRepo.load();
+    this.favoriteOpenIdRepo.load();
 
     const newLocal = wx.getUserProfile;
     if (newLocal) {
@@ -193,7 +193,7 @@ Page({
     getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
-        new EventRepo().fetchAllUserEvents(that._callback, that.favoriteOpenidRepo);
+        new EventRepo().fetchAllUserEvents(that._callback, that.favoriteOpenIdRepo);
       } else {
         wx.showToast({ title: "获取openid失败！" })
         wx.stopPullDownRefresh();
@@ -236,7 +236,7 @@ Page({
     getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
-        new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenidRepo, that._callback);
+        new FavoriteEventRepo().fetchUserEvents(that.favoriteOpenIdRepo, that._callback);
       } else {
         wx.showToast({ title: "获取openid失败！", icon: "error" })
         wx.stopPullDownRefresh();
@@ -250,7 +250,7 @@ Page({
     getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that.data.user = user;
-        new EventRepo().fetchUserEventsByName(that.data.keyword, that._callback, that.favoriteOpenidRepo);
+        new EventRepo().fetchUserEventsByName(that.data.keyword, that._callback, that.favoriteOpenIdRepo);
       } else {
         wx.showToast({ title: "获取openid失败！", icon: "error" })
         wx.stopPullDownRefresh();
@@ -267,9 +267,9 @@ Page({
     let openid = e.currentTarget.dataset.openid;
     const values = e.detail.value;
     if (values.length > 0) {
-      this.favoriteOpenidRepo.add(openid)
+      this.favoriteOpenIdRepo.add(openid)
     } else {
-      this.favoriteOpenidRepo.remove(openid);
+      this.favoriteOpenIdRepo.remove(openid);
       if (this.data.tab == 3) {
         this.loadByTab();
       }

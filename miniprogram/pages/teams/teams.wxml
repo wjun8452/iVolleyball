@@ -54,4 +54,24 @@
       </view>
     </block>
   </view>
+
+  <view class="container" style="display:flex; flex-direction: column;">
+    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+      <view> 我收藏的队伍 </view>
+      <view style="font-size: 12px; color: gray;"> 来自微信分享 </view>
+    </view>
+
+    <block wx:for="{{favoriteTeams}}" wx:key="_id" wx:for-item="team" wx:for-index="index">
+      <view class="list-item" bindtap="onClickEditTeam" data-teamid="{{team._id}}">
+        <view class="item-content">
+          <view class="avartar_container">
+            <image class="avartar" wx:if="{{team.owner.userInfo.avatarUrl}}" src="{{team.owner.userInfo.avatarUrl}}" mode="cover"></image>
+            <text class="nickName"> {{team.owner.userInfo.nickName}} </text>
+          </view>
+          <view> {{team.name}} </view>
+          <view> {{team.players.length }}个成员 </view>
+        </view>
+      </view>
+    </block>
+  </view>
 </view>

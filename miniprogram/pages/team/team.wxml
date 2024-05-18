@@ -49,10 +49,19 @@
         </form>
       </view>
       <view wx:if="{{isMyTeam}}" class="teamblock_row" style="margin-bottom: 5px;">
-        <button open-type="share" size="default" style="width: 100%;"> 邀请好友加入 </button>
+        <button open-type="share" size="default" style="width: 100%;" data-msg="invite"> 邀请好友加入 </button>
+      </view>
+      <view class="teamblock_row" style="margin-bottom: 5px;">
+        <button open-type="share" size="default" style="width: 100%;" data-msg="share"> 分享给好友 </button>
       </view>
       <view wx:if="{{canJoin}}" class="teamblock_row">
         <button bindtap="onAddMySelf" size="default" style="width: 100%;"> 我加入 </button>
+      </view>
+      <view wx:if="{{!isFavorite && !isMyTeam}}" class="teamblock_row">
+        <button bindtap="onAddFavorite" size="default" style="width: 100%;"> 收藏 </button>
+      </view>
+      <view wx:if="{{isFavorite && !isMyTeam}}" class="teamblock_row">
+        <button bindtap="onRemoveFavorite" size="default" style="width: 100%;"> 取消收藏 </button>
       </view>
     </view>
   </view>

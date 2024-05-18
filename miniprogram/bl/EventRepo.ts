@@ -1,6 +1,6 @@
 import { parseDate, parseTime } from "../utils/Util";
-import { FavoriteOpenidRepo } from "./FavoriteOpenidRepo";
-import { VUser, VTeam, TeamRepo } from "./TeamRepo"
+import { FavoriteOpenIdRepo } from "./FavoriteOpenIdRepo";
+import { VUser, VTeam } from "./TeamRepo"
 
 const CLOUD_ENV: string = 'ilovevolleyball-d1813b'; //,test-705bde
 
@@ -484,21 +484,21 @@ export class EventRepo {
     })
   };
 
-  fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+  fetchAllUserEvents(callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenIdRepo?: FavoriteOpenIdRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
-    return this._fetchUserEvents({}, db, callback, favoriteOpenidRepo);
+    return this._fetchUserEvents({}, db, callback, favoriteOpenIdRepo);
   }
 
-  fetchUserEvents(openid: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+  fetchUserEvents(openid: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenIdRepo?: FavoriteOpenIdRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
-    return this._fetchUserEvents({ _openid: openid }, db, callback, favoriteOpenidRepo);
+    return this._fetchUserEvents({ _openid: openid }, db, callback, favoriteOpenIdRepo);
   }
 
-  fetchUserEventsByName(keyword: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+  fetchUserEventsByName(keyword: string, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenIdRepo?: FavoriteOpenIdRepo) {
     const db = wx.cloud.database({
       env: CLOUD_ENV
     })
@@ -508,10 +508,10 @@ export class EventRepo {
         options: 'i',
       })
     }
-    return this._fetchUserEvents(where_clause, db, callback, favoriteOpenidRepo);
+    return this._fetchUserEvents(where_clause, db, callback, favoriteOpenIdRepo);
   }
 
-  private _fetchUserEvents(where_clause: {}, db: DB.Database, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenidRepo?: FavoriteOpenidRepo) {
+  private _fetchUserEvents(where_clause: {}, db: DB.Database, callback: (success: boolean, events: UserEvent[] | null) => void, favoriteOpenIdRepo?: FavoriteOpenIdRepo) {
     db.collection("vevent").where(where_clause).orderBy('update_time', 'desc').get({
       success(res) {
         console.log("db.vevent.get", where_clause)
@@ -521,8 +521,8 @@ export class EventRepo {
         for (let k = 0; k < userEvents.length; k++) {
           let userEvent = userEvents[k];
 
-          if (favoriteOpenidRepo) {
-            if (favoriteOpenidRepo.isFavorite(userEvent._openid)) {
+          if (favoriteOpenIdRepo) {
+            if (favoriteOpenIdRepo.isFavorite(userEvent._openid)) {
               userEvent["isFavorite"] = true;
             } else {
               userEvent["isFavorite"] = false;

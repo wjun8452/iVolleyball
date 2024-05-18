@@ -30,9 +30,11 @@
   <view wx:if="{{isOwner && !inviteAsUmpire2 && !inviteAsUmpire1}}" class="teamblock">
     <view class='teamblock_row'>
       <view class="teamblock_title">我方队伍</view>
-      <view class="teamblock_value"> {{court.myTeam}}</view>
+      <view class="teamblock_value">
+        <input disabled="{{court.status==0}}" bindconfirm='onEditTeam' data-obj="myTeam" placeholder='{{court.myTeam}}' />
+      </view>
       <view>
-        <picker disabled="{{court.status==0}}" bindchange="onImportTeam" value="{{pikerTeamIndex}}" range="{{myteams}}" range-key="name">
+        <picker disabled="{{court.status==0}}" bindchange="onImportTeam" value="{{pikerTeamIndex}}" range="{{myteams}}" range-key="name" data-obj="myTeam" >
           <button disabled="{{court.status==0}}" size="mini"> 导入 </button>
         </picker>
       </view>
@@ -45,6 +47,14 @@
       <view class="teamblock_title">对方队伍</view>
       <view class="teamblock_value">
         <input disabled="{{court.status==0}}" bindconfirm='onEditTeam' data-obj="yourTeam" placeholder='{{court.yourTeam}}' />
+      </view>
+      <view>
+        <picker disabled="{{court.status==0}}" bindchange="onImportTeam" value="{{pikerTeamIndex}}" range="{{myteams}}" range-key="name" data-obj="yourTeam">
+          <button disabled="{{court.status==0}}" size="mini"> 导入 </button>
+        </picker>
+      </view>
+      <view>
+        <button disabled="{{court.status==0}}" size="mini" bindtap="gotoTeams"> 管理 </button>
       </view>
     </view>
 

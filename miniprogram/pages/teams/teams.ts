@@ -1,3 +1,5 @@
+import { FavoriteTeamIdRepo } from "../../bl/FavoriteTeamIdRepo";
+import { FavoriteTeamRepo } from "../../bl/FavoriteTeamRepo";
 import { TeamRepo, VTeam, VUser } from "../../bl/TeamRepo";
 
 const App = getApp()
@@ -11,6 +13,7 @@ Page({
   data: {
     myteams: [],
     jointTeams: [],
+    favoriteTeams: [],
     user: new VUser(),
     canIUseGetUserProfile: false,
   },
@@ -46,20 +49,20 @@ Page({
     }
   },
 
-  gotoMyprofile (e:any) {
+  gotoMyprofile(e: any) {
     const that = this;
     wx.navigateTo({
-      url : "../myprofile/myprofile",
+      url: "../myprofile/myprofile",
       events: {
         updateAvartar: (result) => {
           console.log("updateAvartar event received: ", result)
-          const userInfo:VUser = result;
+          const userInfo: VUser = result;
           that.data.user = userInfo;
           that.setData(that.data)
         },
         success: function (res) {
         },
-        fail: function(res) {
+        fail: function (res) {
         }
       }
     })
@@ -121,10 +124,10 @@ Page({
     })
 
     const that2 = this;
-    getApp().getCurrentUser((user:VUser, success: boolean) => {
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         that2.data.user = user;
-        that2.setData({user:user})
+        that2.setData({ user: user })
         let teamRepo = new TeamRepo();
         console.log("load teams by owner: ", this.data.user.openid)
         const that = that2;
@@ -133,23 +136,36 @@ Page({
             that.data.myteams = teams;
             that.setData({ myteams: teams })
           } else {
-            wx.showToast({'title':'加载失败!', 'icon':'error'})
+            wx.showToast({ 'title': '加载失败!', 'icon': 'error' })
           }
           wx.hideLoading();
         });
-  
-  
+
+
         teamRepo.fetchJointTeams(user.openid, ((errorCode: number, teams: VTeam[]) => {
           if (errorCode == 0) {
             that.data.jointTeams = teams;
             that.setData({ jointTeams: teams })
           } else {
-            wx.showToast({'title':'加载失败!', 'icon':'error'})
+            wx.showToast({ 'title': '加载失败!', 'icon': 'error' })
           }
           wx.hideLoading();
         }));
+
+        new FavoriteTeamRepo().fetchFavoriteTeams(new FavoriteTeamIdRepo(), (success: boolean, teams: VTeam[]) => {
+          console.log("favorite team callback: success=" + success, ", teams=", teams);
+          if (success) {
+            that.data.favoriteTeams = teams;
+            that.setData({ favoriteTeams: teams })
+          } else {
+            wx.showToast({ 'title': '加载失败!', 'icon': 'error' })
+          }
+          wx.hideLoading();
+        }
+        )
+
       } else {
-        wx.showToast({'title': '错误', 'icon':'error'})
+        wx.showToast({ 'title': '错误', 'icon': 'error' })
         wx.hideLoading();
       }
     });

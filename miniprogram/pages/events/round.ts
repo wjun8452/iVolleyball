@@ -120,6 +120,10 @@ Page({
     this.setData(this.data);
   },
 
+  onGotoBoard(e) {
+    
+  },
+
   hideScoreInput() {
     this.data.showScoreInput = false;
     this.setData(this.data);

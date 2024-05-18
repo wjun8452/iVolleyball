@@ -71,8 +71,10 @@ export class TeamRepo {
       env: this.env
     })
 
+    const _ = db.command
     db.collection('vteam').where({
-      "players.user.openid": openid
+      "players.user.openid": openid,
+      "_openid" : _.neq(openid)
     }).get({
       success(res) {
         console.log("[db.vteam.fetchJointTeams] res:", res)
@@ -80,6 +82,7 @@ export class TeamRepo {
           callback(1, []);
         } else {
           let teams: VTeam[] = res.data;
+          console.log("fetch joint team, size=", teams.length)
           callback(0, teams)
         }
       },
@@ -201,6 +204,7 @@ export class TeamRepo {
           callback(1, null);
         } else {
           let teams: VTeam[] = res.data;
+          console.log("fetch team by owner, size=", teams.length)
           callback(0, teams)
         }
       },
@@ -235,12 +239,24 @@ export class TeamRepo {
     })
   }
 
-    /** 释放资源 */
-    close() {
-      if (this.watcher) {
-        this.watcher.close();
-        this.watcher = null;
-        console.log("[team] watcher closed.")
+  /** 释放资源 */
+  close() {
+    if (this.watcher) {
+      this.watcher.close();
+      this.watcher = null;
+      console.log("[team] watcher closed.")
+    }
+  }
+}
+
+export function deDupTeams(arr: VTeam[]): VTeam[] {
+  for (var i = 0; i < arr.length; i++) {
+    for (var j = i + 1; j < arr.length; j++) {
+      if (arr[i]._id == arr[j]._id) {         //第一个等同于第二个，splice方法删除第二个
+        arr.splice(j, 1);
+        j--;
       }
     }
+  }
+  return arr;
 }

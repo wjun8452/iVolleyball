@@ -16,8 +16,10 @@
       <view class="color_score" style="flex:1" >{{item.score_str}}</view>
     </view>
     <view class="teamblock_row">
-      <button size="mini" bindtap="onSetScore" data-index="{{index}}" disabled="{{!isOwner}}"> 设置
+      <button size="mini" bindtap="onSetScore" data-index="{{index}}" disabled="{{!isOwner}}"> 录入
       </button>
+      <!-- <button size="mini" bindtap="onGotoBoard" data-index="{{index}}" disabled="{{!isOwner}}"> 记分
+      </button> -->
       <button size="mini" bindtap="deleteSet" data-index="{{index}}" disabled="{{!isOwner}}"> 删除 </button>
     </view>
   </view>

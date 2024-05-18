@@ -1,8 +1,10 @@
 // pages/stat_setting/stat_setting.js
 
 import { BasePage } from "../../bl/BasePage";
+import { FavoriteTeamIdRepo } from "../../bl/FavoriteTeamIdRepo";
+import { FavoriteTeamRepo } from "../../bl/FavoriteTeamRepo";
 import { GlobalData } from "../../bl/GlobalData";
-import { TeamRepo, VTeam, VUser } from "../../bl/TeamRepo";
+import { deDupTeams, TeamRepo, VTeam, VUser } from "../../bl/TeamRepo";
 import { StatCat, VolleyCourt } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
@@ -65,7 +67,7 @@ class SettingPage extends BasePage {
     //     this.setMyselfUmpire2(this);
     //   }
     // }
-    
+
     this.setData(this.data);
 
     if (reason == Reason.Init) {
@@ -425,7 +427,6 @@ class SettingPage extends BasePage {
   }
 
   loadMyTeam = function (this: SettingPage, showError: boolean) {
-
     wx.showLoading({
       title: '正在加载',
     });
@@ -434,67 +435,59 @@ class SettingPage extends BasePage {
       let that = this
       let teamRepo = new TeamRepo();
       teamRepo.fetchByOwner(user.openid, (errorCode: number, teams: VTeam[] | null) => {
-        wx.hideLoading();
-        if (errorCode == 2) {
-          if (showError) {
-            wx.showToast({
-              icon: "error",
-              title: "加载失败！"
-            })
-          }
-        } else if (errorCode == 1) {
-          wx.showModal({
-            title: "没有球队",
-            content: "现在创建一个球队?",
-            success(res) {
-              if (res.confirm) {
-                wx.navigateTo({
-                  url: "../team/team"
-                })
-              } else if (res.cancel) {
-              }
-            }
-          })
-        } else if (teams != null) {
-          console.log("load teams:", teams)
+        if (teams != null) {
           that.data.myteams = teams;
-          that.setData({ myteams: teams })
-        } else {
-          if (showError) {
-            wx.showToast({
-              icon: "error",
-              title: "加载失败！"
-            })
-          }
         }
+
+        teamRepo.fetchJointTeams(user.openid, (errorCode: number, teams: VTeamp[]) => {
+          if (teams != null) {
+            that.data.myteams = that.data.myteams.concat(teams);
+          }
+
+          new FavoriteTeamRepo().fetchFavoriteTeams(new FavoriteTeamIdRepo(), (success: boolean, teams: VTeam[]) => {
+            if (teams != null) {
+              that.data.myteams = that.data.myteams.concat(teams);
+            }
+            that.data.myteams = deDupTeams(that.data.myteams)
+            wx.hideLoading();
+            that.setData(that.data);
+          })
+        })
       })
     });
   }
 
   onImportTeam = function (this: SettingPage, e: any) {
     console.log('picker发送选择改变，携带值为', e.detail.value)
+
     this.data.pikerTeamIndex = e.detail.value;
     this.setData({ pikerTeamIndex: this.data.pikerTeamIndex });
     if (this.data.pikerTeamIndex < 0) return;
 
     let index = this.data.pikerTeamIndex;
     let team = this.data.myteams[index];
-    this.data.court!.all_players = new Array();
-    this.data.court!.players = ["", "", "", "", "", ""];
-    for (let index = 0; index < team.players.length; index++) {
-      this.data.court!.all_players.push(team.players[index].name);
-      this.data.court!.players_map[team.players[index].name] = team.players[index];
-      if (team.players[index].user.openid != "") {
-        this.data.court!.players_id.push(team.players[index].user.openid);
+
+    if (e.currentTarget.dataset.obj === "myTeam") {
+      this.data.court!.all_players = new Array();
+      this.data.court!.players = ["", "", "", "", "", ""];
+      for (let index = 0; index < team.players.length; index++) {
+        this.data.court!.all_players.push(team.players[index].name);
+        this.data.court!.players_map[team.players[index].name] = team.players[index];
+        if (team.players[index].user.openid != "") {
+          this.data.court!.players_id.push(team.players[index].user.openid);
+        }
       }
+      console.log(this.data.court!.players_map)
+      this.data.court!.setter = -1;
+      this.data.court!.libero = -1;
+      this.data.court!.libero_replacement1 = -1;
+      this.data.court!.libero_replacement2 = -1;
+      this.data.court!.myTeam = team.name;
+      this.data.court!.myteamId = team._id;
+    } else {
+      this.data.court!.yourTeam = team.name;
+      this.data.court!.yourteamId = team._id;
     }
-    console.log(this.data.court!.players_map)
-    this.data.court!.setter = -1;
-    this.data.court!.libero = -1;
-    this.data.court!.libero_replacement1 = -1;
-    this.data.court!.libero_replacement2 = -1;
-    this.data.court!.myTeam = team.name;
-    this.data.court!.myteamId = team._id;
     this.updateMatch();
   }
 
@@ -679,20 +672,20 @@ class SettingPage extends BasePage {
     that.setData(that.data)
   }
 
-  gotoMyprofile = function(this: SettingPage, e: any) {
+  gotoMyprofile = function (this: SettingPage, e: any) {
     const that = this;
     wx.navigateTo({
-      url : "../myprofile/myprofile",
+      url: "../myprofile/myprofile",
       events: {
         updateAvartar: (result) => {
           console.log("updateAvartar event received: ", result)
-          const userInfo:VUser = result;
+          const userInfo: VUser = result;
           that.data.court?.updateOwnerAvartar(userInfo);
           that.repo?.updateMatch(that.data.court);
         },
         success: function (res) {
         },
-        fail: function(res) {
+        fail: function (res) {
         }
       }
     })

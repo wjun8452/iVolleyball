@@ -1,5 +1,5 @@
 
-export class FavoriteOpenidRepo {
+export class FavoriteOpenIdRepo {
   openid_set: Set<string> = new Set<string> ();
   key: string = "favorite_openid";
 

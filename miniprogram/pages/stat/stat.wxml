@@ -32,7 +32,7 @@
       <!-- 主裁判 -->
       <view wx:if='{{court.chief_umpire.openid!=""}}' style="display:flex; flex-direction: row; justify-content: space-between; align-items: center;">
         <view style="display:flex; flex-direction: row; ">
-          <view>主裁判 {{isOwner ? "(你)" : ""}}：</view>
+          <view>主裁判 {{isOwner ? "" : ""}}：</view>
           <view class="avartar_container">
             <image class="avartar_small" src='{{court.chief_umpire.userInfo.avatarUrl!="" ? court.chief_umpire.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             <text class="nickName">{{court.chief_umpire.userInfo.nickName}}</text>
@@ -52,7 +52,7 @@
       <!-- 统计员1 -->
       <view wx:if='{{court.stat_umpire1.openid!=""}}' style="display:flex; flex-direction: row; justify-content: space-between; align-items: center;">
         <view style="display:flex; flex-direction: row; ">
-          <view>统计员1{{isUmpire1?"(你)":""}}： </view>
+          <view>统计员1{{isUmpire1?"":""}}： </view>
           <view class="avartar_container">
             <image class="avartar_small" src='{{court.stat_umpire1.userInfo.avatarUrl!="" ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             <text class="nickName">{{court.stat_umpire1.userInfo.nickName}}</text>
@@ -85,7 +85,7 @@
       <!-- 统计员2 -->
       <view wx:if='{{court.stat_umpire2.openid!=""}}' style="display:flex; flex-direction: row; justify-content: space-between; align-items: center;">
         <view style="display:flex; flex-direction: row; ">
-          <view>统计员2{{isUmpire2?"(你)":""}}: </view>
+          <view>统计员2{{isUmpire2?"":""}}: </view>
           <view class="avartar_container">
             <image class="avartar_small" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             <text class="nickName">{{court.stat_umpire2.userInfo.nickName}}</text>

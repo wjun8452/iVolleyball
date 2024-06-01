@@ -44,12 +44,11 @@
               <block wx:if="{{!court._id}}">
                 <image style="height: 28px; width: 28px; border: solid 0px;"  src="../../images/nocloud.svg"> </image>
               </block>
-              <view style="line-height:14px; font-size: 14px;"> {{ (court.mode==1 || court.mode==2) ?"气排":"硬排"}} </view>
+              <!-- <view style="line-height:14px; font-size: 14px;"> {{ (court.mode==1 || court.mode==2) ?"气排":"硬排"}} </view> -->
             </view>
 
             <view style="display: flex; flex-direction: column;">
               <view class=''> {{court.status==1?"":"已结束"}} </view>
-              <view> {{isOwner? "":"来自好友分享"}} </view>
             </view>
 
           </view>

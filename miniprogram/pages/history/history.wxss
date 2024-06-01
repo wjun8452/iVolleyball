@@ -3,3 +3,7 @@
   height:20px;
   margin-left: 3px;
 }
+
+.sel {
+  border-bottom: 2px solid #FF9900;
+}

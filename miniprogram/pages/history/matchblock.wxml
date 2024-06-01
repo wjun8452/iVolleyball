@@ -37,11 +37,12 @@
       </view>
       <view class="match-item-right">
         <view class='match-item-textblock'>
-          <view>类型：{{ court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}}</view>
+          <!-- <view>类型：{{ court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}}</view> -->
           <view> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
+          <view>时间：{{court.create_time}}</view>
           <view wx:if='{{court.place!=""}}'>地点：{{court.place}}</view>
           <view wx:if='{{court.stat_umpire1.openid!=""}}' class="avartar_container">
-            <view>统计员1{{cout.stat_umpire1.openid==openid?"（你）":""}}：</view>
+            <view>统计员1{{cout.stat_umpire1.openid==openid?"":""}}：</view>
             <view>
               <image class="avartar_small" src='{{court.stat_umpire1.userInfo.avatarUrl!="" ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             </view>
@@ -50,7 +51,7 @@
             </view>
           </view>
           <view wx:if='{{court.stat_umpire2.openid!=""}}' class="avartar_container">
-            <view>统计员2{{cout.stat_umpire2.openid==openid?"（你）":""}}：</view>
+            <view>统计员2{{cout.stat_umpire2.openid==openid?"":""}}：</view>
             <view>
               <image class="avartar_small" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
             </view>
@@ -58,7 +59,6 @@
               <text class="nickName_small">{{court.stat_umpire2.userInfo.nickName}}</text>
             </view>
           </view>
-          <view>时间：{{court.create_time}}</view>
         </view>
       </view>
     </view>

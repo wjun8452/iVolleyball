@@ -6,7 +6,7 @@
   <view wx:if="{{inviteAsUmpire1 || inviteAsUmpire2}}" class="teamblock">
     <view style="margin:1px 1px 8px 1px" class="block1">
       <view style="text-align: center;margin: 10px;"> 来自好友的邀请(请点击成为统计员)</view>
-      <view style='text-align:left;'> 类型：{{court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}} </view>
+      <!-- <view style='text-align:left;'> 类型：{{court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}} </view> -->
       <view style='text-align:left;'> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
       <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
       <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
@@ -396,7 +396,7 @@
   <!-- 主裁判 -->
   <view class="teamblock">
     <view class='teamblock_row'>
-      <view> 主裁判{{isOwner ? "(你)" : ""}}: </view>
+      <view> 主裁判{{isOwner ? "" : ""}}: </view>
       <view style="display: flex; flex-direction: row; align-items: baseline;">
         <view class="avartar_container">
           <image class="avartar" src='{{court.chief_umpire.userInfo.avatarUrl !="" ? court.chief_umpire.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
@@ -413,7 +413,7 @@
   <!-- 统计员1 -->
   <view wx:if="{{(isOwner || inviteAsUmpire1) && !inviteAsUmpire2}}" class="teamblock">
     <view style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 2px; " class='teamblock_row'>
-      <view>统计员1{{isUmpire1 ? "(你)" : ""}}: </view>
+      <view>统计员1{{isUmpire1 ? "" : ""}}: </view>
       <view style="display: flex; flex-direction: row; align-items: baseline;">
         <view wx:if='{{court.stat_umpire1.openid!=""}}' class="avartar_container">
           <image class="avartar" src='{{court.stat_umpire1.userInfo.avatarUrl!="" ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
@@ -456,7 +456,7 @@
   <!-- 统计员2 -->
   <view wx:if="{{(isOwner || inviteAsUmpire2) && !inviteAsUmpire1}}" class="teamblock">
     <view style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 2px; ">
-      <view>统计员2{{isUmpire2 ? "(你)" : ""}}: </view>
+      <view>统计员2{{isUmpire2 ? "" : ""}}: </view>
       <view style="display: flex; flex-direction: row; align-items: baseline;">
         <view wx:if='{{court.stat_umpire2.openid!=""}}' class="avartar_container">
           <image class="avartar" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>

@@ -2,5 +2,5 @@
   "usingComponents": {},
   "enablePullDownRefresh" : true,
   "backgroundColor": "#ffffff",
-  "navigationBarTitleText": "历史记录"
+  "navigationBarTitleText": "记分历史"
 }

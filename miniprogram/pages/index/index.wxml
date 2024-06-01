@@ -14,7 +14,7 @@
 
 		<navigator class="navigator_container" url="../history/history">
 			<image class="navigator_image" src="../../images/history.svg"></image>
-			<view class="navigator_text">历史记录 </view>
+			<view class="navigator_text">记分历史 </view>
 		</navigator>
 
 		<navigator class="navigator_container" url="../teams/teams"> 
@@ -38,7 +38,7 @@
 		</navigator>
 
 		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version">v2024.5.18</view>
+			<view class="navigator_version">v2024.6.1</view>
 		</navigator>
 </view>
 

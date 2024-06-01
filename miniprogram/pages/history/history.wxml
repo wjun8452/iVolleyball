@@ -1,53 +1,73 @@
 <import src="matchblock.wxml" />
+<view class="main">
 
-<view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column; overflow: hidden;" >
+  <!-- tab headers -->
+  <view class="container" style="display:flex; flex-direction: row; justify-content: space-between; ">
+    <view class='{{tab==1 ? "sel" : ""}}' bindtap="onClickTab" data-tab="1"> 最近 </view>
+    <view class='{{tab==2 ? "sel" : ""}}' bindtap="onClickTab" data-tab="2"> 我的 </view>
+    <view class='{{tab==3 ? "sel" : ""}}' bindtap="onClickTab" data-tab="3"> 参加 </view>
+    <!-- <view class='{{tab==4 ? "sel" : ""}}' bindtap="onClickTab" data-tab="4"> 收藏 </view> -->
+    <view class='{{tab==5 ? "sel" : ""}}' bindtap="onClickTab" data-tab="5"> 广场 </view>
+  </view>
 
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view>上次打开的比赛</view>
-      <view> <button size="mini" bindtap="onCreate">新建</button>
+  <view style="box-sizing:border-box; width: 100%; display:flex; flex-direction:column; overflow: hidden;">
+
+    <view wx:if="{{tab==1}}" class="container" style="display:flex; flex-direction: column; margin: 10px;">
+      <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
+        <view>上次记分</view>
+        <view> <button size="mini" bindtap="onCreate">新建</button>
+        </view>
+      </view>
+
+      <template wx:if="{{last_court}}" is="matchblock" data="{{court: last_court}}" />
+
+
+      <view class="first_item" style="margin-top: 20px; font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
+        <view>最近浏览</view>
+      </view>
+
+      <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
+        <block wx:for="{{shared_matches}}" wx:key="create_time">
+          <template is="matchblock" data="{{court: item}}" />
+        </block>
+      </view>
+
+    </view>
+
+
+    <view wx:if="{{tab==2}}" class="container" style="display:flex; flex-direction: column; margin: 10px;">
+      <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
+        <view>我的记分</view>
+        <view style="font-size: 12px; color: gray;"> 显示最近8个，左滑可删除 </view>
+      </view>
+
+      <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left; ">
+        <block wx:for="{{matches}}" wx:key="create_time">
+          <template is="matchblock" data="{{court: item, showDelete:true}}" />
+        </block>
       </view>
     </view>
 
-    <template wx:if="{{last_court}}" is="matchblock" data="{{court: last_court}}" />
-  </view>
+    <view wx:if="{{tab==3}}" class="container" style="display:flex; flex-direction: column; margin: 10px;">
+      <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
+        <view>我参加的比赛</view>
+        <view style="font-size: 12px; color: gray;"> 显示最近8个 </view>
+      </view>
 
-
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
-      <view>我上传的比赛</view>
-      <view style="font-size: 12px; color: gray;"> 显示最近8个，左滑可删除 </view>
-    </view>
-
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left; ">
-      <block wx:for="{{matches}}" wx:key="create_time">
-        <template is="matchblock" data="{{court: item, showDelete:true}}" />
+      <block wx:for="{{joint_matches}}" wx:key="create_time">
+        <template is="matchblock" data="{{court: item}}" />
       </block>
     </view>
-  </view>
 
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
-      <view>我参加的比赛</view>
-      <view style="font-size: 12px; color: gray;"> 显示最近8个 </view>
-    </view>
+    <view wx:if="{{tab==5}}" class="container" style="display:flex; flex-direction: column; margin: 10px;">
+      <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between; align-items:baseline">
+        <view>记分广场</view>
+        <view style="font-size: 12px; color: gray;"> 显示最近8个 </view>
+      </view>
 
-    <block wx:for="{{joint_matches}}" wx:key="create_time">
-      <template is="matchblock" data="{{court: item}}" />
-    </block>
-  </view>
-
-
-  <view class="container" style="display:flex; flex-direction: column; margin: 10px;">
-    <view class="first_item" style="font-size: 20px; text-align: left; display: flex; flex-direction: row; justify-content: space-between;">
-      <view>好友分享的比赛</view>
-    </view>
-
-    <view style="display:flex; flex-direction:column; align-items: flex-start; text-align: left;">
-      <block wx:for="{{shared_matches}}" wx:key="create_time">
+      <block wx:for="{{square_matches}}" wx:key="create_time">
         <template is="matchblock" data="{{court: item}}" />
       </block>
     </view>
   </view>
-
 </view>

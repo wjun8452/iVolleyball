@@ -13,10 +13,13 @@ class HistoryPageData {
   joint_matches: VolleyCourt[] = []; //我参加过的比赛
   shared_matches: VolleyCourt[] = []; //来自他人分享的比赛
   last_court: VolleyCourt | null = null; //上次打开的比赛
+  square_matches: VolleyCourt[] = []; //广场上的比赛
   globalData: GlobalData | null = null;
   isLoading: boolean = false; //节流阀，防止重复下拉
   openid: string = ""; //当前微信用户id
   editMode: boolean = false; //是否显示删除按钮
+  tab: number = 1; //1-最近，2-我的，3-参加，4-收藏，5-大厅
+  viewAll: boolean = false;
 }
 
 class HistoryPage extends BasePage {
@@ -33,24 +36,41 @@ class HistoryPage extends BasePage {
     this.loadData();
   }
 
-  loadData = function (this: HistoryPage) {
-    this.data.isLoading = true;
+  loadByTab = function (this: HistoryPage) {
+    if (this.data.tab == 1) {
+      this.loadRecentTab();
+    }
+    else if (this.data.tab == 2) {
+      this.loadMymatchTab();
+    }
+    else if (this.data.tab == 3) {
+      this.loadParticipateTab();
+    }
+    else if (this.data.tab == 4) {
+      // this.loadFavoriteTab();
+    }
+    else if (this.data.tab == 5) {
+      this.loadSquareTab();
+    }
+  }
 
-    wx.showLoading({
-      title: '正在加载...',
-    })
-
+  loadRecentTab = function (this: HistoryPage) {
     //先加载local的2种比赛
     this.data.last_court = this.repo.loadFromLocal();
-
     let friendsRepo = new FriendsCourtRepo();
     this.data.shared_matches = friendsRepo.getCourts();
+    this.setData(this.data);
+    wx.hideLoading();
+    this.data.isLoading = false;
+    wx.stopPullDownRefresh();
+  }
 
+  loadMymatchTab = function (this: HistoryPage) {
     //加载云端的比赛
     getApp().getCurrentUser((user: VUser, success: boolean) => {
       if (success) {
         this.data.openid = user.openid;
-        this.fetchCloudMatches(user.openid);
+        this.fetchMyMatches(user.openid);
       } else {
         wx.hideLoading();
         wx.showToast({
@@ -63,8 +83,62 @@ class HistoryPage extends BasePage {
     });
   }
 
+  loadParticipateTab = function (this: HistoryPage) {
+    //加载云端的比赛
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
+      if (success) {
+        this.data.openid = user.openid;
+        this.fetchJointMatches(user.openid);
+      } else {
+        wx.hideLoading();
+        wx.showToast({
+          title: '登陆失败',
+          icon: 'error',
+        })
+        this.data.isLoading = false;
+        wx.stopPullDownRefresh();
+      }
+    });
+  }
 
-  fetchCloudMatches = function (this: HistoryPage, openid: string) {
+  loadFavoriteTab = function (this: HistoryPage) {
+    let friendsRepo = new FriendsCourtRepo();
+    this.data.shared_matches = friendsRepo.getCourts();
+    this.setData(this.data);
+    wx.hideLoading();
+    this.data.isLoading = false;
+    wx.stopPullDownRefresh();
+  }
+
+  loadSquareTab = function (this: HistoryPage) {
+    //加载云端的比赛
+    getApp().getCurrentUser((user: VUser, success: boolean) => {
+      if (success) {
+        this.data.openid = user.openid;
+        this.fetchSquareMatches(user.openid);
+      } else {
+        wx.hideLoading();
+        wx.showToast({
+          title: '登陆失败',
+          icon: 'error',
+        })
+        this.data.isLoading = false;
+        wx.stopPullDownRefresh();
+      }
+    });
+  }
+
+  loadData = function (this: HistoryPage) {
+    this.data.isLoading = true;
+
+    wx.showLoading({
+      title: '正在加载...',
+    })
+
+    this.loadByTab();
+  }
+
+  fetchMyMatches = function (this: HistoryPage, openid: string) {
     this.repo.fetchMatches(openid, 8, (matches: VolleyCourt[], success: boolean) => {
       if (success) {
         this.data.matches = matches;
@@ -75,21 +149,45 @@ class HistoryPage extends BasePage {
           icon: 'error'
         })
       }
+      this.setData(this.data);
+      wx.hideLoading();
+      this.data.isLoading = false;
+      wx.stopPullDownRefresh();
+    })
+  }
 
-      this.repo.fetchJointMatches(openid, 8, (matches: VolleyCourt[], success: boolean) => {
-        if (success) {
-          this.data.joint_matches = matches;
-        } else {
-          wx.showToast({
-            title: '加载我参加的比赛失败',
-            icon: 'error'
-          })
-        }
-        this.setData(this.data);
-        wx.hideLoading();
-        this.data.isLoading = false;
-        wx.stopPullDownRefresh();
-      })
+  fetchJointMatches = function (this: HistoryPage, openid: string) {
+    this.repo.fetchJointMatches(openid, 8, (matches: VolleyCourt[], success: boolean) => {
+      if (success) {
+        this.data.joint_matches = matches;
+      } else {
+        wx.showToast({
+          title: '加载我参加的比赛失败',
+          icon: 'error'
+        })
+      }
+      this.setData(this.data);
+      wx.hideLoading();
+      this.data.isLoading = false;
+      wx.stopPullDownRefresh();
+    })
+  }
+
+  fetchSquareMatches = function (this: HistoryPage, openid: string) {
+    this.repo.fetchSquareMatches(openid, 8, (matches: VolleyCourt[], success: boolean) => {
+      if (success) {
+        this.data.square_matches = matches;
+        console.log("他人比赛:", matches)
+      } else {
+        wx.showToast({
+          title: '加载他人比赛失败',
+          icon: 'error'
+        })
+      }
+      this.setData(this.data);
+      wx.hideLoading();
+      this.data.isLoading = false;
+      wx.stopPullDownRefresh();
     })
   }
 
@@ -160,6 +258,21 @@ class HistoryPage extends BasePage {
     wx.navigateTo({
       url: "../score_board/score_board?createNew=true",
     })
+  }
+
+  showInitData = function (this: HistoryPage) {
+    this.data.viewAll = false; //collapsed
+    this.data.last_court = null;
+    this.data.matches = [];
+    this.setData(this.data);
+  }
+
+  onClickTab = function (this: HistoryPage, e: any) {
+    let tab = e.currentTarget.dataset.tab;
+    if (this.data.tab == tab) return;
+    this.data.tab = tab;
+    this.showInitData(); //refresh UI immediatly
+    this.loadByTab();
   }
 }
 

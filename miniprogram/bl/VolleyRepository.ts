@@ -738,6 +738,71 @@ export class JointVolleyRepository {
         }
       })
   }
+
+  fetchSquareMatches(openid: string, maxcount: number, callback: (matches: VolleyCourt[], success: boolean) => void) {
+
+    const that = this;
+
+    const db = wx.cloud.database({
+      env: this.env
+    })
+
+    const _ = db.command
+
+    db.collection('vmatch').where({
+      _openid: _.neq(openid)
+    }).field({
+      _id: true,
+      myScore: true,
+      yourScore: true,
+      create_time: true,
+      update_time: true,
+      myTeam: true,
+      yourTeam: true,
+      place: true,
+      _openid: true,
+      status: true,
+      mode: true,
+      chief_umpire: true,
+      stat_umpire1: true,
+      stat_umpire2: true
+    }).orderBy('create_time', 'desc')
+      .limit(maxcount)
+      .get({
+        success(res) {
+          console.log("[db.vmatch.get] openid", openid, "res:", res)
+          let matches: VolleyCourt[] = [];
+          for (let i in res.data) {
+            let t: Date = <Date><unknown>(res.data[i].create_time)
+            if (typeof (t) === "string") {
+              res.data[i].create_time = t;
+            }
+            else if (typeof (t) === "object" && t instanceof Date) {
+              res.data[i].create_time = parseTime(t);
+            } else {
+              res.data[i].create_time = ""
+            }
+
+            if (res.data[i].update_time) {
+              if (res.data[i].update_time instanceof Date) {
+                let t2: Date = <Date><unknown>(res.data[i].update_time)
+                res.data[i].update_time = parseTime(t2);
+              }
+            } else {
+              res.data[i].update_time = res.data[i].create_time;
+            }
+            //todo: 当前用户avatar可能比历史存储的更新，是否要用用户最新的头像更新？
+            matches.push(res.data[i])
+          }
+          callback(matches, true)
+        },
+        fail(res) {
+          console.log(res)
+          callback([], false);
+        }
+      })
+  }
+
 }
 
 

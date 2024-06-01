@@ -842,7 +842,10 @@ export class FriendsCourtRepo {
         return;
       }
     }
-    this.courts.push(court)
+    this.courts.unshift(court)
+    if (this.courts.length > 8) {
+      this.courts = this.courts.slice(0, 8)
+    }
     wx.setStorageSync(this.cacheKey, this.courts);
   }
 

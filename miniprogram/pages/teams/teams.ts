@@ -37,8 +37,8 @@ Page({
     }
 
     let teamRepo = new TeamRepo();
-    if (this.data.myteams && this.data.myteams!.length >= 5) {
-      wx.showToast({ icon: "error", title: "最多5只队伍" });
+    if (this.data.myteams && this.data.myteams!.length >= 50) {
+      wx.showToast({ icon: "error", title: "最多50只队伍" });
     } else {
       wx.showLoading({ title: "正在加载" });
       teamRepo.createTeam(this.data.user, (teamId: string | null) => {

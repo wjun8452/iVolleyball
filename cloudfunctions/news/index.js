@@ -54,7 +54,7 @@ loadNewsDetail = async function (url) {
       'Accept-Encoding': 'gzip, deflate, br',
       'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
       'Cache-Control': 'max-age=0',
-      'Connection':'keep-alive',
+      'Connection': 'keep-alive',
       'Host': aURL.host,
       'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
       'sec-ch-ua-mobile': '?0',
@@ -64,7 +64,7 @@ loadNewsDetail = async function (url) {
       'Sec-Fetch-Site': 'none',
       'Sec-Fetch-User': '?1',
       'Upgrade-Insecure-Requests': '1',
-      'Cookie':''
+      'Cookie': ''
     },
   })
     .then(function (response) {
@@ -77,41 +77,58 @@ loadNewsDetail = async function (url) {
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  let url = 'https://news.baidu.com/n?cmd=4&class=volleyball&tn=rss';
-  console.log("collect RSS news starts ...")
-  let feed = await parser.parseURL(url);
-  console.log("total news: ", feed.items.length, ", from ", feed.title);
-  console.log("collect RSS news end.")
+  let urls = ['https://feedx.net/rss/thepaper.xml',
+    'https://feedx.net/rss/infzm.xml'
+    //'https://news.baidu.com/n?cmd=4&class=volleyball&tn=rss' //百度停止更新了
+  ];
+  let keywords = '排球|男排|女排|沙排|气排|奥运|世锦赛'
+  let news = new Array();
+
+  for (const index in urls) {
+    console.log("collect RSS news starts, from ", urls[index])
+    let feed = await parser.parseURL(urls[index]);
+    console.log("total news: ", feed.items.length, ", from ", feed.title);
+    console.log("collect RSS news ends.")
+
+    for (const index2 in feed.items) {
+      console.log(index2, ": ", feed.items[index2].title);
+      if (feed.items[index2].title.match(keywords) != null) {
+        news.push(feed.items[index2])
+        console.log("volleyball news found! add it.")
+      }
+    }
+  }
 
   await clearDB()
 
-  for (const index in feed.items) {
-    console.log(feed.items[index].title + ':' + feed.items[index].link)
-    await addNewsToDB(feed.items[index])
+  console.log("***** 排球新闻总条数:  ", news.length)
+  for (const index in news) {
+    await addNewsToDB(news[index])
   }
+  console.log("saved to db.")
 
   //访问摘要的link，爬取新闻的细节
-  for (const index in [0]) {
-    feed.items[index].link = feed.items[index].link.replace("http:", "https:")
+  // for (const index in [0]) {
+  // feed.items[index].link = feed.items[index].link.replace("http:", "https:")
 
-    //nok
-    // await loadNewsDetail(feed.items[index].link + '&usm=3&rsv_idx=2&rsv_page=1')
+  //nok
+  // await loadNewsDetail(feed.items[index].link + '&usm=3&rsv_idx=2&rsv_page=1')
 
-    //ok
-    // await loadNewsDetail("https://www.baidu.com/s?rtt=1&bsst=1&cl=2&tn=news&ie=utf-8&word=%E6%8E%92%E7%90%83")
+  //ok
+  // await loadNewsDetail("https://www.baidu.com/s?rtt=1&bsst=1&cl=2&tn=news&ie=utf-8&word=%E6%8E%92%E7%90%83")
 
-    // nok
-    // await loadNewsDetail("https://baijiahao.baidu.com/s?id=1764148019204143368&wfr=spider&for=pc")
+  // nok
+  // await loadNewsDetail("https://baijiahao.baidu.com/s?id=1764148019204143368&wfr=spider&for=pc")
 
-    //ok
-    // await loadNewsDetail("http://news.yongzhou.gov.cn/hzdw/folder1318/2023-04-25/1OV5msFmVIXuasDx.html")
+  //ok
+  // await loadNewsDetail("http://news.yongzhou.gov.cn/hzdw/folder1318/2023-04-25/1OV5msFmVIXuasDx.html")
 
-    //ok
-    // await loadNewsDetail("https://sports.sohu.com/a/670138201_120168436")
+  //ok
+  // await loadNewsDetail("https://sports.sohu.com/a/670138201_120168436")
 
-    //nok 动态生成的新闻摘要和链接
-    // await loadNewsDetail("https://www.sohu.com/xtopic/TURBd05Ea3lOVGc1?spm=smpc.channel_255.block3_77_mRZJlu_g_link.2.1682429582404ILOBIKt_1253")
-  }
+  //nok 动态生成的新闻摘要和链接
+  // await loadNewsDetail("https://www.sohu.com/xtopic/TURBd05Ea3lOVGc1?spm=smpc.channel_255.block3_77_mRZJlu_g_link.2.1682429582404ILOBIKt_1253")
+  // }
 
   return { msg: 'ok' };
 }

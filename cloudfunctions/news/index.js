@@ -91,13 +91,11 @@ loadNewsDetail = async function (url) {
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  //越靠后，新闻越靠前显示
-  let urls = [
-    'https://news.baidu.com/n?cmd=4&class=volleyball&tn=rss', //百度停止更新了
-    'https://news.baidu.com/n?cmd=1&class=sportnews&tn=rss',
-    'https://feedx.net/rss/bjnews.xml',
+  let urls = ['https://feedx.net/rss/thepaper.xml',
     'https://feedx.net/rss/infzm.xml',
-    'https://feedx.net/rss/thepaper.xml'
+    'https://feedx.net/rss/bjnews.xml',
+    'https://news.baidu.com/n?cmd=1&class=sportnews&tn=rss',
+    'https://news.baidu.com/n?cmd=4&class=volleyball&tn=rss' //百度停止更新了
   ];
   let keywords = '排球|男排|女排|沙排|气排'
   let news = new Array();

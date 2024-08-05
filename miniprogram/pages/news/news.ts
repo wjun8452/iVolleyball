@@ -135,7 +135,7 @@ Page({
     );
 
     //云数据的请求
-    db.collection("vnews").field({
+    db.collection("vnews").orderBy('updateTime', 'desc').field({
       _id: true,
       title: true,
       contentSnippet: true,
@@ -152,7 +152,7 @@ Page({
             for (const i in res.data) {
               const item = res.data[i];
               item.updateTime = parseTime(item.updateTime);
-              item.pubDate = item.pubDate.substring(0,10);
+              item.pubDate = item.pubDate;
             }
             that.data.news = that.data.news.concat(res.data)
 

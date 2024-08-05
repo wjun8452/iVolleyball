@@ -1,6 +1,9 @@
 <!--pages/release/release.wxml-->
 <view style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
   <view class="block1">
+		<text style="margin-left: 5px;">v2024.8.5 排球新闻按更新日期排序 </text>
+  </view>
+  <view class="block1">
 		<text style="margin-left: 5px;">v2024.6.20 应用户要求，可创建的球队数量提高到50个 </text>
   </view>
   <view class="block1">

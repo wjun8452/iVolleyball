@@ -27,10 +27,10 @@
 			<view class="navigator_text">赛事组织 </view>
 		</navigator>
 
-    <navigator class="navigator_container" url="../news/news"> 
+    <!-- <navigator class="navigator_container" url="../news/news"> 
 			<image class="navigator_image" src="../../images/news.svg"></image>
 			<view class="navigator_text"> 排球新闻 </view>
-		</navigator>
+		</navigator> -->
 
 		<navigator class="navigator_container" url="../help/help"> 
 			<image class="navigator_image" src="../../images/help.svg"></image>

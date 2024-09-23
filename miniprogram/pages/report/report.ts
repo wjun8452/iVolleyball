@@ -1,23 +1,25 @@
 import { BasePage } from "../../bl/BasePage";
 import { GlobalData } from "../../bl/GlobalData";
-import { VPlayer, VUser } from "../../bl/TeamRepo";
+import { VUser } from "../../bl/TeamRepo";
 import { StatItem, StatName, VolleyCourt } from "../../bl/VolleyCourt";
 import { Reason, Status, VolleyRepository } from "../../bl/VolleyRepository";
 
-let videoAd:any = null;
+let videoAd: any = null;
 
 type StatSumRecord = Record<string, number>
 type PlayerStatRecord = Record<string, StatSumRecord>
 
-type SubReportRecord = Record<string, number|string>
+type SubReportRecord = Record<string, number | string>
 type CatReportRecord = Record<string, SubReportRecord>
 type PlayerReportRecord = Record<string, CatReportRecord>;
 
 class ReportData {
   matchID: string | null = null;
   court: VolleyCourt | null = null;
-  summary:PlayerReportRecord = {};
+  summary: PlayerReportRecord = {};
+  summary2: PlayerReportRecord = {}; //对方的统计
   globalData: GlobalData | null = null;
+  tab: number = 1; //1 信息，2 我方统计， 3 对方统计
 }
 
 
@@ -25,12 +27,13 @@ class ReportPage extends BasePage {
   data: ReportData = new ReportData();
   repo: VolleyRepository | null = null;
 
-  onCourtChange = function (this: ReportPage, court: VolleyCourt, reason: Reason, status: Status, success:boolean): void {
+  onCourtChange = function (this: ReportPage, court: VolleyCourt, reason: Reason, status: Status, success: boolean): void {
 
     console.log("[Report] onCourtChange Begins, reason:", reason, ", status:", status, ", court id:", court._id, ", court:", court, ", success:", success)
 
+    wx.hideLoading();
     if (!success) {
-      wx.showToast({'title':'操作失败！', 'icon': 'error'})
+      wx.showToast({ 'title': '操作失败！', 'icon': 'error' })
       return;
     }
 
@@ -38,16 +41,15 @@ class ReportPage extends BasePage {
     this.data.court = court;
 
     this.createStaticAndSummary(this.data.court);
-    
+    this.createStaticAndSummary2(this.data.court);
+
     //更新界面
     this.setData(this.data)
-
-    wx.hideLoading();
 
     console.log("[Report] onCourtChange ends, this:", this)
   }
 
-  onLoad = function(this: ReportPage, options:any) {
+  onLoad = function (this: ReportPage, options: any) {
 
     wx.showLoading({
       title: '加载中',
@@ -90,10 +92,10 @@ class ReportPage extends BasePage {
     // }
   }
 
-  getAllPlayers = function(data:VolleyCourt) : string[] {
+  getAllPlayers = function (data: VolleyCourt): string[] {
     //data.all_players, this.data.players, this.data.libero, this.data.libero_replacement1, this.data.libero_replacement2
     if (data.is_libero_enabled) {
-      let players:string[] = []
+      let players: string[] = []
       players = players.concat(data.players);
 
       if (players.indexOf(data.all_players[data.libero]) == -1) {
@@ -109,21 +111,54 @@ class ReportPage extends BasePage {
       }
 
       return players;
-      
+
     } else {
       return data.players;
     }
   }
 
-  createStaticAndSummary = function(this:ReportPage, data:VolleyCourt) {
-      //create summary
-      let stat_items = data.getMergedUmpireStats();
-      let statistics:PlayerStatRecord = this.createStatistics(stat_items)
-      let players:string[] = this.getAllPlayers(data)
-      this.createSummary(this.data.summary, players, statistics);
+  getAllPlayers2 = function (data: VolleyCourt): string[] {
+    //data.all_players, this.data.players, this.data.libero, this.data.libero_replacement1, this.data.libero_replacement2
+    if (data.is_libero_enabled2) {
+      let players: string[] = []
+      players = players.concat(data.players2);
+
+      if (players.indexOf(data.all_players2[data.libero2]) == -1) {
+        players.push(data.all_players2[data.libero2]);
+      }
+
+      if (players.indexOf(data.all_players2[data.libero2_replacement1]) == -1) {
+        players.push(data.all_players2[data.libero2_replacement1])
+      }
+
+      if (players.indexOf(data.all_players2[data.libero2_replacement2]) == -1) {
+        players.push(data.all_players2[data.libero2_replacement2])
+      }
+
+      return players;
+
+    } else {
+      return data.players2;
+    }
   }
 
-  onShow = function() {
+  createStaticAndSummary = function (this: ReportPage, data: VolleyCourt) {
+    //create summary
+    let stat_items = data.getMergedUmpireStats();
+    let statistics: PlayerStatRecord = this.createStatistics(stat_items)
+    let players: string[] = this.getAllPlayers(data)
+    this.createSummary(this.data.summary, players, statistics);
+  }
+
+  createStaticAndSummary2 = function (this: ReportPage, data: VolleyCourt) {
+    //create summary
+    let stat_items = data.getMergedUmpireStats2();
+    let statistics: PlayerStatRecord = this.createStatistics(stat_items)
+    let players: string[] = this.getAllPlayers2(data)
+    this.createSummary(this.data.summary2, players, statistics);
+  }
+
+  onShow = function () {
     // 用户触发广告后，显示激励视频广告
     if (videoAd) {
       videoAd.show().catch(() => {
@@ -137,13 +172,13 @@ class ReportPage extends BasePage {
     }
   }
 
-  onUnload = function(this:ReportPage) {
+  onUnload = function (this: ReportPage) {
     if (this.repo) {
       this.repo.close();
     }
   }
 
-  onShareAppMessage = function(this:ReportPage) {
+  onShareAppMessage = function (this: ReportPage) {
     if (!this.data.matchID) {
       wx.showToast({
         icon: "error",
@@ -155,7 +190,7 @@ class ReportPage extends BasePage {
       return {
         title: '分享赛况',
         path: path,
-        fail: function(res: any) {
+        fail: function (res: any) {
           console.error(res);
           wx.showToast({
             title: '分享失败',
@@ -166,9 +201,9 @@ class ReportPage extends BasePage {
   }
 
   //将项目次数按人头汇总
-  createStatistics = function(this:ReportPage, stats: StatItem[]) : PlayerStatRecord {
+  createStatistics = function (this: ReportPage, stats: StatItem[]): PlayerStatRecord {
     /** player: {statNem, core} */
-    let statistics:PlayerStatRecord = {}
+    let statistics: PlayerStatRecord = {}
     for (let index in stats) {
       let stat = stats[index];
 
@@ -193,7 +228,7 @@ class ReportPage extends BasePage {
     return statistics;
   }
 
-  _addStatistic = function(this:ReportPage, stat:Record<StatName, number>, stat_name:StatName) {
+  _addStatistic = function (this: ReportPage, stat: Record<StatName, number>, stat_name: StatName) {
     if (stat.hasOwnProperty(stat_name)) {
       stat[stat_name] = stat[stat_name] + 1
     } else {
@@ -202,13 +237,13 @@ class ReportPage extends BasePage {
   }
 
 
-  _createNewStatistic = function(this:ReportPage, stat_name:StatName) : StatSumRecord {
-    let record:StatSumRecord = {};
+  _createNewStatistic = function (this: ReportPage, stat_name: StatName): StatSumRecord {
+    let record: StatSumRecord = {};
     record[stat_name] = 1;
     return record;
   }
 
-  createSummary = function(this:ReportPage, summary:PlayerReportRecord, players:string[], statistics:PlayerStatRecord) {
+  createSummary = function (this: ReportPage, summary: PlayerReportRecord, players: string[], statistics: PlayerStatRecord) {
     summary["标题"] = this.createSummaryForPlayer()
     for (let index in players) {
       let player = players[index]
@@ -217,66 +252,66 @@ class ReportPage extends BasePage {
     }
   }
 
-  createSummaryForPlayer = function(this:ReportPage, statSumRecord?:StatSumRecord) : CatReportRecord {
-    let summary: CatReportRecord =  { 
-        "得分": {
-            "总得分": "",
-            "发球防反阶段得分": "",
-            "净得分": ""
-          },
-          "发球": {
-            "总数": "",
-            "失误": "",
-            "直接得分": "",
-            "效率": ""
-          },
-          "一传": {
-            "总数": "",
-            "失误": "",
-            "到位率": "",
-            "完美到位率": "",
-            "到位效率": ""
-          },
-          "进攻": {
-            "总数": "",
-            "失误": "",
-            "被拦死": "",
-            "得分": "",
-            "成功率": "",
-            "成功效率": ""
-          },
-          "拦网": {
-            "总数": "",
-            "得分": "",
-            "有效撑起": "",
-            "拦回": "",
-            "破坏性拦网": "",
-            "失误": ""
-          },
-          "防反起球": {
-            "总数": "",
-            "失误": "",
-            "有效防起": "",
-            "防起无攻": "", 
-            "到位率": "",
-            "到位效率": ""
-          },
-          "传球": {
-            "总数": "",
-            "到位": "",
-            "不到位": "",
-            "失误": "",
-            "到位率": "",
-            "到位效率": ""
-          }
-        };
+  createSummaryForPlayer = function (this: ReportPage, statSumRecord?: StatSumRecord): CatReportRecord {
+    let summary: CatReportRecord = {
+      "得分": {
+        "总得分": "",
+        "发球防反阶段得分": "",
+        "净得分": ""
+      },
+      "发球": {
+        "总数": "",
+        "失误": "",
+        "直接得分": "",
+        "效率": ""
+      },
+      "一传": {
+        "总数": "",
+        "失误": "",
+        "到位率": "",
+        "完美到位率": "",
+        "到位效率": ""
+      },
+      "进攻": {
+        "总数": "",
+        "失误": "",
+        "被拦死": "",
+        "得分": "",
+        "成功率": "",
+        "成功效率": ""
+      },
+      "拦网": {
+        "总数": "",
+        "得分": "",
+        "有效撑起": "",
+        "拦回": "",
+        "破坏性拦网": "",
+        "失误": ""
+      },
+      "防反起球": {
+        "总数": "",
+        "失误": "",
+        "有效防起": "",
+        "防起无攻": "",
+        "到位率": "",
+        "到位效率": ""
+      },
+      "传球": {
+        "总数": "",
+        "到位": "",
+        "不到位": "",
+        "失误": "",
+        "到位率": "",
+        "到位效率": ""
+      }
+    };
 
     if (!statSumRecord) {
       return summary;
     }
 
     //得分
-    let win:number = 0;
+    let win: number = 0;
     let win_items = [StatName.ServeWin, StatName.AttackWin, StatName.BlockWin];
 
     for (let index in win_items) {
@@ -289,7 +324,7 @@ class ReportPage extends BasePage {
     summary["得分"]["总得分"] = win;
 
     //净得分
-    let lost:number = 0;
+    let lost: number = 0;
     let lost_items = [StatName.ServeLost, StatName.ErChuanLost, StatName.ReceptionLost, StatName.AttackLost, StatName.DefendLost]
 
     for (let index in lost_items) {
@@ -299,11 +334,11 @@ class ReportPage extends BasePage {
       }
     }
 
-    let net:number = win - lost
+    let net: number = win - lost
     summary["得分"]["净得分"] = net
 
     //发球
-    let total:number = 0
+    let total: number = 0
     lost = 0
     win = 0
 
@@ -360,7 +395,7 @@ class ReportPage extends BasePage {
     summary["一传"]["总数"] = total
     summary["一传"]["失误"] = lost
     summary["一传"]["到位率"] = total == 0 ? "0" : ((win + normal) / total * 100).toFixed(0) + "%"
-    summary["一传"]["完美到位率"] = total == 0 ? "0": (win / total * 100).toFixed(0) + "%"
+    summary["一传"]["完美到位率"] = total == 0 ? "0" : (win / total * 100).toFixed(0) + "%"
     summary["一传"]["到位效率"] = total == 0 ? "0" : ((win + normal - lost) / total * 100).toFixed(0) + "%"
 
     //AttackNormal: "进攻一般",
@@ -395,7 +430,7 @@ class ReportPage extends BasePage {
     summary["进攻"]["失误"] = lost
     summary["进攻"]["被拦死"] = block
     summary["进攻"]["得分"] = win
-    summary["进攻"]["成功率"] = total == 0 ? "0" : (win / total * 100).toFixed(0)+ "%"
+    summary["进攻"]["成功率"] = total == 0 ? "0" : (win / total * 100).toFixed(0) + "%"
     summary["进攻"]["成功效率"] = total == 0 ? "0" : ((win - lost - block) / total * 100).toFixed(0) + "%"
 
 
@@ -434,7 +469,7 @@ class ReportPage extends BasePage {
     summary["拦网"]["失误"] = lost
     summary["拦网"]["得分"] = win
     summary["拦网"]["有效撑起"] = plus
-    summary["拦网"]["拦回"] = minus 
+    summary["拦网"]["拦回"] = minus
     summary["拦网"]["破坏性拦网"] = half
 
     //   DefendLost: "防守失误",
@@ -496,17 +531,18 @@ class ReportPage extends BasePage {
     summary["传球"]["失误"] = lost
     summary["传球"]["到位"] = win
     summary["传球"]["不到位"] = normal
-    summary["传球"]["到位率"] = total == 0 ? "0" : (win / total * 100).toFixed(0)  + "%"
+    summary["传球"]["到位率"] = total == 0 ? "0" : (win / total * 100).toFixed(0) + "%"
     summary["传球"]["到位效率"] = total == 0 ? "0" : ((win - lost) / total * 100).toFixed(0) + "%"
 
     return summary
   }
 
-  // gotoHome = function() { 
-  //   wx.navigateTo({ 
-  //     url: '../index/index', 
-  //   }) 
-  // }
+  onClickTab = function (this: ReportPage, e: any)  {
+    let tab = e.currentTarget.dataset.tab;
+    if (this.data.tab == tab) return;
+    this.data.tab = tab;
+    this.setData(this.data);
+  }
 }
 
 Page(new ReportPage())

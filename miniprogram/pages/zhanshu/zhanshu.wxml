@@ -1,0 +1,34 @@
+<!--pages/zhanshu/zhanshu.wxml-->
+<view style='width: 100vw !important; height: 100vh !important;  background-image: url("https://696c-ilovevolleyball-d1813b-1253572757.tcb.qcloud.la/image/volleycourt.png?sign=42e2bfdac707bdf85c59b3a28a19fb78&t=1727081150"); background-size: 100% 100%; background-repeat: no-repeat; display: flex; flex-direction: column;' catchtouchmove='stopPageScroll'>
+
+  <view style="flex: 1; display: flex; flex-direction: row; justify-content: space-between;">
+    <view>
+      <picker bindchange="onImportTeam" value="{{teamPicker0}}" range="{{myteams}}" range-key="name" data-which="0">
+        <button size="mini"> 导入1队 </button>
+      </picker>
+    </view>
+    <view>
+      <picker bindchange="onImportTeam" value="{{teamPicker1}}" range="{{myteams}}" range-key="name" data-which="1">
+        <button size="mini"> 导入2队 </button>
+      </picker>
+    </view>
+    <vew>
+      <button size="mini" bind:tap="reset">复原</button>
+    </vew>
+  </view>
+
+  <movable-area style="width: 100%; flex: 98;">
+    <block wx:for="{{[0,1,2]}}" wx:for-index="which" wx:key="*this">
+      <block wx:for="{{players[which]}}" wx:for-item="player" wx:key="name">
+        <movable-view direction="all" style="width:{{avatarWidth}}px; height: {{avatarWidth}}px;" x="{{player.x}}" y="{{player.y}}" bind:touchend='moved' bindchange="moving" data-moveid="{{index}}" data-which="{{which}}">
+          <!--  background-image url只能是云端文件，本地文件无法显示  -->
+          <view style='border-radius: 30%; width:{{avatarWidth}}px; height:{{avatarWidth}}px; background-color: #eee; background-image: url({{player.user.userInfo.avatarUrl=="" ? "https://696c-ilovevolleyball-d1813b-1253572757.tcb.qcloud.la/image/avartar.svg?sign=77404a95e6cd414ba86c2490ae4e41be&t=1727108408" : player.user.userInfo.avatarUrl }}); background-size: 100% 100%; background-repeat: no-repeat; '>
+            <view style="text-align: center; border: solid 0px black; width:{{avatarWidth/2}}px; height:{{avatarWidth/2}}px; border-radius:50%; background-color: red; color: white; font-size:small"> {{player.number}} </view>
+          </view>
+
+        </movable-view>
+      </block>
+    </block>
+  </movable-area>
+
+</view>

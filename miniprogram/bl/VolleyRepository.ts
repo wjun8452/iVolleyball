@@ -28,7 +28,11 @@ export interface CourtDataChanged {
   (courtData: VolleyCourt, reason: Reason, status: Status, success:boolean): void
 }
 
-export class VolleyRepository {
+export interface CourtRepo {
+
+}
+
+export class VolleyRepository implements CourtRepo {
   private callback: CourtDataChanged;
   private matchID: string | null = null;
   private userID: string; //当前用户的 openid
@@ -185,6 +189,7 @@ export class VolleyRepository {
     // }
 
     court.updateAvailableItems()
+    court.updateAvailableItems2();
 
     let t = data.create_time
     if (typeof (t) === "string") {
@@ -266,6 +271,7 @@ export class VolleyRepository {
 
   updateMatch(court: VolleyCourt) {
     court.updateStatSettings();
+    court.updateStatSettings2();
     this._updateMatch(court, false);
   }
 
@@ -337,6 +343,22 @@ export class VolleyRepository {
           play_item_cats_umpire2: court.play_item_cats_umpire2,
           stat_items_umpire2: court.stat_items_umpire2,
           stat_umpire2_done: court.stat_umpire2_done
+        }
+        this._updateMatchByOthers(who, matchId, data, who_id, court, callback);
+      } else if (who == "umpire3") {
+        let data = {
+          play_items2_umpire1: court.play_items2_umpire1,
+          play_item2_cats_umpire1: court.play_item_cats2_umpire1,
+          stat_items2_umpire1: court.stat_items2_umpire1,
+          stat2_umpire1_done: court.stat2_umpire1_done
+        }
+        this._updateMatchByOthers(who, matchId, data, who_id, court, callback);
+      } else if (who == "umpire4") {
+        let data = {
+          play_items2_umpire2: court.play_items2_umpire2,
+          play_item2_cats_umpire2: court.play_item_cats2_umpire2,
+          stat_items2_umpire2: court.stat_items2_umpire2,
+          stat2_umpire2_done: court.stat2_umpire2_done
         }
         this._updateMatchByOthers(who, matchId, data, who_id, court, callback);
       } else {
@@ -412,7 +434,7 @@ export class VolleyRepository {
         }
       })
     } else {
-      console.log("update a local match")
+      console.log("update a local match", court)
       wx.setStorageSync(this.cacheKey, court);
       this.callback(court, endMatch ? Reason.Ended : Reason.Update, Status.Local, true);
     }

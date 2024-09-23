@@ -1,50 +1,93 @@
 <wxs module="utils" src="../../utils/util.wxs"></wxs>
-
-<view wx:if="{{court}}" style="display: flex; flex-direction: column; margin: 5px">
-<!-- <view style="box-sizing:border-box; overflow: hidden;width:{{globalData.sysInfo.windowHeight}}px; height:{{globalData.sysInfo.windowWidth}}px; position: absolute; left: {{(globalData.sysInfo.windowWidth-globalData.sysInfo.windowHeight)/2}}px; top: {{(globalData.sysInfo.windowHeight-globalData.sysInfo.windowWidth)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;border:0px solid;align-items:stretch;"> -->
-
-  <!-- 得分信息 -->
-  <view style="margin:1px 1px 8px 1px" class="block1">
-    <view style="text-align: center;"> 比赛结果 </view>
-    <view style='text-align:left;'> 类型：{{court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}} </view>
-    <view style='text-align:left;'> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
-    <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
-    <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
-    <view style='text-align:left;'> 地点：{{court.place}} </view>
-    <view style='text-align:left;'> 时间：{{court.create_time}} </view>
+<view class="main">
+  <!-- tab headers -->
+  <view class="container" style="display:flex; flex-direction: row; justify-content: space-between; ">
+    <view class='{{tab==1 ? "sel" : ""}}' bindtap="onClickTab" data-tab="1"> 比赛信息 </view>
+    <view class='{{tab==2 ? "sel" : ""}}' bindtap="onClickTab" data-tab="2"> {{court.myTeam}} </view>
+    <view class='{{tab==3 ? "sel" : ""}}' bindtap="onClickTab" data-tab="3"> {{court.yourTeam}} </view>
   </view>
 
-  <!--按统计大类循环，每个大类是一个表格 -->
-  <block wx:for='{{summary["标题"]}}' wx:for-index="category" wx:key='index'>
-    <view style="margin:1px 1px 2px 1px; font-size: small; " class="block1">
-      <!-- 表格名称 -->
-      <view style="text-align: center; font-size: medium; padding: 5px;"> {{category}} </view>
-      <!--标题行-->
-      <view style="display: flex; flex-direction: row; align-items: center; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;">
-        <view style="flex:1;"> </view>
-        <block wx:for='{{summary["标题"][category]}}' wx:for-index="stat_name" wx:key='index'>
-          <view style="flex:1;"> {{ stat_name }} </view>
-        </block>
-      </view>
+  <view wx:if="{{court}}" style="display: flex; flex-direction: column; margin: 5px">
 
-      <!--数据行-->
-      <block wx:for="{{summary}}" wx:for-index="player" wx:key='index'>
-        <block wx:if='{{player!="标题"}}'>
-          <view style='display: flex; flex-direction: row; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;'>
-            <view style="flex:1;" class="avartar_container_vertical">
-              <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
-              <text class="nickName" style='color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; '>{{player}}</text>
-            </view>
-            <block wx:for='{{summary[player][category]}}' wx:for-item="count" wx:key='*this'>
-              <view style="flex:1;"> {{count}} </view>
+    <!-- 得分信息 -->
+    <view wx:if="{{tab==1}}" style="margin:1px 1px 8px 1px" class="block1">
+      <view style="text-align: center;"> 比赛结果 </view>
+      <view style='text-align:left;'> 类型：{{court.mode==2 ? "4人气排球": (court.mode==1 ? "5人气排球": "6人硬排球")}} </view>
+      <view style='text-align:left;'> 状态：{{court.status == 0 ? "已结束" : "进行中"}} </view>
+      <view style='text-align:left;'> 队伍：{{court.myTeam}} vs {{court.yourTeam}}</view>
+      <view style='text-align:left;'> 比分：{{court.myScore}} : {{court.yourScore}} </view>
+      <view style='text-align:left;'> 地点：{{court.place}} </view>
+      <view style='text-align:left;'> 时间：{{court.create_time}} </view>
+    </view>
+
+    <!--我方统计，按统计大类循环，每个大类是一个表格 -->
+    <view wx:if="{{tab==2}}">
+      <block wx:for='{{summary["标题"]}}' wx:for-index="category" wx:key='index'>
+        <view style="margin:1px 1px 2px 1px; font-size: small; " class="block1">
+          <!-- 表格名称 -->
+          <view style="text-align: center; font-size: medium; padding: 5px;"> {{category}} </view>
+          <!--标题行-->
+          <view style="display: flex; flex-direction: row; align-items: center; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;">
+            <view style="flex:1;"> </view>
+            <block wx:for='{{summary["标题"][category]}}' wx:for-index="stat_name" wx:key='index'>
+              <view style="flex:1;"> {{ stat_name }} </view>
             </block>
           </view>
-        </block>
+
+          <!--数据行-->
+          <block wx:for="{{summary}}" wx:for-index="player" wx:key='index'>
+            <block wx:if='{{player!="标题"}}'>
+              <view style='display: flex; flex-direction: row; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;'>
+                <view style="flex:1;" class="avartar_container_vertical">
+                  <image class="avartar" src='{{court.players_map[player].user.userInfo.avatarUrl? court.players_map[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                  <text class="nickName" style='color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; '>{{player}}</text>
+                </view>
+                <block wx:for='{{summary[player][category]}}' wx:for-item="count" wx:key='*this'>
+                  <view style="flex:1;"> {{count}} </view>
+                </block>
+              </view>
+            </block>
+          </block>
+        </view>
       </block>
+
+      <button wx:if="{{court._id}}" style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3 share_button" open-type="share"> 分享 </button>
     </view>
-  </block>
 
-  <button wx:if="{{court._id}}" style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3 share_button" open-type="share"> 分享 </button>
+    <!--我方统计，按统计大类循环，每个大类是一个表格 -->
+    <view wx:if="{{tab==3}}">
+      <block wx:for='{{summary2["标题"]}}' wx:for-index="category" wx:key='index'>
+        <view style="margin:1px 1px 2px 1px; font-size: small; " class="block1">
+          <!-- 表格名称 -->
+          <view style="text-align: center; font-size: medium; padding: 5px;"> {{category}} </view>
+          <!--标题行-->
+          <view style="display: flex; flex-direction: row; align-items: center; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;">
+            <view style="flex:1;"> </view>
+            <block wx:for='{{summary2["标题"][category]}}' wx:for-index="stat_name" wx:key='index'>
+              <view style="flex:1;"> {{ stat_name }} </view>
+            </block>
+          </view>
 
-  <!-- <button style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3" bindtap='gotoHome'> 返回首页 </button> -->
+          <!--数据行-->
+          <block wx:for="{{summary2}}" wx:for-index="player" wx:key='index'>
+            <block wx:if='{{player!="标题"}}'>
+              <view style='display: flex; flex-direction: row; border-bottom: 1px solid #eee; margin-bottom: 5px; margin-top: 5px;'>
+                <view style="flex:1;" class="avartar_container_vertical">
+                  <image class="avartar" src='{{court.players_map2[player].user.userInfo.avatarUrl? court.players_map2[player].user.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
+                  <text class="nickName" style='color: {{ (serve && who_serve==position) ? "#FF9900": is_libero_enabled && utils.isLibero(players[position], libero, all_players) ? "#99CC99" : "#336699"}}; '>{{player}}</text>
+                </view>
+                <block wx:for='{{summary2[player][category]}}' wx:for-item="count" wx:key='*this'>
+                  <view style="flex:1;"> {{count}} </view>
+                </block>
+              </view>
+            </block>
+          </block>
+        </view>
+      </block>
+
+      <button wx:if="{{court._id}}" style="width:100%; margin-top:10px; border: 1px solid #336699" class="color3 share_button" open-type="share"> 分享 </button>
+    </view>
+
+  </view>
+
 </view>

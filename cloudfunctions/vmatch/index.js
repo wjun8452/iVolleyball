@@ -48,6 +48,28 @@ handleUmpireStats = async function (who, who_id, matchId, matchData) {
       if (result.data.length > 0) {
         exist = true;
       }
+    } else if (who === "umpire3") {
+      let result = await db.collection('vmatch').where({
+        "_id": matchId,
+        "stat2_umpire1.openid": who_id
+      }).get();
+
+      console.log("result", result)
+
+      if (result.data.length > 0) {
+        exist = true;
+      }
+    } else if (who == "umpire4") {
+      let result = await db.collection('vmatch').where({
+        "_id": matchId,
+        "stat2_umpire2.openid": who_id
+      }).get();
+
+      console.log("result", result)
+
+      if (result.data.length > 0) {
+        exist = true;
+      }
     }
     if (!exist) {
       return {
@@ -105,8 +127,28 @@ handleSetUmpire = async function (matchId, who, user ) {
       });
       console.log(result)
       return result;
-    } else if (who == "umpire2") {
+    } else if (who == "umpire3") {
+      //检查不允许两个统计员id一样
+      let query = await db.collection('vmatch').where({
+        _id: matchId
+      }).get();
 
+      if (query.data.length > 0) {
+        if (user.openid!="" && query.data[0].stat2_umpire2.openid == user.openid) {
+          return {
+            errMsg: "invalid param, the user is already a umpire"
+          }
+        }
+      }
+
+      let result = await db.collection('vmatch').where({
+        _id: matchId
+      }).update({
+        data: {"stat2_umpire1": user}
+      });
+      console.log(result)
+      return result;
+    } else if (who == "umpire2") {
       //检查不允许两个统计员id一样
       let query = await db.collection('vmatch').where({
         _id: matchId
@@ -125,7 +167,26 @@ handleSetUmpire = async function (matchId, who, user ) {
       }).update({
         data: {"stat_umpire2": user}
       });
-    } else {
+    } else if (who == "umpire4") {
+      //检查不允许两个统计员id一样
+      let query = await db.collection('vmatch').where({
+        _id: matchId
+      }).get();
+
+      if (query.data.length > 0) {
+        if (user.openid!="" && query.data[0].stat2_umpire1.openid == user.openid) {
+          return {
+            errMsg: "invalid param, the user is already a umpire"
+          }
+        }
+      }
+      
+      return await db.collection('vmatch').where({
+        _id: matchId
+      }).update({
+        data: {"stat2_umpire2": user}
+      });
+    }  else {
       return {
         errMsg: "invalid param, who=" + who + " is not support"
       }

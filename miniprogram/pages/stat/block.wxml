@@ -2,8 +2,8 @@
 <template name="volleyblock">
   <!-- represents an area the player stands -->
   <view style='display:flex; flex-direction:column; height:100%; align-items: center;'>
-    <!-- 显示本轮分数下的统计历史区域 -->
-    <view wx:if="{{opPosition!=position}}" style="flex:4; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px; width: 100%; align-items: center;">
+    <!-- 显示本轮分数下的统计历史区域，如果正在统计该球员，则不显示，只显示统计button，点击统计buttong之后就可以显示历史信息了 -->
+    <view wx:if="{{opPosition!=position && can_umpire}}" style="flex:4; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px; width: 100%; align-items: center;">
         <block wx:for="{{stats}}" wx:for-item='stat' wx:key="*this">
           <view style='font-size: small; color: {{stat.score==1? "#FF9900" : (stat.score==-1?"green":"#336699")}};'> {{stat.item}}
           </view>
@@ -12,13 +12,14 @@
 
     <!-- 显示统计按钮区域 -->
     <view style="flex:9; display: flex; flex-direction: column; flex-wrap: wrap; padding: 2px; width: 100%;">
+    <!--  data-courtindex 不能写成 data-courtIndex，否则onTapCat中拿到的是undefine   !-->
       <block wx:for="{{play_item_cats}}" wx:for-item='category' wx:key="*this">
-        <button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' style="flex:1; text-align: center;" class="mybutton" hidden='{{opCat!=null && opPosition==position}}' disabled="{{!can_umpire}}" size="mini"> {{category}} </button>
+        <button catchtap='onTapCat' data-position='{{position}}' data-cat='{{category}}' data-play_item_index='{{index}}' data-courtindex='{{courtIndex}}' style="flex:1; text-align: center;" class="mybutton" hidden='{{opCat!=null && opPosition==position}}' disabled="{{!can_umpire}}" size="mini"> {{category}} </button>
       </block>
 
       <block wx:for="{{play_items}}" wx:for-item='play_item' wx:key="index">
         <block wx:if='{{play_item.category==opCat && opPosition==position}}'>
-          <button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' style='flex:1; text-align: center; color: {{play_item.score==1? "#FF9900" : (play_item.score==-1?"green":"#336699")}}; border: 1px solid #336699;'  class='mybutton' disabled="{{!can_umpire}}" size="mini"> {{play_item.name}} </button>
+          <button catchtap='onTapPlayItem' data-position='{{position}}' data-play_item_index='{{index}}' data-courtindex = '{{courtIndex}}' style='flex:1; text-align: center; color: {{play_item.score==1? "#FF9900" : (play_item.score==-1?"green":"#336699")}}; border: 1px solid #336699;'  class='mybutton' disabled="{{!can_umpire}}" size="mini"> {{play_item.name}} </button>
         </block>
       </block>
 

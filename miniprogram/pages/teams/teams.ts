@@ -54,10 +54,10 @@ Page({
     wx.navigateTo({
       url: "../myprofile/myprofile",
       events: {
-        updateAvartar: (result) => {
+        updateAvartarEvent: (result) => {
           console.log("updateAvartar event received: ", result)
-          const userInfo: VUser = result;
-          that.data.user = userInfo;
+          const user: VUser = result;
+          that.data.user = user;
           that.setData(that.data)
         },
         success: function (res) {

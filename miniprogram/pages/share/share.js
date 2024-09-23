@@ -84,6 +84,10 @@ Page({
         return this.gotoInvitePage(this.data._id, "inviteAsUmpire1=true");
       } else if (this.data.which_umpire == "2") {
         return this.gotoInvitePage(this.data._id, "inviteAsUmpire2=true");
+      } else if (this.data.which_umpire == "3") {
+        return this.gotoInvitePage(this.data._id, "inviteAsUmpire3=true");
+      } else if (this.data.which_umpire == "4") {
+        return this.gotoInvitePage(this.data._id, "inviteAsUmpire4=true");
       }
     } else {
       var path = '/pages/score_board/score_board?_id=' + this.data._id

@@ -16,7 +16,8 @@
     "pages/events/board",
     "pages/events/round",
     "pages/score_board/setting",
-    "pages/myprofile/myprofile"
+    "pages/myprofile/myprofile",
+    "pages/zhanshu/zhanshu"
   ],
   "window": {
     "backgroundTextStyle": "light",

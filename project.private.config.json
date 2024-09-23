@@ -4,6 +4,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/zhanshu/zhanshu",
+          "pathName": "pages/zhanshu/zhanshu",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/score_board/score_board",
           "pathName": "pages/score_board/score_board",
           "query": "",

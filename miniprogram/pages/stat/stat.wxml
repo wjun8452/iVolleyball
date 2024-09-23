@@ -2,192 +2,167 @@
 <import src="block.wxml" />
 
 <view style="display: flex; flex-direction: column; height:{{globalData.sysInfo.windowHeight}}px; width: 100%;" bindtap="onTapBoard" class="color3">
-
-  <!-- 比赛得分区域-->
-  <view style="flex:1;" class="net">
-    <text style="flex:1; text-align: center;"> {{court.myTeam}} </text>
-    <text style="flex:1; text-align: center; font-size: xx-large " bindtap='onTapScore'> {{court.myScore}} : {{court.yourScore}}</text>
-    <text style="flex:1;text-align: center; "> {{court.yourTeam}} </text>
-  </view>
-
-  <!-- 得分按钮区域 -->
-  <view style="flex:1;display: flex; flex-direction: row; margin-bottom: 10px;">
-    <block wx:if="{{isOwner && court.status!=0}}">
-      <button size='mini' disabled="{{!umpire_done}}" bindtap='onTapAddScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolorwin textwhite">得分</button>
-    </block>
-
-    <block wx:if="{{isOwner && court.status!=0}}">
-      <button size='mini' disabled="{{!umpire_done}}" bindtap='onTapLooseScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolorloss textwhite"> 失分 </button>
-    </block>
-
-    <block wx:if="{{isOwner && court.status!=0}}">
-      <button size='mini' bindtap='onTapRevert' disabled='{{court.stat_items.length==0 || !umpire_done}}' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">撤销</button>
-    </block>
-
-  </view>
-
-  <!-- 统计员状态区域 -->
-  <view wx:if="{{court.status!=0}}" style="flex:2; display: flex; flex-direction: column; margin-top: 5px; font-size: small; margin-left: 5px; margin-right: 5px;" >
-    <view>
-      <!-- 主裁判 -->
-      <view wx:if='{{court.chief_umpire.openid!=""}}' style="display:flex; flex-direction: row; justify-content: space-between; align-items: center;">
-        <view style="display:flex; flex-direction: row; ">
-          <view>主裁判 {{isOwner ? "" : ""}}：</view>
-          <view class="avartar_container">
-            <image class="avartar_small" src='{{court.chief_umpire.userInfo.avatarUrl!="" ? court.chief_umpire.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
-            <text class="nickName">{{court.chief_umpire.userInfo.nickName}}</text>
+  <!-- 对方场地 -->
+  <block wx:if="{{showWhichCourt==2 || showWhichCourt==1}}">
+    <!-- 对方，硬排， 场上站位，技术统计按钮区域 -->
+    <view wx:if="{{court.mode==0}}" style="flex:10; height: 100%;" class="court">
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[0,5,4]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map2, players:court.players2, all_players:court.all_players2, position: item, play_items: isUmpire3 ? court.play_items2_umpire1[item] : isUmpire4 ? court.play_items2_umpire2[item] :court.play_items2[item], serve:court.serve2, who_serve:court.who_serve2, opPosition:opPosition2, opCat:opCat2, play_item_cats: isUmpire3 ? court.play_item_cats2_umpire1[item] : isUmpire4 ? court.play_item_cats2_umpire2[item] : court.play_item_cats2[item], isOwner:isOwner, status:court.status, libero:court.libero2, is_libero_enabled:court.is_libero_enabled2, isUmpire1:isUmpire3, isUmpire2: isUmpire4, can_umpire: can_umpire, stats: stat_record2[court.players2[item]], courtIndex:2}}" />
           </view>
-        </view>
-
-        <block wx:if="{{isOwner && umpire_done}}">
-          <view class=".color_main_orange"> 请判分 </view>
-        </block>
-
-
-         <block wx:if="{{!isOwner && umpire_done}}">
-          <view class=".color_main_orange"> 正在判分... </view>
         </block>
       </view>
-
-      <!-- 统计员1 -->
-      <view wx:if='{{court.stat_umpire1.openid!=""}}' style="display:flex; flex-direction: row; justify-content: space-between; align-items: center;">
-        <view style="display:flex; flex-direction: row; ">
-          <view>统计员1{{isUmpire1?"":""}}： </view>
-          <view class="avartar_container">
-            <image class="avartar_small" src='{{court.stat_umpire1.userInfo.avatarUrl!="" ? court.stat_umpire1.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
-            <text class="nickName">{{court.stat_umpire1.userInfo.nickName}}</text>
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map2, players:court.players2, all_players:court.all_players2, position: item, play_items: isUmpire3 ? court.play_items2_umpire1[item] : isUmpire4 ? court.play_items2_umpire2[item] :court.play_items2[item], serve:court.serve2, who_serve:court.who_serve2, opPosition:opPosition2, opCat:opCat2, play_item_cats: isUmpire3 ? court.play_item_cats2_umpire1[item] : isUmpire4 ? court.play_item_cats2_umpire2[item] : court.play_item_cats2[item], isOwner:isOwner, status:court.status, libero:court.libero2, is_libero_enabled:court.is_libero_enabled2, isUmpire3:isUmpire3, isUmpire4: isUmpire4, can_umpire: can_umpire, stats: stat_record2[court.players2[item]], courtIndex: 2 }}" />
           </view>
-        </view>
-
-        <block wx:if="{{isUmpire1 && !court.stat_umpire1_done }}">
-          <view class=".color_main_orange"> 请做技术统计，然后提交 </view>
-        </block>
-
-
-         <block wx:if='{{isUmpire1 && court.stat_umpire1_done && (court.stat_umpire2.openid=="" || court.stat_umpire2_done) }}'>
-          <view style="color:green"> 请等候主裁判分 </view>
-        </block>
-
-        <block wx:if='{{isUmpire1 && court.stat_umpire1_done && court.stat_umpire2.openid!="" && !court.stat_umpire2_done}}'>
-          <view style="color:green"> 请等候统计员2提交 </view>
-        </block>
-
-
-        <block wx:if="{{!isUmpire1 && !court.stat_umpire1_done }}">
-          <view class=".color_main_orange"> 正在统计... </view>
-        </block>
-
-        <block wx:if="{{!isUmpire1 && court.stat_umpire1_done }}">
-          <view style="color:green"> 已提交 </view>
         </block>
       </view>
+    </view>
 
-      <!-- 统计员2 -->
-      <view wx:if='{{court.stat_umpire2.openid!=""}}' style="display:flex; flex-direction: row; justify-content: space-between; align-items: center;">
-        <view style="display:flex; flex-direction: row; ">
-          <view>统计员2{{isUmpire2?"":""}}: </view>
-          <view class="avartar_container">
-            <image class="avartar_small" src='{{court.stat_umpire2.userInfo.avatarUrl!="" ? court.stat_umpire2.userInfo.avatarUrl : "../../images/avartar.svg"}}' mode="cover"></image>
-            <text class="nickName">{{court.stat_umpire2.userInfo.nickName}}</text>
+    <!-- 对方，气排5人 场上站位，技术统计按钮区域 todo isUmpire1, isUmpire2改成3，4-->
+    <view wx:if="{{court.mode==1}}" style="flex:10;" class="court">
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[3,2,1]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map2, players:court.players2, all_players:court.all_players2, position: item, play_items: isUmpire3 ? court.play_items2_umpire1[item] : isUmpire4 ? court.play_items2_umpire2[item] :court.play_items2[item], serve:court.serve2, who_serve:court.who_serve2, opPosition:opPosition2, opCat:opCat2, play_item_cats: isUmpire3 ? court.play_item_cats2_umpire1[item] : isUmpire4 ? court.play_item_cats2_umpire2[item] : court.play_item_cats2[item], isOwner:isOwner, status:court.status, libero:court.libero2, is_libero_enabled:court.is_libero_enabled2, isUmpire1:isUmpire3, isUmpire2: isUmpire4 , can_umpire: can_umpire, stats: stat_record2[court.players2[item]], courtIndex:2 }}" />
           </view>
-        </view>
-
-       <block wx:if="{{isUmpire2 && !court.stat_umpire2_done }}">
-          <view class=".color_main_orange"> 请做技术统计，然后提交 </view>
-        </block>
-
-
-         <block wx:if='{{isUmpire2 && court.stat_umpire2_done && (court.stat_umpire1.openid=="" || court.stat_umpire1_done) }}'>
-          <view style="color:green"> 请等候主裁判分 </view>
-        </block>
-
-        <block wx:if='{{isUmpire2 && court.stat_umpire2_done && court.stat_umpire1.openid!="" && !court.stat_umpire1_done }}'>
-          <view style="color:green"> 请等候统计员1提交 </view>
-        </block>
-
-
-        <block wx:if="{{!isUmpire2 && !court.stat_umpire2_done }}">
-          <view class=".color_main_orange"> 正在统计... </view>
-        </block>
-
-        <block wx:if="{{!isUmpire2 && court.stat_umpire2_done }}">
-          <view style="color:green"> 已提交 </view>
         </block>
       </view>
-
-      <view wx:if='{{court.stat_umpire1.openid=="" && court.stat_umpire2.openid==""}}'> 未安排统计员，点击设置可设定</view>
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[4,0]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map2, players:court.players2, all_players:court.all_players2, position: item, play_items: isUmpire1 ? court.play_items2_umpire1[item] : isUmpire2 ? court.play_items2_umpire2[item] :court.play_items2[item], serve:court.serve2, who_serve:court.who_serve2, opPosition:opPosition2, opCat:opCat2, play_item_cats: isUmpire1 ? court.play_item_cats2_umpire1[item] : isUmpire2 ? court.play_item_cats2_umpire2[item] : court.play_item_cats2[item], isOwner:isOwner, status:court.status, libero:court.libero2, is_libero_enabled:court.is_libero_enabled2, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record2[court.players2[item]] }}" />
+          </view>
+        </block>
+      </view>
     </view>
+
+    <!-- 对方，气排4人 场上站位，技术统计按钮区域 todo isUmpire1, isUmpire2改成3，4- -->
+    <view wx:if="{{court.mode==2}}" style="flex:10;" class="court">
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[2,1]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map2, players:court.players2, all_players:court.all_players2, position: item, play_items: isUmpire3 ? court.play_items2_umpire1[item] : isUmpire4 ? court.play_items2_umpire2[item] :court.play_items2[item], serve:court.serve2, who_serve:court.who_serve2, opPosition:opPosition2, opCat:opCat2, play_item_cats: isUmpire3 ? court.play_item_cats2_umpire1[item] : isUmpire4 ? court.play_item_cats2_umpire2[item] : court.play_item_cats2[item], isOwner:isOwner, status:court.status, libero:court.libero2, is_libero_enabled:court.is_libero_enabled2, isUmpire1:isUmpire3, isUmpire2: isUmpire4, can_umpire: can_umpire, stats: stat_record2[court.players2[item]],courtIndex:2 }}" />
+          </view>
+        </block>
+      </view>
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[3,0]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map2, players:court.players2, all_players:court.all_players2, position: item, play_items: isUmpire3 ? court.play_items2_umpire1[item] : isUmpire4 ? court.play_items2_umpire2[item] :court.play_items2[item], serve:court.serve2, who_serve:court.who_serve2, opPosition:opPosition2, opCat:opCat2, play_item_cats: isUmpire3 ? court.play_item_cats2_umpire1[item] : isUmpire4 ? court.play_item_cats2_umpire2[item] : court.play_item_cats2[item], isOwner:isOwner, status:court.status, libero:court.libero2, is_libero_enabled:court.is_libero_enabled2, isUmpire1:isUmpire3, isUmpire2: isUmpire4, can_umpire: can_umpire, stats: stat_record2[court.players2[item]] ,courtIndex:2}}" />
+          </view>
+        </block>
+      </view>
+    </view>
+  </block>
+
+  <!-- 队伍名称区域 -->
+  <view style="flex:1;">
+    <!-- 队伍名称区域 -->
+    <view class="net">
+      <text style="flex:1; text-align: center;" bindtap='onTapMyTeam'> {{court.myTeam}} </text>
+      <text style="flex:1; text-align: center; font-size:larger" bindtap='onTapScore'> {{court.myScore}} : {{court.yourScore}}</text>
+      <text style="flex:1;text-align: center; " bindtap='onTapYourTeam'> {{court.yourTeam}} </text>
+    </view>
+
+    <!-- 得分按钮区域 -->
+    <view style="flex:1;display: flex; flex-direction: row; margin-bottom: 10px;">
+      <block wx:if="{{isOwner && court.status!=0}}">
+        <button size='mini' disabled="{{!umpire_done}}" bindtap='onTapAddScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolorwin textwhite">得分</button>
+      </block>
+
+      <block wx:if="{{isOwner && court.status!=0}}">
+        <button size='mini' bindtap='onTapRevert' disabled='{{court.stat_items.length==0 || umpire_done}}' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolor2 color3">撤销</button>
+      </block>
+
+      <block wx:if="{{isOwner && court.status!=0}}">
+        <button size='mini' disabled="{{!umpire_done}}" bindtap='onTapLooseScore' style="flex:1; margin:2px; border: 1px solid #336699;" class="bgcolorloss textwhite"> 得分 </button>
+      </block>
+
+    </view>
+
+    <!-- 统计员状态区域 -->
+    <!-- <view wx:if="{{court.status!=0}}" style="flex:1; display: flex; flex-direction: column; margin: 2px; font-size: small;">
+     <view style="color:green"> {{tips_text}} </view>
+     </view> -->
   </view>
 
-  <!-- 硬排， 场上站位，技术统计按钮区域 -->
-  <view wx:if="{{court.mode==0}}" style="flex:10; height: 100%;" class="court">
-    <view style="flex:1;" class="player_row">
-      <block wx:for="{{[3,2,1]}}" wx:key="*this">
-        <view style="flex:1;" class="player">
-          <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] }}" />
-        </view>
-      </block>
+<!-- 我方场地 -->
+  <block wx:if="{{showWhichCourt==0 || showWhichCourt==2}}">
+    <!-- 硬排， 场上站位，技术统计按钮区域 -->
+    <view wx:if="{{court.mode==0}}" style="flex:10; height: 100%;" class="court">
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[3,2,1]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]], courtIndex:1}}" />
+          </view>
+        </block>
+      </view>
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[4,5,0]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]], courtIndex:1 }}" />
+          </view>
+        </block>
+      </view>
     </view>
-    <view style="flex:1;" class="player_row">
-      <block wx:for="{{[4,5,0]}}" wx:key="*this">
-        <view style="flex:1;" class="player">
-          <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] }}" />
-        </view>
-      </block>
-    </view>
-  </view>
 
-  <!-- 气排5人 场上站位，技术统计按钮区域 -->
-  <view wx:if="{{court.mode==1}}" style="flex:10;" class="court">
-    <view style="flex:1;" class="player_row">
-      <block wx:for="{{[3,2,1]}}" wx:key="*this">
-        <view style="flex:1;" class="player">
-          <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2 , can_umpire: can_umpire, stats: stat_record[court.players[item]] }}" />
-        </view>
-      </block>
+    <!-- 气排5人 场上站位，技术统计按钮区域 -->
+    <view wx:if="{{court.mode==1}}" style="flex:10;" class="court">
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[3,2,1]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2 , can_umpire: can_umpire, stats: stat_record[court.players[item]],courtIndex:1 }}" />
+          </view>
+        </block>
+      </view>
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[4,0]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]],courtIndex:1 }}" />
+          </view>
+        </block>
+      </view>
     </view>
-    <view style="flex:1;" class="player_row">
-      <block wx:for="{{[4,0]}}" wx:key="*this">
-        <view style="flex:1;" class="player">
-          <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] }}" />
-        </view>
-      </block>
-    </view>
-  </view>
 
-  <!-- 气排4人 场上站位，技术统计按钮区域 -->
-  <view wx:if="{{court.mode==2}}" style="flex:10;" class="court">
-    <view style="flex:1;" class="player_row">
-      <block wx:for="{{[2,1]}}" wx:key="*this">
-        <view style="flex:1;" class="player">
-          <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] }}" />
-        </view>
-      </block>
+    <!-- 气排4人 场上站位，技术统计按钮区域 -->
+    <view wx:if="{{court.mode==2}}" style="flex:10;" class="court">
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[2,1]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] ,courtIndex:1}}" />
+          </view>
+        </block>
+      </view>
+      <view style="flex:1;" class="player_row">
+        <block wx:for="{{[3,0]}}" wx:key="*this">
+          <view style="flex:1;" class="player">
+            <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] ,courtIndex:1}}" />
+          </view>
+        </block>
+      </view>
     </view>
-    <view style="flex:1;" class="player_row">
-      <block wx:for="{{[3,0]}}" wx:key="*this">
-        <view style="flex:1;" class="player">
-          <template is="volleyblock" data="{{players_map:court.players_map, players:court.players, all_players:court.all_players, position: item, play_items: isUmpire1 ? court.play_items_umpire1[item] : isUmpire2 ? court.play_items_umpire2[item] :court.play_items[item], serve:court.serve, who_serve:court.who_serve, opPosition:opPosition, opCat:opCat, play_item_cats: isUmpire1 ? court.play_item_cats_umpire1[item] : isUmpire2 ? court.play_item_cats_umpire2[item] : court.play_item_cats[item], isOwner:isOwner, status:court.status, libero:court.libero, is_libero_enabled:court.is_libero_enabled, isUmpire1:isUmpire1, isUmpire2: isUmpire2, can_umpire: can_umpire, stats: stat_record[court.players[item]] }}" />
-        </view>
-      </block>
-    </view>
-  </view>
+
+  </block>
 
   <!-- 技术统计提交，撤回按钮区域 -->
   <view style="flex:1;display: flex; flex-direction: row;">
 
-    <block wx:if="{{(isUmpire1 || isUmpire2) && court.status!=0}}">
+    <block wx:if="{{(isUmpire1 || isUmpire2 || isUmpire3 || isUmpire4) && court.status!=0}}">
       <button size='mini' disabled="{{!can_umpire}}" bindtap='onTapSubmit' style="flex:1;" class="mybutton">提交统计</button>
     </block>
 
-    <block wx:if="{{(isUmpire1 || isUmpire2) && court.status!=0}}">
-      <button size='mini' disabled="{{!can_umpire || !canRevertUmpire}}" bindtap='onTapRevertStat' style="flex:1;" class="mybutton">撤销统计</button>
+    <block wx:if="{{(isUmpire1 || isUmpire2 || isUmpire3 || isUmpire4) && court.status!=0}}">
+      <button size='mini' disabled="{{!can_umpire || lastStatUmpire==0}}" bindtap='onTapRevertStat' style="flex:1;" class="mybutton">撤销统计</button>
     </block>
   </view>
 
   <!-- 设置按钮区域 -->
   <view style="flex:1;display: flex; flex-direction: row;">
-    <block wx:if="{{isOwner}}">
+    <block>
       <button size='mini' bindtap='onTapSetting' style="flex:1;" class="mybutton">场上设置</button>
     </block>
 

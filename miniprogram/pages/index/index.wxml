@@ -28,7 +28,7 @@
 		</navigator>
 
     <navigator class="navigator_container" url="../zhanshu/zhanshu"> 
-			<image class="navigator_image" src="../../images/event.svg"></image>
+			<image class="navigator_image" src="../../images/zhanshu.svg"></image>
 			<view class="navigator_text">战术面板</view>
 		</navigator>
 
@@ -43,7 +43,7 @@
 		</navigator>
 
 		<navigator class="navigator_container" url="../release/release">
-			<view class="navigator_version">v2024.8.5</view>
+			<view class="navigator_version">v2024.9.25</view>
 		</navigator>
 </view>
 

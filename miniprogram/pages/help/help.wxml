@@ -4,7 +4,7 @@
       <image src="../../images/board.svg" style="width:20px;height:20px"></image>
       <text style="margin-left: 5px;">比赛记分</text>
     </view>
-    <text style="margin-left: 15px;"> 加分 - 手指点击屏幕 </text>
+    <text style="margin-left: 15px;"> 加分 - 手指点击屏幕，可设置手势 </text>
     <text style="margin-left: 15px;"> 减分 - 手指向下滑动屏幕 </text>
     <text style="margin-left: 15px;"> 分数快速归0 - 手指从左划到右；</text>
     <text style="margin-left: 15px;"> 分享给好友 - 点击右上角...可以分享页面给好友，分享后好友可以随时查看记分进展</text>
@@ -26,8 +26,7 @@
       <text style="margin-left: 5px;">技术统计及设置</text>
     </view>
     <text style="margin-left: 15px;"> 比赛记分->技术统计，点击报告按钮可以查看队员的统计数字 </text>
-    <text style="margin-left: 15px;"> 技术统计->设置，可设置队名，硬排、气排球，场上位置，统计项目，统计球员等</text>
-    <text style="margin-left: 15px;"> 减少统计项目或者只针对某个队员，可以大大简化统计工作；</text>
+    <text style="margin-left: 15px;"> 比赛记分->技术统计->场上设置，可以邀请好友帮助做技术统计</text>
   </view>
 
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
@@ -45,8 +44,25 @@
       <image src="../../images/team.svg" style="width:20px;height:20px"></image>
       <text style="margin-left: 5px;">球队管理</text>
     </view>
-    <text style="margin-left: 15px;"> 此处可以创建队伍，邀请好友加入自己的队伍</text>
+    <text style="margin-left: 15px;"> 创建自己的队伍，邀请好友加入自己的队伍</text>
     <text style="margin-left: 15px;"> 左滑可以删除自己创建的队伍 </text>
+  </view>
+
+  <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+    <view style="display: flex; flex-direction: row; align-items: center;">
+      <image src="../../images/event.svg" style="width:20px;height:20px"></image>
+      <text style="margin-left: 5px;">赛事组织</text>
+    </view>
+    <text style="margin-left: 15px;"> 创建各种小组赛，贝格尔法编排场次</text>
+    <text style="margin-left: 15px;"> 大屏海报，展示各队伍积分和名次 </text>
+  </view>
+
+  <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">
+    <view style="display: flex; flex-direction: row; align-items: center;">
+      <image src="../../images/zhanshu.svg" style="width:20px;height:20px"></image>
+      <text style="margin-left: 5px;">战术面板</text>
+    </view>
+    <text style="margin-left: 15px;"> 提供各种工具，帮助教练员进行排兵布阵</text>
   </view>
 
   <view class="block1" style="display: flex; flex-direction: column; align-items: left;justify-content: space-between; ">

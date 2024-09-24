@@ -37,12 +37,12 @@
 			<view class="navigator_text"> 排球新闻 </view>
 		</navigator> -->
 
-		<navigator class="navigator_container" url="../help/help"> 
+		<!-- <navigator class="navigator_container" url="../help/help"> 
 			<image class="navigator_image" src="../../images/help.svg"></image>
 			<view class="navigator_text">使用帮助 </view>
-		</navigator>
+		</navigator> -->
 
-		<navigator class="navigator_container" url="../release/release">
+		<navigator class="navigator_container">
 			<view class="navigator_version">v2024.9.25</view>
 		</navigator>
 </view>
